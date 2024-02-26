@@ -1,0 +1,16 @@
+apiVersion: monitoring.grafana.com/v1alpha1
+kind: PodLogs
+metadata:
+  name: {{ template "app.name" . }}
+spec:
+  pipelineStages:
+  - cri: {}
+  {{- with .Values.podLogs.pipelineStages }}
+  {{- . | toYaml | nindent 2 }}
+  {{- end }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "app.labelselector" . | nindent 6 }}

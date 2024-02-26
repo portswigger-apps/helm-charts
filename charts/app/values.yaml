@@ -1,0 +1,79 @@
+image:
+  name: "public.ecr.aws/nginx/nginx"
+  tag: "alpine"
+
+args: []
+
+env: []
+
+envFrom: []
+
+deployment:
+  enabled: true
+  kind: "Deployment"
+  replicas: 1
+  updateStrategy:
+
+pod:
+  additionalVolumeMounts: []
+  # - name: dsdsocket
+  #   mountPath: /socket
+  additionalVolumes: []
+  # - name: dsdsocket
+  #   hostPath:
+  #     path: /var/run/statsd-exporter
+
+resources:
+  cpu: "100m"
+  memory: "64Mi"
+
+ports:
+  app-port:
+    port: 8080
+    protocol: TCP
+    expose: true
+
+metricsEndpoint:
+  path: /metrics
+  port: app-port
+
+healthcheckEndpoint:
+  path: /health
+  port: app-port
+
+podLogs:
+  pipelineStages: []
+
+service:
+  enabled: true
+
+ingress:
+  enabled: false
+  annotations: {}
+  className: ""
+  host: ""
+  paths:
+    - "/"
+
+initContainers: []
+
+serviceAccount:
+  enabled: true
+  automountServiceAccountToken: false
+  annotations: {}
+  # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
+
+extraDeploy: []
+
+ciliumNetworkPolicy:
+  enabled: false
+
+  ingress: []
+
+  egress: []
+  # - toFQDNs:
+  #   - matchName: "my-remote-service.com"
+
+  ingressControllerEndpointMatchLabels:
+    k8s:io.kubernetes.pod.namespace: ingress
+    app.kubernetes.io/name: nginx

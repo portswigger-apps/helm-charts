@@ -1,0 +1,13 @@
+{{- if gt (.Values.deployment.replicas | toString | atoi) 1 -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "app.name" . }}
+  labels:
+  {{- include "app.labels" . | nindent 8 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "app.labelselector" . | nindent 6 }}
+  maxUnavailable: 50%
+{{- end -}}
