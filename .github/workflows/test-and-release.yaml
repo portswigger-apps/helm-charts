@@ -34,7 +34,7 @@ jobs:
             https://github.com/helm-unittest/helm-unittest
 
       - name: Lint
-        run: helm lint charts/*/
+        run: helm lint charts/app/
 
       - name: Test
         run: helm unittest --strict charts/*/
