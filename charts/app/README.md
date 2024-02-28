@@ -6,7 +6,7 @@ A Helm "monochart" for deploying common application patterns
 
 ## Installation
 ```
-helm repo add utility-charts https://portswigger-apps.github.io/helm-charts/
+helm repo add helm-charts https://portswigger-apps.github.io/helm-charts/
 helm install app helm-charts/app
 ```
 
