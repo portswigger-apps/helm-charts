@@ -118,13 +118,13 @@ Outputs a pod spec for use in different resources.
       topologySpreadConstraints:
       - labelSelector:
           matchLabels:
-            {{- include "app.labelselector" . | nindent 10 }}
+            {{- include "app.labelselector" . | nindent 12 }}
         maxSkew: 1
         topologyKey: kubernetes.io/hostname
         whenUnsatisfiable: DoNotSchedule
       - labelSelector:
           matchLabels:
-            {{- include "app.labelselector" . | nindent 10 }}
+            {{- include "app.labelselector" . | nindent 12 }}
         maxSkew: 1
         topologyKey: topology.kubernetes.io/zone
         whenUnsatisfiable: ScheduleAnyway
