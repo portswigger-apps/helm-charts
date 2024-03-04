@@ -7,6 +7,7 @@ Outputs a pod spec for use in different resources.
 {{- define "app.podTemplate" }}
     metadata:
       annotations:
+        checksum/env-secret: {{ $envSec := include (print $.Template.BasePath "/kubernetes/secret-env.yaml") . | fromYaml }}{{ $envSec.data | toYaml | sha256sum }}
       {{- with .Values.pod.annotations }}
       {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -95,9 +96,10 @@ Outputs a pod spec for use in different resources.
                 fieldPath: status.podIP
           - name: IMAGE_TAG
             value: {{ .Values.image.tag | quote }}
-        {{- with .Values.env }}
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
+          {{- range $key, $value := .Values.env}}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
         {{- if or .Values.envFrom .Values.secretEnv}}
         envFrom:
           {{- with .Values.envFrom }}
