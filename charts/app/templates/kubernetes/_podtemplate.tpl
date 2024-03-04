@@ -105,7 +105,7 @@ Outputs a pod spec for use in different resources.
           {{- end }}
           {{- if .Values.secretEnv }}
           - secretRef:
-              name: {{ .Release.Name}}-env
+              name: {{ .Release.Name }}-env
           {{- end }}
         {{- end }}
         volumeMounts:
