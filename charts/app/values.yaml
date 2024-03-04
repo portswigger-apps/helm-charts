@@ -8,6 +8,9 @@ env: []
 
 envFrom: []
 
+secretEnv: {}
+  # secret_key: secret_value
+
 deployment:
   enabled: true
   kind: "Deployment"

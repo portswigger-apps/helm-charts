@@ -98,9 +98,15 @@ Outputs a pod spec for use in different resources.
         {{- with .Values.env }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.envFrom }}
+        {{- if or .Values.envFrom .Values.secretEnv}}
         envFrom:
+          {{- with .Values.envFrom }}
           {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- if .Values.secretEnv }}
+          - secretRef:
+              name: {{ .Release.Name}}-env
+          {{- end }}
         {{- end }}
         volumeMounts:
         - mountPath: /tmp
