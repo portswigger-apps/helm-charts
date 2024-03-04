@@ -3,6 +3,18 @@ entries:
   app:
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2024-03-04T11:22:51.723256979Z"
+    description: A Helm "monochart" for deploying common application patterns
+    digest: 9223943173484d274a9e62a3508326ffb18ef3264d9171d908eeec7b4f0850f9
+    keywords:
+    - app
+    name: app
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/app-0.0.0-alpha-4/app-0.0.0-alpha-4.tgz
+    version: 0.0.0-alpha-4
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2024-03-04T11:16:36.695215999Z"
     description: A Helm "monochart" for deploying common application patterns
     digest: e2f2758112388ee88983458f443d5df4b0fc49050a22a6f30d87596937584c95
@@ -88,6 +100,18 @@ entries:
     version: 0.0.0-alpha-2
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2024-03-04T11:22:51.857688506Z"
+    description: A Helm "monochart" for deploying common application patterns
+    digest: fb7a2a1c874476a94862b31f87fc453479e20e3a6a3b3c7565f4a7e2a51fc9be
+    keywords:
+    - cron
+    name: cron
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/cron-0.0.0-alpha-2/cron-0.0.0-alpha-2.tgz
+    version: 0.0.0-alpha-2
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2024-02-27T13:14:03.835348178Z"
     description: A Helm "monochart" for deploying common application patterns
     digest: 2d1052297d79b4adccbd205f65a58e8b75a0db37e0337e3735606270127c0dc0
@@ -111,4 +135,16 @@ entries:
     urls:
     - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-1/infra-0.0.0-alpha-1.tgz
     version: 0.0.0-alpha-1
-generated: "2024-03-04T11:16:36.695256524Z"
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2024-03-04T11:22:51.966964977Z"
+    description: A Helm "monochart" for deploying common application patterns
+    digest: 067b7bfe9a960a194bdfe7b0f2acb9bb7ddd2e3cdac3d4a7947d114789ed5add
+    keywords:
+    - infra
+    name: infra
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-1/infra-0.0.0-alpha-1.tgz
+    version: 0.0.0-alpha-1
+generated: "2024-03-04T11:22:51.967038505Z"
