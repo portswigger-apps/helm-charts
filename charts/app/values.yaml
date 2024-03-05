@@ -12,6 +12,9 @@ envFrom: []
 secretEnv: {}
   # secret_key: secret_value
 
+secretVolume: {}
+  # file-name.txt: aGVsbG8gMTIz
+
 deployment:
   enabled: true
   kind: "Deployment"

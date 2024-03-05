@@ -7,7 +7,8 @@ Outputs a pod spec for use in different resources.
 {{- define "app.podTemplate" }}
     metadata:
       annotations:
-        checksum/env-secret: {{ $envSec := include (print $.Template.BasePath "/kubernetes/secret-env.yaml") . | fromYaml }}{{ $envSec.data | toYaml | sha256sum }}
+        checksum/secret-env: {{ $envSec := include (print $.Template.BasePath "/kubernetes/secret-env.yaml") . | fromYaml }}{{ $envSec.data | toYaml | sha256sum }}
+        checksum/secret-volume: {{ $envSec := include (print $.Template.BasePath "/kubernetes/secret-volume.yaml") . | fromYaml }}{{ $envSec.data | toYaml | sha256sum }}
       {{- with .Values.pod.annotations }}
       {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -113,6 +114,11 @@ Outputs a pod spec for use in different resources.
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
+        {{- if .Values.secretVolume }}
+        - mountPath: /secrets
+          name: {{ $.Release.Name }}-volume
+          readOnly: true
+        {{- end }}
         {{- if .Values.pod.additionalVolumeMounts }}
         {{- toYaml .Values.pod.additionalVolumeMounts | nindent 8 }}
         {{- end }}
@@ -139,6 +145,11 @@ Outputs a pod spec for use in different resources.
       volumes:
       - name: tmp-volume
         emptyDir: {}
+      {{- if .Values.secretVolume }}
+      - name: {{ $.Release.Name }}-volume
+        secret:
+          secretName: {{ $.Release.Name }}-volume
+      {{- end }}
       {{- if .Values.pod.additionalVolumes }}
       {{- toYaml .Values.pod.additionalVolumes | nindent 6 }}
       {{- end }}
