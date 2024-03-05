@@ -1,0 +1,71 @@
+suite: Ingress configuration
+templates:
+      - kubernetes/ingress.yaml
+tests:
+  - it: should not create ingress if not enabled
+    set:
+      ingress:
+        enabled: false
+    asserts:
+      - hasDocuments:
+         count: 0
+
+  - it: should expose port if expose enabled
+    set:
+      ingress:
+        enabled: true
+        host: my-host.com
+        paths:
+        - "/my-path"
+      ports:
+        app-port:
+          port: 1234
+          protocol: TCP
+          expose: true
+    asserts:
+      - exists:
+          path: spec.rules[?(@.host == "my-host.com")]
+      - equal:
+          path: spec.rules[?(@.host == "my-host.com")].http.paths[?(@.path == "/my-path")]
+          value:
+            path: "/my-path"
+            pathType: Prefix
+            backend:
+              service:
+                name: RELEASE-NAME
+                port:
+                  number: 1234
+
+  - it: should not expose port if expose not enabled
+    set:
+      ingress:
+        enabled: true
+        host: my-host.com
+        paths:
+        - "/my-path"
+      ports:
+        app-port:
+          port: 1234
+          protocol: TCP
+          expose: false
+    asserts:
+      - exists:
+          path: spec.rules[?(@.host == "my-host.com")]
+      - isEmpty:
+          path: spec.rules[?(@.host == "my-host.com")].http.paths
+
+  - it: fail if no host name
+    set:
+      ingress:
+        host: null
+        enabled: true
+        paths:
+        - "/my-path"
+      ports:
+        app-port:
+          port: 1234
+          protocol: TCP
+          expose: false
+    asserts:
+      - failedTemplate:
+          errorMessage: "ERROR: A unique hostname must be set if creating an ingress"

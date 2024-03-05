@@ -1,0 +1,41 @@
+suite: Service configuration
+templates:
+      - kubernetes/service.yaml
+tests:
+  - it: should not create service if not enabled
+    set:
+      service:
+        enabled: false
+    asserts:
+      - hasDocuments:
+         count: 0
+
+  - it: should create service if enabled and port exposed
+    set:
+      service:
+        enabled: true
+      ports:
+        app-port:
+          expose: true
+          port: 8080
+          protocol: TCP
+    asserts:
+      - equal:
+          path: spec.ports[?(@.targetPort == "app-port")]
+          value:
+            port: 8080
+            protocol: TCP
+            targetPort: app-port
+
+  - it: should not add port if port not exposed
+    set:
+      service:
+        enabled: true
+      ports:
+        app-port:
+          expose: false
+          port: 8080
+          protocol: TCP
+    asserts:
+      - isEmpty:
+          path: spec.ports

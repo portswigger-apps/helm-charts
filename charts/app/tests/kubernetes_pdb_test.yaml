@@ -1,0 +1,18 @@
+suite: Pod Distribution Budget configuration
+templates:
+      - kubernetes/pdb.yaml
+tests:
+  - it: should not create pdb if 1 replica
+    set:
+      deployment:
+        replicas: 1
+    asserts:
+      - hasDocuments:
+         count: 0
+  - it: should create pdb if more than 1 replicas
+    set:
+      deployment:
+        replicas: 2
+    asserts:
+      - hasDocuments:
+         count: 1
