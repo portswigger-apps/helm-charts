@@ -36,6 +36,9 @@ jobs:
       - name: Lint
         run: helm lint charts/app/
 
+      - name: Test
+        run: helm unittest --strict charts/app/
+
       - name: Release
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: helm/chart-releaser-action@v1.5.0
