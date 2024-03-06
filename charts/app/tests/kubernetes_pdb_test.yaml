@@ -1,4 +1,4 @@
-suite: Pod Distribution Budget configuration
+suite: Pod Disruption Budget configuration
 templates:
       - kubernetes/pdb.yaml
 tests:
@@ -14,5 +14,7 @@ tests:
       deployment:
         replicas: 2
     asserts:
+      - isKind:
+          of: PodDisruptionBudget
       - hasDocuments:
          count: 1

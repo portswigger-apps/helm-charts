@@ -1,0 +1,75 @@
+suite: Cilium network policy configuration
+templates:
+      - cilium/networkpolicy.yaml
+tests:
+  - it: should not create network policy if not enabled
+    set:
+      ciliumNetworkPolicy:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create network policy if enabled and set default values
+    set:
+      ciliumNetworkPolicy:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: CiliumNetworkPolicy
+      - equal:
+          path: spec.endpointSelector.matchLabels
+          value:
+            app.kubernetes.io/app: RELEASE-NAME
+            app.kubernetes.io/instance: app-RELEASE-NAME
+      - equal:
+          path: spec.egress
+          value:
+          - toEndpoints:
+            - matchLabels:
+                k8s:io.kubernetes.pod.namespace: kube-system
+                k8s-app: kube-dns
+            toPorts:
+            - ports:
+              - port: "53"
+                protocol: ANY
+              rules:
+                dns:
+                - matchPattern: "*"
+  - it: should add ports and match labels
+    set:
+      ciliumNetworkPolicy:
+        enabled: true
+        ingressControllerEndpointMatchLabels:
+          endpoint-match-label-1: value1
+          endpoint-match-label-2: value2
+      ingress:
+        enabled: true
+      ports:
+        app-port:
+          port: 8080
+          protocol: TCP
+          expose: true
+    asserts:
+      - equal:
+          path: spec.ingress[0].toPorts
+          value:
+            - ports:
+              - port: "8080"
+                protocol: TCP
+      - equal:
+          path: spec.ingress[1].toPorts
+          value:
+            - ports:
+              - port: "8080"
+                protocol: TCP
+      - equal:
+          path: spec.ingress[1].fromEndpoints
+          value:
+              - matchLabels:
+                  app.kubernetes.io/name: nginx
+                  endpoint-match-label-1: value1
+                  endpoint-match-label-2: value2
+                  k8s:io.kubernetes.pod.namespace: ingress

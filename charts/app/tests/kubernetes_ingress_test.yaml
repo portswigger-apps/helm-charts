@@ -23,6 +23,8 @@ tests:
           protocol: TCP
           expose: true
     asserts:
+      - isKind:
+          of: Ingress
       - exists:
           path: spec.rules[?(@.host == "my-host.com")]
       - equal:

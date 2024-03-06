@@ -158,6 +158,20 @@ tests:
           value:
             memory: 89Mi
 
+  - it: should have correct checksum for no secrets
+    set:
+      deployment:
+        enabled: true
+        kind: "Deployment"
+    template: kubernetes/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations.checksum/secret-env
+          value: "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+      - equal:
+          path: spec.template.metadata.annotations.checksum/secret-volume
+          value: "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+
   - it: should add environment secrets
     set:
       deployment:
@@ -172,6 +186,9 @@ tests:
           value:
             - secretRef:
                 name: RELEASE-NAME-env
+      - equal:
+          path: spec.template.metadata.annotations.checksum/secret-env
+          value: "4ea0fc2d4d2c6ba772445da8ad357f2719453fa0f6462c2feb73476b7aafc2b7"
 
   - it: should add volume secrets
     set:
@@ -194,3 +211,6 @@ tests:
             name: RELEASE-NAME-volume
             secret:
               secretName: RELEASE-NAME-volume
+      - equal:
+          path: spec.template.metadata.annotations.checksum/secret-volume
+          value: "b93e8ed7da9e1df7cade422ad14c91a0f5555449296010ff93504bb2024f5d79"

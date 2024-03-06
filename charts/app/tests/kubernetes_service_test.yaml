@@ -20,6 +20,8 @@ tests:
           port: 8080
           protocol: TCP
     asserts:
+      - isKind:
+          of: Service
       - equal:
           path: spec.ports[?(@.targetPort == "app-port")]
           value:
