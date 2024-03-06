@@ -7,7 +7,7 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: {{ .Values.deployment.kind }}
+    kind: Deployment
     name: {{ template "app.name" . }}
   minReplicas: {{ .Values.deployment.replicas }}
   maxReplicas: {{ max .Values.deployment.maxReplicas .Values.deployment.replicas | default .Values.deployment.replicas }}

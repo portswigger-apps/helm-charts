@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.0.0-alpha-9](https://img.shields.io/badge/Version-0.0.0--alpha--9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-10](https://img.shields.io/badge/Version-0.0.0--alpha--10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,44 +14,44 @@ helm install app helm-charts/app
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| args | list | `[]` |  |
-| ciliumNetworkPolicy.egress | list | `[]` |  |
-| ciliumNetworkPolicy.enabled | bool | `false` |  |
-| ciliumNetworkPolicy.ingress | list | `[]` |  |
-| ciliumNetworkPolicy.ingressControllerEndpointMatchLabels."app.kubernetes.io/name" | string | `"nginx"` |  |
-| ciliumNetworkPolicy.ingressControllerEndpointMatchLabels."k8s:io.kubernetes.pod.namespace" | string | `"ingress"` |  |
+| args | list | `[]` | Arguments to be passed to the container |
+| ciliumNetworkPolicy | object | `{"egress":[],"enabled":false,"ingress":[],"ingressControllerEndpointMatchLabels":{"app.kubernetes.io/name":"nginx","k8s:io.kubernetes.pod.namespace":"ingress"}}` | Configuration for the ciliumNetworkPolicy, allowing restriction of network access to pods. |
+| ciliumNetworkPolicy.egress | list | `[]` | Cilium egress rules. See example in values.yaml |
+| ciliumNetworkPolicy.ingress | list | `[]` | Cilium ingress rules. See example in values.yaml |
+| ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | object | `{"app.kubernetes.io/name":"nginx","k8s:io.kubernetes.pod.namespace":"ingress"}` | Pods that have these labels with be able to access your application |
 | deployment.enabled | bool | `true` |  |
-| deployment.kind | string | `"Deployment"` |  |
-| deployment.replicas | int | `1` |  |
-| deployment.updateStrategy | string | `nil` |  |
-| env | object | `{}` |  |
-| envFrom | list | `[]` |  |
-| extraDeploy | list | `[]` |  |
-| healthcheckEndpoint.path | string | `"/health"` |  |
-| healthcheckEndpoint.port | string | `"app-port"` |  |
-| image.name | string | `"public.ecr.aws/nginx/nginx"` |  |
-| image.tag | string | `"alpine"` |  |
+| deployment.maxReplicas | string | `nil` | The maximum number of replicas of the application |
+| deployment.replicas | int | `1` | The minimum number of replicas of the application |
+| env | object | `{}` | Environment variables that will be available in the container |
+| envFrom | list | `[]` | Used to specify environment variables from ConfigMaps. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/ |
+| extraDeploy | list | `[]` | Extra Kubernetes configuration |
+| healthcheckEndpoint | object | `{"path":"/health","port":"app-port"}` | Configuration for startup, liveness and readiness probes |
+| healthcheckEndpoint.path | string | `"/health"` | The path of the healthcheck endpoint |
+| healthcheckEndpoint.port | string | `"app-port"` | Which port the healthcheck endpoint is exposed on. Referenced by the port's name |
+| image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
+| image.tag | string | `"alpine"` | The container tag that will be run |
 | ingress.annotations | object | `{}` |  |
-| ingress.className | string | `""` |  |
-| ingress.enabled | bool | `false` |  |
-| ingress.host | string | `""` |  |
-| ingress.paths[0] | string | `"/"` |  |
-| initContainers | list | `[]` |  |
-| metricsEndpoint.path | string | `"/metrics"` |  |
-| metricsEndpoint.port | string | `"app-port"` |  |
-| pod.additionalVolumeMounts | list | `[]` |  |
-| pod.additionalVolumes | list | `[]` |  |
-| podLogs.pipelineStages | list | `[]` |  |
-| ports.app-port.expose | bool | `true` |  |
-| ports.app-port.port | int | `8080` |  |
-| ports.app-port.protocol | string | `"TCP"` |  |
-| resources.cpu | string | `"100m"` |  |
-| resources.memory | string | `"64Mi"` |  |
-| secretEnv | object | `{}` |  |
-| secretVolume | object | `{}` |  |
-| service.enabled | bool | `true` |  |
-| serviceAccount.annotations | object | `{}` |  |
-| serviceAccount.automountServiceAccountToken | bool | `false` |  |
-| serviceAccount.enabled | bool | `true` |  |
+| ingress.enabled | bool | `false` | Adds an ingress to expose the application to the outside world |
+| ingress.host | string | `""` | The host name the application will be accessible from |
+| ingress.paths | list | `["/"]` | The path prefixes that are exposed |
+| initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. |
+| metricsEndpoint.path | string | `"/metrics"` | The path of the metrics endpoint |
+| metricsEndpoint.port | string | `"app-port"` | Which port the metrics endpoint is exposed on. Referenced by the port's name |
+| pod.additionalVolumeMounts | list | `[]` | Configuration for additional volume mounts. References additionalVolumes |
+| pod.additionalVolumes | list | `[]` | Configuration for additional volumes. |
+| podLogs.pipelineStages | list | `[]` | Used to define grafana pipelines |
+| ports | object | `{"app-port":{"expose":true,"port":8080,"protocol":"TCP"}}` | Configuration for the ports that the application listens on. |
+| ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world. |
+| ports.app-port.port | int | `8080` | The port the application is running on |
+| ports.app-port.protocol | string | `"TCP"` | The protocol the application uses |
+| resources.cpu | string | `"100m"` | Requested CPU time for the pod |
+| resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
+| secretEnv | object | `{}` | Secret values that are mounted as environment variables |
+| secretVolume | object | `{}` | Secret values that are mounted as a file to /secrets |
+| service.annotations | object | `{}` | Annotations for the service |
+| service.enabled | bool | `true` | Adds a service to expose the application to the rest of the cluster |
+| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true}` | Service account configuration. Used for applications that access the Kubernetes API. |
+| serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account |
+| serviceAccount.enabled | bool | `true` | Enables/disables the custom service account |
 
 ---

@@ -1,6 +1,6 @@
-{{- if and .Values.deployment.enabled (eq .Values.deployment.kind "Deployment") -}}
+{{- if .Values.deployment.enabled -}}
 apiVersion: apps/v1
-kind: {{ .Values.deployment.kind }}
+kind: Deployment
 metadata:
   name: {{ template "app.name" . }}
   labels:

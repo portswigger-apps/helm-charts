@@ -1,86 +1,130 @@
 image:
+  # -- The container image of your application
   name: "public.ecr.aws/nginx/nginx"
+  # -- The container tag that will be run
   tag: "alpine"
 
+# -- Arguments to be passed to the container
 args: []
 
+# -- Environment variables that will be available in the container
 env: {}
   # MY_ENVIRONMENT_VARIABLE: "my_value"
 
+# -- Used to specify environment variables from ConfigMaps. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
 envFrom: []
 
+# -- Secret values that are mounted as environment variables
 secretEnv: {}
   # secret_key: secret_value
 
+# -- Secret values that are mounted as a file to /secrets
 secretVolume: {}
   # file-name.txt: aGVsbG8gMTIz
 
 deployment:
   enabled: true
-  kind: "Deployment"
+  # -- The minimum number of replicas of the application
   replicas: 1
-  updateStrategy:
+  # -- The maximum number of replicas of the application
+  maxReplicas: null
 
 pod:
-  additionalVolumeMounts: []
-  # - name: dsdsocket
-  #   mountPath: /socket
+  # -- Configuration for additional volumes.
   additionalVolumes: []
   # - name: dsdsocket
   #   hostPath:
   #     path: /var/run/statsd-exporter
 
+  # -- Configuration for additional volume mounts. References additionalVolumes
+  additionalVolumeMounts: []
+  # - name: dsdsocket
+  #   mountPath: /socket
+
 resources:
+  # -- Requested CPU time for the pod
   cpu: "100m"
+  # -- Maximum memory usage for the pod
   memory: "64Mi"
 
+# -- Configuration for the ports that the application listens on.
 ports:
   app-port:
+    # -- The port the application is running on
     port: 8080
+    # -- The protocol the application uses
     protocol: TCP
+    # -- Whether the port should be accessible to the cluster and outside world.
     expose: true
 
 metricsEndpoint:
+  # -- The path of the metrics endpoint
   path: /metrics
+  # -- Which port the metrics endpoint is exposed on. Referenced by the port's name
   port: app-port
 
+# -- Configuration for startup, liveness and readiness probes
 healthcheckEndpoint:
+  # -- The path of the healthcheck endpoint
   path: /health
+  # -- Which port the healthcheck endpoint is exposed on. Referenced by the port's name
   port: app-port
 
 podLogs:
+  # -- Used to define grafana pipelines
   pipelineStages: []
 
 service:
+  # -- Adds a service to expose the application to the rest of the cluster
   enabled: true
+  # -- Annotations for the service
+  annotations: {}
 
 ingress:
+  # -- Adds an ingress to expose the application to the outside world
   enabled: false
   annotations: {}
-  className: ""
+  # -- The host name the application will be accessible from
   host: ""
+  # -- The path prefixes that are exposed
   paths:
     - "/"
 
+# -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
 initContainers: []
 
+# -- Service account configuration. Used for applications that access the Kubernetes API.
 serviceAccount:
+  # -- Enables/disables the custom service account
   enabled: true
+  # -- If the service account token should be mounted into pods that use the service account
   automountServiceAccountToken: false
   annotations: {}
   # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
 
+# -- Extra Kubernetes configuration
 extraDeploy: []
 
+# -- Configuration for the ciliumNetworkPolicy, allowing restriction of network access to pods.
 ciliumNetworkPolicy:
   enabled: false
 
+  # -- Cilium ingress rules. See example in values.yaml
   ingress: []
+  # - fromEndpoints:
+  #  - matchLabels:
+  #      app.kubernetes.io/name: frontend # Pods with this label will be able to access your application
+  #  toPorts:
+  #  - ports:
+  #    - port: "8080"
+  #      protocol: TCP
 
+  # -- Cilium egress rules. See example in values.yaml
   egress: []
   # - toFQDNs:
   #   - matchName: "my-remote-service.com"
 
+  # -- Pods that have these labels with be able to access your application
   ingressControllerEndpointMatchLabels:
     k8s:io.kubernetes.pod.namespace: ingress
     app.kubernetes.io/name: nginx
