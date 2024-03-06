@@ -39,7 +39,7 @@ helm install app helm-charts/app
 | metricsEndpoint.port | string | `"app-port"` | The port that the metrics endpoint is exposed on. Referenced by the port's name |
 | pod.additionalVolumeMounts | list | `[]` | Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml |
 | pod.additionalVolumes | list | `[]` | Configuration for additional volumes. See example in values.yaml |
-| podLogs.pipelineStages | list | `[]` |  |
+| podLogs.pipelineStages | list | `[]` | Grafana Loki pipeline stages configuration. See https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/ |
 | ports | object | `{"app-port":{"expose":true,"port":8080,"protocol":"TCP"}}` | Configuration for the ports that the application listens on. |
 | ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world. |
 | ports.app-port.port | int | `8080` | The port the application is running on |

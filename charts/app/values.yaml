@@ -71,6 +71,7 @@ healthcheckEndpoint:
   port: app-port
 
 podLogs:
+  # -- Grafana Loki pipeline stages configuration. See https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/
   pipelineStages: []
 
 service:
