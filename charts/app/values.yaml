@@ -109,13 +109,13 @@ ciliumNetworkPolicy:
 
   # -- Cilium ingress rules. See example in values.yaml
   ingress: []
-  # - fromEndpoints:
-  #  - matchLabels:
-  #      app.kubernetes.io/name: frontend # Pods with this label will be able to access your application
-  #  toPorts:
-  #  - ports:
-  #    - port: "8080"
-  #      protocol: TCP
+  # fromEndpoints:
+  # - matchLabels:
+  #     app.kubernetes.io/name: frontend # Pods with this label will be able to access your application
+  #   toPorts:
+  #     - ports:
+  #       - port: "8080"
+  #         protocol: TCP
 
   # -- Cilium egress rules. See example in values.yaml
   egress: []

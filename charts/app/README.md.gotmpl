@@ -22,3 +22,8 @@ helm install {{ template "chart.name" . }} helm-charts/{{ template "chart.name" 
 {{ template "chart.valuesSection" . }}
 
 ---
+
+## Cilium Network Policy Examples
+```
+{{ .Files.Get "cilium-network-policy-examples.yaml" }}
+```

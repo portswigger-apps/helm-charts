@@ -1,0 +1,13 @@
+ingress:
+  - fromEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: frontend # Pods with this label will be able to access your application
+    toPorts:
+      - ports:
+        - port: "8080"
+          protocol: TCP
+
+
+egress:
+  - toFQDNs:
+    - matchName: "my-remote-service.com"

@@ -54,3 +54,20 @@ helm install app helm-charts/app
 | serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account |
 
 ---
+
+## Cilium Network Policy Examples
+```
+ingress:
+  - fromEndpoints:
+    - matchLabels:
+        app.kubernetes.io/name: frontend # Pods with this label will be able to access your application
+    toPorts:
+      - ports:
+        - port: "8080"
+          protocol: TCP
+
+egress:
+  - toFQDNs:
+    - matchName: "my-remote-service.com"
+
+```
