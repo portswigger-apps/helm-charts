@@ -30,13 +30,13 @@ deployment:
   maxReplicas: null
 
 pod:
-  # -- Configuration for additional volumes.
+  # -- Configuration for additional volumes. See example in values.yaml
   additionalVolumes: []
   # - name: dsdsocket
   #   hostPath:
   #     path: /var/run/statsd-exporter
 
-  # -- Configuration for additional volume mounts. References additionalVolumes
+  # -- Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml
   additionalVolumeMounts: []
   # - name: dsdsocket
   #   mountPath: /socket
@@ -60,24 +60,22 @@ ports:
 metricsEndpoint:
   # -- The path of the metrics endpoint
   path: /metrics
-  # -- Which port the metrics endpoint is exposed on. Referenced by the port's name
+  # -- The port that the metrics endpoint is exposed on. Referenced by the port's name
   port: app-port
 
 # -- Configuration for startup, liveness and readiness probes
 healthcheckEndpoint:
   # -- The path of the healthcheck endpoint
   path: /health
-  # -- Which port the healthcheck endpoint is exposed on. Referenced by the port's name
+  # -- The port that the healthcheck endpoint is exposed on. Referenced by the port's name
   port: app-port
 
 podLogs:
-  # -- Used to define grafana pipelines
   pipelineStages: []
 
 service:
   # -- Adds a service to expose the application to the rest of the cluster
   enabled: true
-  # -- Annotations for the service
   annotations: {}
 
 ingress:
@@ -92,18 +90,17 @@ ingress:
 
 # -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
 initContainers: []
+  # - name: init-myservice
+  #   image: nginx
+  #   command: ['sh', '-c', "echo 'output'"]
 
-# -- Service account configuration. Used for applications that access the Kubernetes API.
+# -- Service account configuration. Configuration is required for accessing AWS resources
 serviceAccount:
-  # -- Enables/disables the custom service account
   enabled: true
   # -- If the service account token should be mounted into pods that use the service account
   automountServiceAccountToken: false
   annotations: {}
   # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
-
-# -- Extra Kubernetes configuration
-extraDeploy: []
 
 # -- Configuration for the ciliumNetworkPolicy, allowing restriction of network access to pods.
 ciliumNetworkPolicy:
@@ -128,3 +125,6 @@ ciliumNetworkPolicy:
   ingressControllerEndpointMatchLabels:
     k8s:io.kubernetes.pod.namespace: ingress
     app.kubernetes.io/name: nginx
+
+# -- Extra Kubernetes configuration
+extraDeploy: []

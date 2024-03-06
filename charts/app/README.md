@@ -27,7 +27,7 @@ helm install app helm-charts/app
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | healthcheckEndpoint | object | `{"path":"/health","port":"app-port"}` | Configuration for startup, liveness and readiness probes |
 | healthcheckEndpoint.path | string | `"/health"` | The path of the healthcheck endpoint |
-| healthcheckEndpoint.port | string | `"app-port"` | Which port the healthcheck endpoint is exposed on. Referenced by the port's name |
+| healthcheckEndpoint.port | string | `"app-port"` | The port that the healthcheck endpoint is exposed on. Referenced by the port's name |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
 | ingress.annotations | object | `{}` |  |
@@ -36,10 +36,10 @@ helm install app helm-charts/app
 | ingress.paths | list | `["/"]` | The path prefixes that are exposed |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. |
 | metricsEndpoint.path | string | `"/metrics"` | The path of the metrics endpoint |
-| metricsEndpoint.port | string | `"app-port"` | Which port the metrics endpoint is exposed on. Referenced by the port's name |
-| pod.additionalVolumeMounts | list | `[]` | Configuration for additional volume mounts. References additionalVolumes |
-| pod.additionalVolumes | list | `[]` | Configuration for additional volumes. |
-| podLogs.pipelineStages | list | `[]` | Used to define grafana pipelines |
+| metricsEndpoint.port | string | `"app-port"` | The port that the metrics endpoint is exposed on. Referenced by the port's name |
+| pod.additionalVolumeMounts | list | `[]` | Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml |
+| pod.additionalVolumes | list | `[]` | Configuration for additional volumes. See example in values.yaml |
+| podLogs.pipelineStages | list | `[]` |  |
 | ports | object | `{"app-port":{"expose":true,"port":8080,"protocol":"TCP"}}` | Configuration for the ports that the application listens on. |
 | ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world. |
 | ports.app-port.port | int | `8080` | The port the application is running on |
@@ -48,10 +48,9 @@ helm install app helm-charts/app
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
 | secretEnv | object | `{}` | Secret values that are mounted as environment variables |
 | secretVolume | object | `{}` | Secret values that are mounted as a file to /secrets |
-| service.annotations | object | `{}` | Annotations for the service |
+| service.annotations | object | `{}` |  |
 | service.enabled | bool | `true` | Adds a service to expose the application to the rest of the cluster |
-| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true}` | Service account configuration. Used for applications that access the Kubernetes API. |
+| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true}` | Service account configuration. Configuration is required for accessing AWS resources |
 | serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account |
-| serviceAccount.enabled | bool | `true` | Enables/disables the custom service account |
 
 ---
