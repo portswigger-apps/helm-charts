@@ -34,10 +34,10 @@ jobs:
             https://github.com/helm-unittest/helm-unittest
 
       - name: Lint
-        run: helm lint charts/app/
+        run: helm lint charts/*/
 
       - name: Test
-        run: helm unittest --strict charts/app/
+        run: helm unittest --strict charts/*/
 
       - name: Release
         if: ${{ github.ref == 'refs/heads/main' }}
