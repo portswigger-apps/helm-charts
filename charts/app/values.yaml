@@ -7,7 +7,7 @@ image:
 # -- Arguments to be passed to the container
 args: []
 
-# -- Environment variables that will be available in the container. Formatted as <environment variable name>: <plain text value>
+# -- Environment variables that will be available in the container. Formatted as ```<environment variable name>: <plain text value>```
 env: {}
   # MY_ENVIRONMENT_VARIABLE: "my_value"
 
@@ -17,11 +17,11 @@ envFrom: []
 #     name: "config-map-name"
 
 
-# -- Secret values that are mounted as environment variables. Formatted as <environment variable name>: <plain text value>
+# -- Secret values that are mounted as environment variables. Formatted as ```<environment variable name>: <plain text value>```
 secretEnv: {}
   # secret_key: secret_value
 
-# -- Secret values that are mounted as a file to /secrets. Formatted as <file name>: <base64 encoded value>
+# -- Secret values that are mounted as a file to /secrets. Formatted as ```<file name>: <base64 encoded value>```
 secretVolume: {}
   # file-name.txt: aGVsbG8gMTIz
 
