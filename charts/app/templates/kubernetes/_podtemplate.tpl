@@ -125,7 +125,7 @@ Outputs a pod spec for use in different resources.
                 name: {{ .Values.infra.postgres.name}}-postgres
                 key: password
           - name: DATABASE_URL
-            value: "postgres://$(DATABASE_USERNAME):${DATABASE_PASSWORD}@$(DATABASE_HOST):${DATABASE_PORT}/$(DATABASE_NAME)"
+            value: "postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)"
           - name: JDBC_DATABASE_URL
             value: "jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)"
           {{- end }}
