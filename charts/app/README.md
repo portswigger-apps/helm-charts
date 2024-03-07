@@ -22,7 +22,7 @@ helm install app helm-charts/app
 | deployment.enabled | bool | `true` |  |
 | deployment.maxReplicas | int | `nil` | The maximum number of replicas of the application |
 | deployment.replicas | int | `1` | The minimum number of replicas of the application |
-| env | object | `{}` | Environment variables that will be available in the container |
+| env | object | `{}` | Environment variables that will be available in the container. Formatted as <environment variable name>: <plain text value> |
 | envFrom | list | `[]` | Used to specify environment variables from ConfigMaps. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/ |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | healthcheckEndpoint | object | `{"path":"/health","port":"app-port"}` | Configuration for startup, liveness and readiness probes |
@@ -46,8 +46,8 @@ helm install app helm-charts/app
 | ports.app-port.protocol | string | `"TCP"` | The protocol the application uses |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
-| secretEnv | object | `{}` | Secret values that are mounted as environment variables |
-| secretVolume | object | `{}` | Secret values that are mounted as a file to /secrets |
+| secretEnv | object | `{}` | Secret values that are mounted as environment variables. Formatted as <environment variable name>: <plain text value> |
+| secretVolume | object | `{}` | Secret values that are mounted as a file to /secrets. Formatted as <file name>: <base64 encoded value> |
 | service.annotations | object | `{}` |  |
 | service.enabled | bool | `true` | Adds a service to expose the application to the rest of the cluster |
 | serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true}` | Service account configuration. Configuration is required for accessing AWS resources |
