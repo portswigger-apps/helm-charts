@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.0.0-alpha-11](https://img.shields.io/badge/Version-0.0.0--alpha--11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -30,6 +30,8 @@ helm install app helm-charts/app
 | healthcheckEndpoint.port | string | `"app-port"` | The port that the healthcheck endpoint is exposed on. Referenced by the port's name |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
+| infra | object | `{"postgres":{"name":null}}` | Configuration for infra |
+| infra.postgres.name | string | `nil` | The database name. Must be the same as the name specified in the infra chart. |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` | Adds an ingress to expose the application to the outside world |
 | ingress.host | string | `""` | The host name the application will be accessible from |
@@ -44,8 +46,6 @@ helm install app helm-charts/app
 | ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world. |
 | ports.app-port.port | int | `8080` | The port the application is running on |
 | ports.app-port.protocol | string | `"TCP"` | The protocol the application uses |
-| postgres | object | `{"name":null}` | Configuration for postgres databases |
-| postgres.name | string | `nil` | The database name. Must be the same as the name specified in the infra chart. |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
 | secretEnv | object | `{}` | Secret values that are mounted as environment variables. Formatted as ```<environment variable name>: <plain text value>``` |

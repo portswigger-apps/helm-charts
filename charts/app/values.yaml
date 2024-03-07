@@ -8,7 +8,8 @@ image:
 args: []
 
 # -- Environment variables that will be available in the container. Formatted as ```<environment variable name>: <plain text value>```
-env: {}
+env:
+  {}
   # MY_ENVIRONMENT_VARIABLE: "my_value"
 
 # -- Used to specify environment variables from ConfigMaps. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
@@ -16,13 +17,14 @@ envFrom: []
 # - configMapRef
 #     name: "config-map-name"
 
-
 # -- Secret values that are mounted as environment variables. Formatted as ```<environment variable name>: <plain text value>```
-secretEnv: {}
+secretEnv:
+  {}
   # secret_key: secret_value
 
 # -- Secret values that are mounted as a file to /secrets. Formatted as ```<file name>: <base64 encoded value>```
-secretVolume: {}
+secretVolume:
+  {}
   # file-name.txt: aGVsbG8gMTIz
 
 deployment:
@@ -93,7 +95,8 @@ ingress:
     - "/"
 
 # -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
-initContainers: []
+initContainers:
+  []
   # - name: init-myservice
   #   image: nginx
   #   command: ['sh', '-c', "echo 'output'"]
@@ -133,7 +136,8 @@ ciliumNetworkPolicy:
 # -- Extra Kubernetes configuration
 extraDeploy: []
 
-# -- Configuration for postgres databases
-postgres:
-  # -- The database name. Must be the same as the name specified in the infra chart.
-  name: null
+# -- Configuration for infra
+infra:
+  postgres:
+    # -- The database name. Must be the same as the name specified in the infra chart.
+    name: null
