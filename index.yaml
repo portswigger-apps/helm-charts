@@ -171,6 +171,18 @@ entries:
     version: 0.0.0-alpha-10
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2024-03-07T08:35:41.981485941Z"
+    description: A Helm "monochart" for deploying common application patterns
+    digest: ae6e9eead48a1c2e190c1c5dedc9361d3ee70563f9a1492f4252aa6fbf3f881d
+    keywords:
+    - app
+    name: app
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/app-0.0.0-alpha-10/app-0.0.0-alpha-10.tgz
+    version: 0.0.0-alpha-10
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2024-02-27T13:14:03.728949269Z"
     description: A Helm "monochart" for deploying common application patterns
     digest: e481ab289d9171299a867468e0b4f124051da419344f2aee35b829c73eb793dc
@@ -327,4 +339,4 @@ entries:
     urls:
     - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-1/infra-0.0.0-alpha-1.tgz
     version: 0.0.0-alpha-1
-generated: "2024-03-06T15:10:52.280923186Z"
+generated: "2024-03-07T08:35:41.981644647Z"
