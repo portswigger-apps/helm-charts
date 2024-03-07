@@ -132,3 +132,8 @@ ciliumNetworkPolicy:
 
 # -- Extra Kubernetes configuration
 extraDeploy: []
+
+# -- Configuration for postgres databases
+postgres:
+  # -- The database name. Must be the same as the name specified in the infra chart.
+  name: null

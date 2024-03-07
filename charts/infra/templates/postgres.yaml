@@ -1,0 +1,11 @@
+{{- if .Values.postgres.name }}
+kind: PostgresInstance
+metadata:
+    name: {{ .Values.postgres.name }}
+    labels:
+    {{- include "infra.labels" . | nindent 4 }}
+spec:
+    multiAz: {{ .Values.postgres.multiAz }}
+    size: {{ .Values.postgres.size }}
+    version: {{ .Values.postgres.version }}
+{{- end }}
