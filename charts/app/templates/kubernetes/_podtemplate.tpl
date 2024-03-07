@@ -106,22 +106,22 @@ Outputs a pod spec for use in different resources.
             value: app
           - name: DATABASE_HOST
             valueFrom:
-              secretRef:
+              secretKeyRef:
                 name: {{ .Values.infra.postgres.name}}-postgres
                 key: host
           - name: DATABASE_PORT
             valueFrom:
-              secretRef:
+              secretKeyRef:
                 name: {{ .Values.infra.postgres.name}}-postgres
                 key: port
           - name: DATABASE_USERNAME
             valueFrom:
-              secretRef:
+              secretKeyRef:
                 name: {{ .Values.infra.postgres.name}}-postgres
                 key: username
           - name: DATABASE_PASSWORD
             valueFrom:
-              secretRef:
+              secretKeyRef:
                 name: {{ .Values.infra.postgres.name}}-postgres
                 key: password
           - name: DATABASE_URL
