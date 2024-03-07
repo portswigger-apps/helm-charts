@@ -1,4 +1,5 @@
 {{- if .Values.postgres.name }}
+apiVersion: platform.portswigger.io/v1alpha1
 kind: PostgresInstance
 metadata:
     name: {{ .Values.postgres.name }}
@@ -7,5 +8,5 @@ metadata:
 spec:
     multiAz: {{ .Values.postgres.multiAz }}
     size: {{ .Values.postgres.size }}
-    version: {{ .Values.postgres.version }}
+    version: {{ quote .Values.postgres.version }}
 {{- end }}

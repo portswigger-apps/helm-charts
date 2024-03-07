@@ -1,9 +1,9 @@
 # -- Postgres database configuration. Leave as null for no database.
 postgres:
   # -- The database's name.
-  name: database-name
+  name: ""
   # -- The instance size. Options: micro, small, medium, large or xlarge.
-  size: micro
+  size: null
   # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
-  version: 16.2
-  multiAz: false
+  version: null
+  multiAz: null
