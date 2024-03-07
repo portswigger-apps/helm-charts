@@ -73,3 +73,49 @@ tests:
                   endpoint-match-label-1: value1
                   endpoint-match-label-2: value2
                   k8s:io.kubernetes.pod.namespace: ingress
+  - it: should add custom ingress rules
+    set:
+      ciliumNetworkPolicy:
+        enabled: true
+        ingress:
+          - fromEndpoints:
+            - matchLabels:
+                app.kubernetes.io/name: frontend
+            toPorts:
+            - ports:
+              - port: "8080"
+                protocol: TCP
+      ports:
+        app-port:
+          port: 8080
+          protocol: TCP
+          expose: true
+    asserts:
+      - equal:
+          path: spec.ingress[1]
+          value:
+            fromEndpoints:
+            - matchLabels:
+                app.kubernetes.io/name: frontend
+            toPorts:
+              - ports:
+                - port: "8080"
+                  protocol: TCP
+  - it: should add custom egress rules
+    set:
+      ciliumNetworkPolicy:
+        enabled: true
+        egress:
+          - toFQDNs:
+            - matchName: "my-remote-service.com"
+      ports:
+        app-port:
+          port: 8080
+          protocol: TCP
+          expose: true
+    asserts:
+      - equal:
+          path: spec.egress[1]
+          value:
+            toFQDNs:
+            - matchName: "my-remote-service.com"

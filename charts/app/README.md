@@ -16,11 +16,11 @@ helm install app helm-charts/app
 |-----|------|---------|-------------|
 | args | list | `[]` | Arguments to be passed to the container |
 | ciliumNetworkPolicy | object | `{"egress":[],"enabled":false,"ingress":[],"ingressControllerEndpointMatchLabels":{"app.kubernetes.io/name":"nginx","k8s:io.kubernetes.pod.namespace":"ingress"}}` | Configuration for the ciliumNetworkPolicy, allowing restriction of network access to pods. |
-| ciliumNetworkPolicy.egress | list | `[]` | Cilium egress rules. See example in values.yaml |
-| ciliumNetworkPolicy.ingress | list | `[]` | Cilium ingress rules. See example in values.yaml |
-| ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | object | `{"app.kubernetes.io/name":"nginx","k8s:io.kubernetes.pod.namespace":"ingress"}` | Pods that have these labels with be able to access your application |
+| ciliumNetworkPolicy.egress | list | `[]` | Cilium egress rules. See examples below. |
+| ciliumNetworkPolicy.ingress | list | `[]` | Cilium ingress rules. See examples below. |
+| ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | object | `{"app.kubernetes.io/name":"nginx","k8s:io.kubernetes.pod.namespace":"ingress"}` | Label matchers for the ingress controller. Used so that the ingress controller can access your application. |
 | deployment.enabled | bool | `true` |  |
-| deployment.maxReplicas | string | `nil` | The maximum number of replicas of the application |
+| deployment.maxReplicas | int | `nil` | The maximum number of replicas of the application |
 | deployment.replicas | int | `1` | The minimum number of replicas of the application |
 | env | object | `{}` | Environment variables that will be available in the container |
 | envFrom | list | `[]` | Used to specify environment variables from ConfigMaps. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/ |
@@ -57,17 +57,30 @@ helm install app helm-charts/app
 
 ## Cilium Network Policy Examples
 ```
-ingress:
-  - fromEndpoints:
-    - matchLabels:
-        app.kubernetes.io/name: frontend # Pods with this label will be able to access your application
-    toPorts:
-      - ports:
-        - port: "8080"
-          protocol: TCP
+# Ingress Example
+- fromEndpoints:
+  - matchLabels:
+      app.kubernetes.io/name: frontend # Pods with this label will be able to access your application
+  toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
 
-egress:
-  - toFQDNs:
-    - matchName: "my-remote-service.com"
+# Egress Example
+- toEndpoints:
+  - matchLabels:
+    k8s:io.kubernetes.pod.namespace: kube-system
+    k8s-app: kube-dns
+  toPorts:
+  - ports:
+     - port: "53"
+       protocol: ANY
+    rules:
+      dns:
+      - matchPattern: "*"
+
+# Egress Example
+- toFQDNs:
+  - matchName: "my-remote-service.com"
 
 ```
