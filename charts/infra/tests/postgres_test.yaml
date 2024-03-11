@@ -1,0 +1,45 @@
+suite: Postgres test
+templates:
+      - postgres.yaml
+tests:
+  - it: should not create by default
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should create if name specified
+    set:
+      postgres:
+        name: database-name
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "database-name"
+  - it: should set required fields
+    set:
+      postgres:
+        name: database-name
+        size: xlarge
+        version: 16.2
+        multiAz: true
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "database-name"
+      - equal:
+          path: spec
+          value:
+            size: xlarge
+            version: "16.2"
+            multiAz: true
+  - it: version field is quoted
+    set:
+      postgres:
+        name: database-name
+        version: "16.2"
+    asserts:
+      - equal:
+          path: metadata.name
+          value: "database-name"
+      - equal:
+          path: spec.version
+          value: "16.2"

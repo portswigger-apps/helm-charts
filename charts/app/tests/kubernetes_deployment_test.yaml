@@ -214,3 +214,61 @@ tests:
       - equal:
           path: spec.template.metadata.annotations.checksum/secret-volume
           value: "b93e8ed7da9e1df7cade422ad14c91a0f5555449296010ff93504bb2024f5d79"
+
+  - it: should add database credentials environment variables
+    set:
+      deployment:
+        enabled: true
+        kind: "Deployment"
+      infra:
+        postgres:
+          name: "database-name"
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+              name: "DATABASE_NAME"
+              value: app
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+              name: "DATABASE_HOST"
+              valueFrom:
+                secretKeyRef:
+                  key: host
+                  name: database-name-postgres
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+              name: "DATABASE_PORT"
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: database-name-postgres
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+              name: "DATABASE_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: database-name-postgres
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+              name: "DATABASE_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: database-name-postgres
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+              name: DATABASE_URL
+              value: postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+              name: JDBC_DATABASE_URL
+              value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)

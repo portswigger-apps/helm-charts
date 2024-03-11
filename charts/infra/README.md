@@ -9,6 +9,7 @@ A Helm "monochart" for deploying common infrastructure
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | postgres | object | `{"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
+| postgres.multiAz | string | `nil` | If database should be a multi-az deployment |
 | postgres.name | string | `""` | The database's name. |
 | postgres.size | string | `nil` | The instance size. Options: micro, small, medium, large or xlarge. |
 | postgres.version | string | `nil` | The postgres version to use. Options: 16.2, 15.6 or 14.11 |
