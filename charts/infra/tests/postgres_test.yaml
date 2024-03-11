@@ -11,6 +11,8 @@ tests:
       postgres:
         name: database-name
     asserts:
+      - isKind:
+          of: PostgresInstance
       - equal:
           path: metadata.name
           value: "database-name"
