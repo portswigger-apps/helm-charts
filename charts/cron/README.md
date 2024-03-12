@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.0.0-alpha-3](https://img.shields.io/badge/Version-0.0.0--alpha--3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-4](https://img.shields.io/badge/Version-0.0.0--alpha--4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -15,7 +15,7 @@ A Helm "monochart" for deploying cron jobs
 | cron.restartPolicy | string | `"OnFailure"` | One of: Never or OnFailure. Never - does not restart. OnFailure - will re-run the job if it fails |
 | cron.retries | int | `0` | Number of retries on failure of job |
 | cron.schedule | string | `"* * * * *"` | Cron formatted schedule for job. |
-| cron.timeoutSeconds | int | `0` | The maximum amount of time the job should run for in seconds. |
+| cron.timeoutSeconds | string | `nil` | The maximum amount of time the job should run for in seconds. |
 | env | object | `{}` | List of environment variables for job container. |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |

@@ -20,7 +20,7 @@ cron:
   # -- One of: Never or OnFailure. Never - does not restart. OnFailure - will re-run the job if it fails
   restartPolicy: OnFailure
   # -- The maximum amount of time the job should run for in seconds.
-  timeoutSeconds: 0
+  timeoutSeconds: null
 
 # -- List of environment variables for job container.
 env: {}

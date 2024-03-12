@@ -41,11 +41,11 @@ Outputs a pod spec for use in different resources.
                     drop:
                       - ALL
                 {{- with .Values.cron.command}}
-                command:  {{- toYaml . | nindent 12 }}
+                command:  {{- toYaml . | nindent 16 }}
                 {{- end }}
-                {{- with .Values.args }}
+                {{- with .Values.cron.args }}
                 args:
-                {{- toYaml . | nindent 10 }}
+                {{- toYaml . | nindent 16 }}
                 {{- end }}
                 env:
                   - name: NODE_NAME
