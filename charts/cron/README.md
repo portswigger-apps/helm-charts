@@ -10,8 +10,8 @@ A Helm "monochart" for deploying cron jobs
 |-----|------|---------|-------------|
 | cron.args | string[] | `nil` | Arguments for the command |
 | cron.command | string[] | `nil` | Command to run on the image. e.g [/bin/bash, my-script.sh] |
-| cron.concurrencyPolicy | string | `"Allow"` | One of: Allow, Forbid and Replace. Allow - allows concurrenlty running cron jobs. Forbid - No concurrent runs, if last job hasn't finished then skip it. Replace - If time for a new job and previous hasn't finished then replace it. |
-| cron.parallelism | int | `1` | Max number of jobs running at a single time |
+| cron.concurrencyPolicy | string | `"Allow"` | Replace - Replace the currently running cron job with a new instance. |
+| cron.parallelism | int | `1` | Number of pods of the cron job to start |
 | cron.restartPolicy | string | `"OnFailure"` | One of: Never or OnFailure. Never - does not restart. OnFailure - will re-run the job if it fails |
 | cron.retries | int | `0` | Number of retries on failure of job |
 | cron.schedule | string | `"* * * * *"` | Cron formatted schedule for job. |

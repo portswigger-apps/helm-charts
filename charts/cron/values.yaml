@@ -7,12 +7,15 @@ image:
 cron:
   # -- Cron formatted schedule for job.
   schedule: "* * * * *"
+  # -- One of: Allow, Forbid and Replace.
+  # -- Allow - allows concurrently running cron jobs.
+  # -- Forbid - No concurrent runs, if last cron job hasn't finished then skip the new run
+  # -- Replace - Replace the currently running cron job with a new instance.
+  concurrencyPolicy: Allow
   # -- Number of retries on failure of job
   retries: 0
-  # -- Max number of jobs running at a single time
+  # -- Number of pods of the cron job to start
   parallelism: 1
-  # -- One of: Allow, Forbid and Replace. Allow - allows concurrenlty running cron jobs. Forbid - No concurrent runs, if last job hasn't finished then skip it. Replace - If time for a new job and previous hasn't finished then replace it.
-  concurrencyPolicy: Allow
   # -- (string[]) Command to run on the image. e.g [/bin/bash, my-script.sh]
   command: null
   # -- (string[]) Arguments for the command
