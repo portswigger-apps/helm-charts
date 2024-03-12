@@ -8,9 +8,9 @@ cron:
   # -- Cron formatted schedule for job.
   schedule: "* * * * *"
   # -- One of: Allow, Forbid and Replace.
-  # -- Allow - allows concurrently running cron jobs.
-  # -- Forbid - No concurrent runs, if last cron job hasn't finished then skip the new run
-  # -- Replace - Replace the currently running cron job with a new instance.
+  # Allow - allows concurrently running cron jobs.
+  # Forbid - No concurrent runs, if last cron job hasn't finished then skip the new run
+  # Replace - Replace the currently running cron job with a new instance.
   concurrencyPolicy: Allow
   # -- Number of retries on failure of job
   retries: 0
