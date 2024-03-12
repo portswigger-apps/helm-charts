@@ -8,19 +8,19 @@ A Helm "monochart" for deploying cron jobs
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| cron.args | string | `nil` | Arguments for the command |
-| cron.command | string | `nil` | Command to run on the image. e.g [/bin/bash, my-script.sh] |
+| cron.args | string[] | `nil` | Arguments for the command |
+| cron.command | string[] | `nil` | Command to run on the image. e.g [/bin/bash, my-script.sh] |
 | cron.concurrencyPolicy | string | `"Allow"` | One of: Allow, Forbid and Replace. Allow - allows concurrenlty running cron jobs. Forbid - No concurrent runs, if last job hasn't finished then skip it. Replace - If time for a new job and previous hasn't finished then replace it. |
 | cron.parallelism | int | `1` | Max number of jobs running at a single time |
 | cron.restartPolicy | string | `"OnFailure"` | One of: Never or OnFailure. Never - does not restart. OnFailure - will re-run the job if it fails |
 | cron.retries | int | `0` | Number of retries on failure of job |
 | cron.schedule | string | `"* * * * *"` | Cron formatted schedule for job. |
-| cron.timeoutSeconds | string | `nil` | The maximum amount of time the job should run for in seconds. |
+| cron.timeoutSeconds | int | `nil` | The maximum amount of time the job should run for in seconds. |
 | env | object | `{}` | List of environment variables for job container. |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
 | infra | object | `{"postgres":{"name":null}}` | Configuration for infra |
-| infra.postgres.name | string | `nil` | The database name. Must be the same as the name specified in the infra chart. |
+| infra.postgres.name | String | `nil` | The database name. Must be the same as the name specified in the infra chart. |
 | pod.annotations | object | `{}` |  |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
