@@ -46,7 +46,7 @@ resources:
 # -- Configuration for infra
 infra:
   postgres:
-    # -- (String) The database name. Must be the same as the name specified in the infra chart.
+    # -- (string) The database name. Must be the same as the name specified in the infra chart.
     name: null
 
 # -- Service account configuration. Configuration is required for accessing AWS resources

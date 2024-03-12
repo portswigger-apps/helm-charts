@@ -20,7 +20,7 @@ A Helm "monochart" for deploying cron jobs
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
 | infra | object | `{"postgres":{"name":null}}` | Configuration for infra |
-| infra.postgres.name | String | `nil` | The database name. Must be the same as the name specified in the infra chart. |
+| infra.postgres.name | string | `nil` | The database name. Must be the same as the name specified in the infra chart. |
 | pod.annotations | object | `{}` |  |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
