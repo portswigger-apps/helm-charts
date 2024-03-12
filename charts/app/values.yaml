@@ -18,13 +18,11 @@ envFrom: []
 #     name: "config-map-name"
 
 # -- Secret values that are mounted as environment variables. Formatted as ```<environment variable name>: <plain text value>```
-secretEnv:
-  {}
+secretEnv: {}
   # secret_key: secret_value
 
 # -- Secret values that are mounted as a file to /secrets. Formatted as ```<file name>: <base64 encoded value>```
-secretVolume:
-  {}
+secretVolume: {}
   # file-name.txt: aGVsbG8gMTIz
 
 deployment:
@@ -139,5 +137,11 @@ extraDeploy: []
 # -- Configuration for infra
 infra:
   postgres:
-    # -- The database name. Must be the same as the name specified in the infra chart.
+    # -- (string) The database name. Must be the same as the name specified in the infra chart.
     name: null
+
+# -- (string[]) Command to run before install and upgrade of your application.
+preDeployCommand: ["a"]
+  # - python
+  # - manage.py
+  # - migrate

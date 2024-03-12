@@ -46,6 +46,7 @@ helm install app helm-charts/app
 | ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world. |
 | ports.app-port.port | int | `8080` | The port the application is running on |
 | ports.app-port.protocol | string | `"TCP"` | The protocol the application uses |
+| preDeployCommand | string[] | `["a"]` | Command to run before install and upgrade of your application. |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
 | secretEnv | object | `{}` | Secret values that are mounted as environment variables. Formatted as ```<environment variable name>: <plain text value>``` |
