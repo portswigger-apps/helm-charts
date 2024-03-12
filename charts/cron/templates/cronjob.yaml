@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ template "cron.name" . }}
+  labels:
+  {{- include "cron.labels" . | nindent 8 }}
+spec:
+  schedule: {{ .Values.cron.schedule | quote }}
+  concurrencyPolicy: {{ .Values.cron.concurrencyPolicy }}
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: {{ .Values.cron.timeoutSeconds }}
+      parallelism: {{ .Values.cron.parallelism }}
+      backoffLimit: {{ .Values.cron.retries }}
+      template: {{ template "cron.podTemplate" . }}

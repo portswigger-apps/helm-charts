@@ -1,0 +1,58 @@
+image:
+  # -- The container image of your application
+  name: "public.ecr.aws/nginx/nginx"
+  # -- The container tag that will be run
+  tag: "alpine"
+
+cron:
+  # -- Cron formatted schedule for job.
+  schedule: "* * * * *"
+  # -- Number of retries on failure of job
+  retries: 0
+  # -- Max number of jobs running at a single time
+  parallelism: 1
+  # -- One of: Allow, Forbid and Replace. Allow - allows concurrenlty running cron jobs. Forbid - No concurrent runs, if last job hasn't finished then skip it. Replace - If time for a new job and previous hasn't finished then replace it.
+  concurrencyPolicy: Allow
+  # -- Command to run on the image. e.g [/bin/bash, my-script.sh]
+  command: null
+  # -- Arguments for the command
+  args: null
+  # -- One of: Never or OnFailure. Never - does not restart. OnFailure - will re-run the job if it fails
+  restartPolicy: OnFailure
+  # -- The maximum amount of time the job should run for in seconds.
+  timeoutSeconds: 0
+
+# -- List of environment variables for job container.
+env: {}
+  # KEY: value
+
+# -- Secret values that are mounted as environment variables. Formatted as ```<environment variable name>: <plain text value>```
+secretEnv: {}
+  # secret_key: secret_value
+
+# -- Secret values that are mounted as a file to /secrets. Formatted as ```<file name>: <base64 encoded value>```
+secretVolume: {}
+  # file-name.txt: aGVsbG8gMTIz
+
+pod:
+  annotations: {}
+
+resources:
+  # -- Requested CPU time for the pod
+  cpu: "100m"
+  # -- Maximum memory usage for the pod
+  memory: "64Mi"
+
+# -- Configuration for infra
+infra:
+  postgres:
+    # -- The database name. Must be the same as the name specified in the infra chart.
+    name: null
+
+# -- Service account configuration. Configuration is required for accessing AWS resources
+serviceAccount:
+  enabled: true
+  # -- If the service account token should be mounted into pods that use the service account
+  automountServiceAccountToken: false
+  annotations: {}
+  # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
