@@ -1,5 +1,85 @@
 {{/* vim: set filetype=mustache: */}}
 
+{{- define "app.probeConfiguration" }}
+{{- end }}
+
+{{- define "app.portConfiguration"}}
+{{- end }}
+
+{{- define "app.resourcesConfiguration" }}
+resources:
+  requests:
+    memory: {{ quote .Values.resources.memory }}
+    cpu: {{ quote .Values.resources.cpu }}
+  limits:
+    memory: {{ quote .Values.resources.memory }}
+{{- end }}
+
+
+{{- define "app.environmentConfiguration" }}
+env:
+- name: NODE_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: spec.nodeName
+- name: POD_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.name
+- name: POD_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
+- name: POD_IP
+  valueFrom:
+    fieldRef:
+      fieldPath: status.podIP
+- name: IMAGE_TAG
+  value: {{ .Values.image.tag | quote }}
+{{- range $key, $value := .Values.env}}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+{{- end }}
+{{- if .Values.infra.postgres.name }}
+- name: DATABASE_NAME
+  value: app
+- name: DATABASE_HOST
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.infra.postgres.name}}-postgres
+      key: host
+- name: DATABASE_PORT
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.infra.postgres.name}}-postgres
+      key: port
+- name: DATABASE_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.infra.postgres.name}}-postgres
+      key: username
+- name: DATABASE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.infra.postgres.name}}-postgres
+      key: password
+- name: DATABASE_URL
+  value: "postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)"
+- name: JDBC_DATABASE_URL
+  value: "jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)"
+{{- end }}
+{{- end }}
+
+{{- define "app.containerSecurityContextConfiguration" }}
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  capabilities:
+    drop:
+      - ALL
+{{- end }}
 
 {{/*
 Outputs a pod spec for use in different resources.
@@ -28,107 +108,15 @@ Outputs a pod spec for use in different resources.
       - image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         name: {{ template "app.name" . }}
-        resources:
-          requests:
-            memory: {{ quote .Values.resources.memory }}
-            cpu: {{ quote .Values.resources.cpu }}
-          limits:
-            memory: {{ quote .Values.resources.memory }}
-        ports:
-        {{- range $portName, $portSpec := .Values.ports }}
-          - name: {{ $portName }}
-            containerPort: {{ $portSpec.port }}
-            protocol: {{ $portSpec.protocol }}
-        {{- end }}
-        startupProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
-          failureThreshold: 60
-          periodSeconds: 5
-          timeoutSeconds: 2
-        readinessProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
-          failureThreshold: 1
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
-        livenessProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
-          failureThreshold: 3
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          runAsUser: 1000
-          capabilities:
-            drop:
-              - ALL
+        {{ include "app.resourcesConfiguration" . | nindent 8 }}
+        {{ include "app.portConfiguration" . | nindent 8 }}
+        {{ include "app.probeConfiguration" . | nindent 8 }}
+        {{ include "app.environmentConfiguration" . | nindent 8 }}
+        {{ include "app.containerSecurityContextConfiguration" . | nindent 8 }}
         {{- with .Values.args }}
         args:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        env:
-          - name: NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          - name: IMAGE_TAG
-            value: {{ .Values.image.tag | quote }}
-          {{- range $key, $value := .Values.env}}
-          - name: {{ $key }}
-            value: {{ $value | quote }}
-          {{- end }}
-          {{- if .Values.infra.postgres.name }}
-          - name: DATABASE_NAME
-            value: app
-          - name: DATABASE_HOST
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
-                key: host
-          - name: DATABASE_PORT
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
-                key: port
-          - name: DATABASE_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
-                key: username
-          - name: DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
-                key: password
-          - name: DATABASE_URL
-            value: "postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)"
-          - name: JDBC_DATABASE_URL
-            value: "jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)"
-          {{- end }}
         {{- if or .Values.envFrom .Values.secretEnv}}
         envFrom:
           {{- with .Values.envFrom }}

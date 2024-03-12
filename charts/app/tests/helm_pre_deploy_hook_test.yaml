@@ -1,14 +1,20 @@
 suite: Pre Deploy Hook configuration
 templates:
   - helm/pre-deploy-hook.yaml
+    # secret templates for checksums
+  - kubernetes/secret-env.yaml
+  - kubernetes/secret-volume.yaml
 tests:
   - it: should not create job without command set
+    template: helm/pre-deploy-hook.yaml
     set:
       preDeployCommand: null
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should add secrets
+    template: helm/pre-deploy-hook.yaml
     set:
       preDeployCommand:
       - python3
@@ -23,7 +29,7 @@ tests:
           path: spec.template.spec.containers[0].envFrom[0]
           value:
             secretRef:
-            name: RELEASE-NAME-env
+              name: RELEASE-NAME-env
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[1]
           value:
@@ -35,9 +41,31 @@ tests:
           value:
             name: RELEASE-NAME-volume
             secret:
-            secretName: RELEASE-NAME-volume
+              secretName: RELEASE-NAME-volume
+
+  - it: should not have health check and ports
+    template: helm/pre-deploy-hook.yaml
+    set:
+      preDeployCommand:
+      - python3
+      - manage.py
+      - migrate
+      healthcheckEndpoint:
+        path: /health
+        port: app-port
+      ports:
+        app-port:
+          port: 8080
+          protocol: TCP
+          expose: true
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].ports
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe
 
   - it: should add database environment variables
+    template: helm/pre-deploy-hook.yaml
     set:
       image:
         name: image-name
