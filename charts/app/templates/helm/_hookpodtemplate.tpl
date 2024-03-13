@@ -2,9 +2,9 @@
 
 
 {{/*
-Outputs a pod spec for use in different resources.
+Outputs a pod spec for use in helm hooks.
 */}}
-{{- define "app.podTemplate" }}
+{{- define "app.hookPodTemplate" }}
     metadata:
       annotations:
         checksum/secret-env: {{ $envSec := include (print $.Template.BasePath "/kubernetes/secret-env.yaml") . | fromYaml }}{{ $envSec.data | toYaml | sha256sum }}
@@ -20,52 +20,17 @@ Outputs a pod spec for use in different resources.
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       terminationGracePeriodSeconds: 30
-      {{- with .Values.initContainers }}
-      initContainers:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
       - image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         name: {{ template "app.name" . }}
+        command: {{ toYaml .command | nindent 8 }}
         resources:
           requests:
             memory: {{ quote .Values.resources.memory }}
             cpu: {{ quote .Values.resources.cpu }}
           limits:
             memory: {{ quote .Values.resources.memory }}
-        ports:
-        {{- range $portName, $portSpec := .Values.ports }}
-          - name: {{ $portName }}
-            containerPort: {{ $portSpec.port }}
-            protocol: {{ $portSpec.protocol }}
-        {{- end }}
-        startupProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
-          failureThreshold: 60
-          periodSeconds: 5
-          timeoutSeconds: 2
-        readinessProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
-          failureThreshold: 1
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
-        livenessProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
-          failureThreshold: 3
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -74,10 +39,6 @@ Outputs a pod spec for use in different resources.
           capabilities:
             drop:
               - ALL
-        {{- with .Values.args }}
-        args:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
         env:
           - name: NODE_NAME
             valueFrom:
