@@ -147,7 +147,7 @@ preDeployCommand: []
   # - migrate
 
 # -- (string[]) Command to run before a rollback.
-preRollbackCommand: ["a"]
+preRollbackCommand: []
   # - python
   # - manage.py
   # - rollback
