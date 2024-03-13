@@ -1,0 +1,22 @@
+{{- if .Values.preRollbackCommand }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "app.name" . }}-pre-rollback-hook
+  labels:
+  {{- include "app.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-rollback
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  {{
+    $ctx := dict "includePorts" false
+                 "includeProbes" false
+                 "useValuesArgs" false
+                 "command" .Values.preRollbackCommand
+                 "restartPolicy" "OnFailure"
+  }}
+  {{ $ctx = merge $ctx . }}
+  template: {{ template "app.podTemplate" $ctx }}
+{{- end }}
