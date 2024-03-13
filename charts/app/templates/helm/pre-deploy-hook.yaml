@@ -10,5 +10,12 @@ metadata:
     "helm.sh/hook-weight": "0"
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
-  template: {{ template "app.podTemplate" . }}
+  {{ $ctx := dict "includePorts" false
+                  "includeProbes" false
+                  "useValuesArgs" false
+                  "command" .Values.preDeployCommand
+                  "restartPolicy" "OnFailure"
+  }}
+  {{ $ctx = merge $ctx . }}
+  template: {{ template "app.podTemplate" $ctx }}
 {{- end }}

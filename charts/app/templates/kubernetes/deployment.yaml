@@ -1,41 +1,3 @@
-{{- define "app.probeConfiguration" }}
-startupProbe:
-  httpGet:
-    path: {{ .Values.healthcheckEndpoint.path }}
-    port: {{ .Values.healthcheckEndpoint.port }}
-    scheme: HTTP
-  failureThreshold: 60
-  periodSeconds: 5
-  timeoutSeconds: 2
-readinessProbe:
-  httpGet:
-    path: {{ .Values.healthcheckEndpoint.path }}
-    port: {{ .Values.healthcheckEndpoint.port }}
-    scheme: HTTP
-  failureThreshold: 1
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 2
-livenessProbe:
-  httpGet:
-    path: {{ .Values.healthcheckEndpoint.path }}
-    port: {{ .Values.healthcheckEndpoint.port }}
-    scheme: HTTP
-  failureThreshold: 3
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 2
-{{- end }}
-
-{{- define "app.portConfiguration"}}
-ports:
-{{- range $portName, $portSpec := .Values.ports }}
-  - name: {{ $portName }}
-    containerPort: {{ $portSpec.port }}
-    protocol: {{ $portSpec.protocol }}
-{{- end }}
-{{- end }}
-
 {{- if .Values.deployment.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -54,5 +16,10 @@ spec:
       maxSurge: 50%
       maxUnavailable: 25%
   minReadySeconds: 5
-  template: {{ template "app.podTemplate" . }}
+    {{ $ctx := dict "includePorts" true
+                  "includeProbes" true
+                  "useValuesArgs" true
+  }}
+  {{ $ctx = merge $ctx . }}
+  template: {{ template "app.podTemplate" $ctx }}
   {{- end -}}

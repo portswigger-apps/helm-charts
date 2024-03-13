@@ -1,9 +1,41 @@
 {{/* vim: set filetype=mustache: */}}
 
 {{- define "app.probeConfiguration" }}
+startupProbe:
+  httpGet:
+    path: {{ .Values.healthcheckEndpoint.path }}
+    port: {{ .Values.healthcheckEndpoint.port }}
+    scheme: HTTP
+  failureThreshold: 60
+  periodSeconds: 5
+  timeoutSeconds: 2
+readinessProbe:
+  httpGet:
+    path: {{ .Values.healthcheckEndpoint.path }}
+    port: {{ .Values.healthcheckEndpoint.port }}
+    scheme: HTTP
+  failureThreshold: 1
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 2
+livenessProbe:
+  httpGet:
+    path: {{ .Values.healthcheckEndpoint.path }}
+    port: {{ .Values.healthcheckEndpoint.port }}
+    scheme: HTTP
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 2
 {{- end }}
 
 {{- define "app.portConfiguration"}}
+ports:
+{{- range $portName, $portSpec := .Values.ports }}
+  - name: {{ $portName }}
+    containerPort: {{ $portSpec.port }}
+    protocol: {{ $portSpec.protocol }}
+{{- end }}
 {{- end }}
 
 {{- define "app.resourcesConfiguration" }}
@@ -100,6 +132,9 @@ Outputs a pod spec for use in different resources.
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       terminationGracePeriodSeconds: 30
+      {{- if .restartPolicy}}
+      restartPolicy: {{ .restartPolicy | quote}}
+      {{- end}}
       {{- with .Values.initContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
@@ -109,13 +144,22 @@ Outputs a pod spec for use in different resources.
         imagePullPolicy: Always
         name: {{ template "app.name" . }}
         {{ include "app.resourcesConfiguration" . | nindent 8 }}
+        {{- if .includePorts }}
         {{ include "app.portConfiguration" . | nindent 8 }}
+        {{- end }}
+        {{- if .includeProbes }}
         {{ include "app.probeConfiguration" . | nindent 8 }}
+        {{- end }}
+        {{- if .command }}
+        command: {{ toYaml .command | nindent 8 }}
+        {{- end }}
         {{ include "app.environmentConfiguration" . | nindent 8 }}
         {{ include "app.containerSecurityContextConfiguration" . | nindent 8 }}
+        {{ if .useValuesArgs }}
         {{- with .Values.args }}
         args:
           {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- end }}
         {{- if or .Values.envFrom .Values.secretEnv}}
         envFrom:

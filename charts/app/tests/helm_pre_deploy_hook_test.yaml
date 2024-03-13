@@ -4,6 +4,8 @@ templates:
     # secret templates for checksums
   - kubernetes/secret-env.yaml
   - kubernetes/secret-volume.yaml
+    # included for shared templating
+  - kubernetes/deployment.yaml
 tests:
   - it: should not create job without command set
     template: helm/pre-deploy-hook.yaml
@@ -63,6 +65,34 @@ tests:
           path: spec.template.spec.containers[0].ports
       - notExists:
           path: spec.template.spec.containers[0].livenessProbe
+
+  - it: should add command to pod
+    template: helm/pre-deploy-hook.yaml
+    set:
+      preDeployCommand:
+        - python3
+        - manage.py
+        - migrate
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value:
+          - "python3"
+          - "manage.py"
+          - "migrate"
+
+  - it: should not add args to pod
+    template: helm/pre-deploy-hook.yaml
+    set:
+      preDeployCommand:
+        - python3
+        - manage.py
+        - migrate
+      args:
+        - my-arg
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].args
 
   - it: should add database environment variables
     template: helm/pre-deploy-hook.yaml

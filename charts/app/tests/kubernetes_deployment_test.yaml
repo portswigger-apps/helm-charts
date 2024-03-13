@@ -4,12 +4,15 @@ templates:
       # secret templates for checksums
       - kubernetes/secret-env.yaml
       - kubernetes/secret-volume.yaml
+      # included to test shared templating
+      - helm/pre-deploy-hook.yaml
 tests:
   - it: should create Deployment with default values
     set:
       deployment:
         enabled: true
         kind: "Deployment"
+      pre-deploy-command: ["sleep", "50"]
     template: kubernetes/deployment.yaml
     asserts:
       # Deployment assertions
