@@ -141,7 +141,7 @@ infra:
     name: null
 
 # -- (string[]) Command to run before install and upgrade of your application.
-preDeployCommand: ["a"]
+preDeployCommand: []
   # - python
   # - manage.py
   # - migrate
