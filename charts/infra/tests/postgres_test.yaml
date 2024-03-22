@@ -1,6 +1,6 @@
 suite: Postgres test
 templates:
-      - postgres.yaml
+  - postgres.yaml
 tests:
   - it: should not create by default
     asserts:

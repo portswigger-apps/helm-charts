@@ -1,0 +1,30 @@
+suite: IRSA role test
+templates:
+  - irsarole.yaml
+tests:
+  - it: "should not create irsa role if not using infrastructure that needs irsa role"
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: "should create irsa role if using s3 bucket and set service account name"
+    set:
+      s3Bucket:
+        name: "s3-bucket"
+      serviceAccountName: "serviceAccountName"
+    asserts:
+      - hasDocuments:
+          count: 1
+  - it: "irsa role name should be service account name"
+    set:
+      s3Bucket:
+        name: "s3-bucket"
+      serviceAccountName: "serviceAccountName"
+    asserts:
+      - isKind:
+          of: IrsaRole
+      - equal:
+          path: metadata.name
+          value: "serviceAccountName"
+      - equal:
+          path: spec.serviceAccountName
+          value: "serviceAccountName"
