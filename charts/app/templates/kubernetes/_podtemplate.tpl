@@ -101,6 +101,23 @@ Outputs a pod spec for use in different resources.
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- if .Values.infra.s3Bucket.name }}
+          - name: S3_REGION
+            valueFrom:
+             secretKeyRef:
+               name: {{ .Values.infra.s3Bucket.name}}-s3bucket
+               key: region
+          - name: S3_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.infra.s3Bucket.name}}-s3bucket
+                key: id
+          - name: S3_ARN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.infra.s3Bucket.name}}-s3bucket
+                key: arn
+          {{- end }}
           {{- if .Values.infra.postgres.name }}
           - name: DATABASE_NAME
             value: app

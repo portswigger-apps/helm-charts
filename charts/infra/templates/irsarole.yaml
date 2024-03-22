@@ -1,0 +1,10 @@
+{{ if and .Values.s3Bucket.name .Values.serviceAccountName }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: IrsaRole
+metadata:
+  name: {{ .Values.serviceAccountName }}
+  labels:
+    {{- include "infra.labels" . | nindent 4 }}
+spec:
+  serviceAccountName: {{ .Values.serviceAccountName }}
+{{- end }}

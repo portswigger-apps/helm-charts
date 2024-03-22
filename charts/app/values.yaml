@@ -102,7 +102,10 @@ initContainers:
 # -- Service account configuration. Configuration is required for accessing AWS resources
 serviceAccount:
   enabled: true
-  # -- If the service account token should be mounted into pods that use the service account
+  # -- (string) The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart.
+  # Defaults to the helmfile release name
+  name: null
+  # -- If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources.
   automountServiceAccountToken: false
   annotations: {}
   # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
@@ -136,8 +139,14 @@ extraDeploy: []
 
 # -- Configuration for infra
 infra:
+  aws:
+    # -- (string) The AWS account id for the deployment.
+    accountId: "12345678910"
   postgres:
     # -- (string) The database name. Must be the same as the name specified in the infra chart.
+    name: null
+  s3Bucket:
+    # -- (string) The s3 bucket's name. Must be the same as the name specified in the infra chart.
     name: null
 
 # -- (string[]) Command to run before install and upgrade of your application.

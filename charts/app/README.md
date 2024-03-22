@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -30,8 +30,10 @@ helm install app helm-charts/app
 | healthcheckEndpoint.port | string | `"app-port"` | The port that the healthcheck endpoint is exposed on. Referenced by the port's name |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
-| infra | object | `{"postgres":{"name":null}}` | Configuration for infra |
+| infra | object | `{"aws":{"accountId":"12345678910"},"postgres":{"name":null},"s3Bucket":{"name":null}}` | Configuration for infra |
+| infra.aws.accountId | string | `"12345678910"` | The AWS account id for the deployment. |
 | infra.postgres.name | string | `nil` | The database name. Must be the same as the name specified in the infra chart. |
+| infra.s3Bucket.name | string | `nil` | The s3 bucket's name. Must be the same as the name specified in the infra chart. |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` | Adds an ingress to expose the application to the outside world |
 | ingress.host | string | `""` | The host name the application will be accessible from |
@@ -54,8 +56,9 @@ helm install app helm-charts/app
 | secretVolume | object | `{}` | Secret values that are mounted as a file to /secrets. Formatted as ```<file name>: <base64 encoded value>``` |
 | service.annotations | object | `{}` |  |
 | service.enabled | bool | `true` | Adds a service to expose the application to the rest of the cluster |
-| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true}` | Service account configuration. Configuration is required for accessing AWS resources |
-| serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account |
+| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":null}` | Service account configuration. Configuration is required for accessing AWS resources |
+| serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources. |
+| serviceAccount.name | string | `nil` | The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart. Defaults to the helmfile release name |
 
 ---
 
