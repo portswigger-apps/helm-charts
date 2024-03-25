@@ -24,4 +24,4 @@ tests:
     asserts:
       - equal:
           path: "spec.irsaRoleName"
-          value: "service-account-name"
+          value: "service-account-name-irsarole"
