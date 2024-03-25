@@ -1,4 +1,4 @@
-{{ if and .Values.s3Bucket.name .Values.serviceAccountName }}
+{{ if .Values.s3Bucket.name }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: IrsaRole
 metadata:
@@ -6,5 +6,9 @@ metadata:
   labels:
     {{- include "infra.labels" . | nindent 4 }}
 spec:
+  {{ if .Values.serviceAccountName }}
   serviceAccountName: {{ .Values.serviceAccountName }}
+  {{- else }}
+  {{- fail "ERROR: A service account name must be specified when using S3 buckets" -}}
+  {{- end }}
 {{- end }}
