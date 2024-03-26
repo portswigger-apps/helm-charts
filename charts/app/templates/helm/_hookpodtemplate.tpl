@@ -18,6 +18,7 @@ Outputs a pod spec for use in helm hooks.
       {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      restartPolicy: OnFailure
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       terminationGracePeriodSeconds: 30
       containers:
