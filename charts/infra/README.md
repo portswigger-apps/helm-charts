@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.0.0-alpha-6](https://img.shields.io/badge/Version-0.0.0--alpha--6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-7](https://img.shields.io/badge/Version-0.0.0--alpha--7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -13,7 +13,8 @@ A Helm "monochart" for deploying common infrastructure
 | postgres.name | string | `""` | The database's name. |
 | postgres.size | string | `nil` | The instance size. Options: micro, small, medium, large or xlarge. |
 | postgres.version | string | `nil` | The postgres version to use. Options: 16.2, 15.6 or 14.11 |
-| s3Bucket | object | `{"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| s3Bucket | object | `{"lifecycleRules":[],"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| s3Bucket.lifecycleRules | list | `[]` | Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule |
 | s3Bucket.name | string | `""` | Name of the bucket |
 | serviceAccountName | string | `""` | The name of the service account specified in the app chart. If not overriden in the app chart use the release name from the helmfile.yaml |
 

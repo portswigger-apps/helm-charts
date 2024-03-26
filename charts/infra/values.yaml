@@ -13,6 +13,8 @@ postgres:
 s3Bucket:
   # -- Name of the bucket
   name: ""
+  # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
+  lifecycleRules: []
 
 # -- The name of the service account specified in the app chart. If not overriden in the app chart use the release name from the helmfile.yaml
 serviceAccountName: ""

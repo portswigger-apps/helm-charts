@@ -7,4 +7,5 @@ metadata:
     {{- include "infra.labels" . | nindent 4 }}
 spec:
    irsaRoleName: {{ .Values.serviceAccountName }}-irsarole
+   lifecycleRules: {{ toYaml .Values.s3Bucket.lifecycleRules | nindent 4 }}
 {{- end }}
