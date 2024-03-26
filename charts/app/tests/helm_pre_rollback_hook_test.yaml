@@ -160,3 +160,42 @@ tests:
           content:
               name: JDBC_DATABASE_URL
               value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)
+
+  - it: should add s3 bucket environment variables
+    set:
+      image:
+        name: image-name
+        tag: tag
+      infra:
+        s3Bucket:
+          name: "s3-bucket-name"
+      preRollbackCommand:
+        - python3
+        - manage.py
+        - migrate
+    template: helm/pre-rollback-hook.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "S3_REGION"
+            valueFrom:
+              secretKeyRef:
+                name: s3-bucket-name-s3bucket
+                key: region
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "S3_ID"
+            valueFrom:
+              secretKeyRef:
+                name: s3-bucket-name-s3bucket
+                key: id
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "S3_ARN"
+            valueFrom:
+              secretKeyRef:
+                name: s3-bucket-name-s3bucket
+                key: arn

@@ -25,3 +25,32 @@ tests:
       - equal:
           path: "spec.irsaRoleName"
           value: "service-account-name-irsarole"
+  - it: "should default to disabled lifecycle rule"
+    set:
+      s3Bucket:
+        name: "s3-bucket"
+      serviceAccountName: "service-account-name"
+    asserts:
+      - equal:
+          path: "spec.lifecycleRules[0].status"
+          value: "Disabled"
+  - it: "should correctly inline lifecycle rule"
+    set:
+      s3Bucket:
+        name: "s3-bucket"
+        lifecycleRules:
+          - expiration:
+              - days: 50
+            filter:
+              prefix: "prefix-"
+            status: Enabled
+      serviceAccountName: "service-account-name"
+    asserts:
+      - equal:
+          path: "spec.lifecycleRules"
+          value:
+            - expiration:
+                - days: 50
+              filter:
+                prefix: "prefix-"
+              status: Enabled
