@@ -4,9 +4,9 @@ kind: PostgresInstance
 metadata:
     name: {{ .Values.postgres.name }}
     labels:
-    {{- include "infra.labels" . | nindent 4 }}
+    {{- include "infra.labels" . | nindent 8 }}
 spec:
-    multiAz: {{ .Values.postgres.multiAz }}
+    multiAZ: {{ .Values.postgres.multiAz }}
     size: {{ .Values.postgres.size }}
     version: {{ quote .Values.postgres.version }}
 {{- end }}
