@@ -21,4 +21,4 @@ s3Bucket:
       status: Disabled
 
 serviceAccount:
-name: ""
+  name: ""

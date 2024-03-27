@@ -8,7 +8,7 @@ A Helm "monochart" for deploying cron jobs
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts | infra | 0.0.0-alpha-11 |
+| https://portswigger-apps.github.io/helm-charts | infra | 0.0.0-alpha-12 |
 
 ## Values
 
@@ -23,19 +23,19 @@ A Helm "monochart" for deploying cron jobs
 | cron.schedule | string | `"* * * * *"` | Cron formatted schedule for job. |
 | cron.timeoutSeconds | int | `nil` | The maximum amount of time the job should run for in seconds. |
 | env | object | `{}` | List of environment variables for job container. |
-| global | object | `{"infra":{"postgres":{"multiAz":null,"name":"","size":null,"version":null},"s3Bucket":{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""}},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":""}}` | Configuration for infra |
-| global.infra.postgres | object | `{"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
-| global.infra.postgres.multiAz | string | `nil` | If database should be a multi-az deployment |
-| global.infra.postgres.name | string | `""` | The database's name. |
-| global.infra.postgres.size | string | `nil` | The instance size. Options: micro, small, medium, large or xlarge. |
-| global.infra.postgres.version | string | `nil` | The postgres version to use. Options: 16.2, 15.6 or 14.11 |
-| global.infra.s3Bucket | object | `{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
-| global.infra.s3Bucket.lifecycleRules | list | `[{"expiration":[{"days":0}],"status":"Disabled"}]` | Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule The status field is required on the rule object. |
-| global.infra.s3Bucket.name | string | `""` | Name of the bucket |
-| global.serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":""}` | Service account configuration. Configuration is required for accessing AWS resources |
-| global.serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
+| infra | object | `{"postgres":{"multiAz":null,"name":"","size":null,"version":null},"s3Bucket":{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":""}}` | Configuration for infra |
+| infra.postgres | object | `{"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
+| infra.postgres.multiAz | string | `nil` | If database should be a multi-az deployment |
+| infra.postgres.name | string | `""` | The database's name. |
+| infra.postgres.size | string | `nil` | The instance size. Options: micro, small, medium, large or xlarge. |
+| infra.postgres.version | string | `nil` | The postgres version to use. Options: 16.2, 15.6 or 14.11 |
+| infra.s3Bucket | object | `{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| infra.s3Bucket.lifecycleRules | list | `[{"expiration":[{"days":0}],"status":"Disabled"}]` | Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule The status field is required on the rule object. |
+| infra.s3Bucket.name | string | `""` | Name of the bucket |
+| infra.serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":""}` | Service account configuration. Configuration is required for accessing AWS resources |
+| infra.serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account |
 | pod.annotations | object | `{}` |  |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |

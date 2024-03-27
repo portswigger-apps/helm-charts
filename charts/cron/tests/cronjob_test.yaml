@@ -93,10 +93,9 @@ tests:
 
   - it: should add s3 credential environment variables
     set:
-      global:
-        infra:
-          s3Bucket:
-            name: "s3-bucket-name"
+      infra:
+        s3Bucket:
+          name: "s3-bucket-name"
         serviceAccount:
           name: "serviceAccountName"
     asserts:
@@ -127,10 +126,9 @@ tests:
 
   - it: should add database credentials environment variables
     set:
-      global:
-        infra:
-          postgres:
-            name: "database-name"
+      infra:
+        postgres:
+          name: "database-name"
     asserts:
     - contains:
         path: spec.jobTemplate.spec.template.spec.containers[0].env

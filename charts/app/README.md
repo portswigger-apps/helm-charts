@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../infra | infra | 0.0.0-alpha-12 |
+| https://portswigger-apps.github.io/helm-charts | infra | 0.0.0-alpha-12 |
 
 ## Values
 

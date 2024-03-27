@@ -37,9 +37,9 @@ helm.sh/chart: {{ template "cron.chart" . }}
 The name of the service account to use
 */}}
 {{- define "cron.serviceAccountName" -}}
-{{- if .Values.serviceAccount.enabled }}
-{{- default (include "cron.name" .) .Values.serviceAccount.name }}
+{{- if .Values.infra.serviceAccount.enabled }}
+{{- default (include "cron.name" .) .Values.infra.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- default "default" .Values.infra.serviceAccount.name }}
 {{- end }}
 {{- end -}}

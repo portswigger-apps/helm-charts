@@ -8,10 +8,8 @@ tests:
           count: 0
   - it: should create if name specified
     set:
-      global:
-        infra:
-          postgres:
-            name: database-name
+      postgres:
+        name: database-name
     asserts:
       - isKind:
           of: PostgresInstance
@@ -20,13 +18,11 @@ tests:
           value: "database-name"
   - it: should set required fields
     set:
-      global:
-        infra:
-          postgres:
-            name: database-name
-            size: xlarge
-            version: 16.2
-            multiAz: true
+      postgres:
+        name: database-name
+        size: xlarge
+        version: 16.2
+        multiAz: true
     asserts:
       - equal:
           path: metadata.name
@@ -39,11 +35,9 @@ tests:
             multiAZ: true
   - it: version field is quoted
     set:
-      global:
-        infra:
-          postgres:
-            name: database-name
-            version: "16.2"
+      postgres:
+        name: database-name
+        version: "16.2"
     asserts:
       - equal:
           path: metadata.name

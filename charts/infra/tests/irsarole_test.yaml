@@ -14,32 +14,26 @@ tests:
           count: 0
   - it: "should fail if s3 bucket without service account name"
     set:
-      global:
-        infra:
-          s3Bucket:
-            name: "s3-bucket"
+      s3Bucket:
+        name: "s3-bucket"
     asserts:
       - failedTemplate:
           errorMessage: "ERROR: A service account name must be specified when using S3 buckets"
   - it: "should create irsa role if using s3 bucket and set service account name"
     set:
-      global:
-        infra:
-          s3Bucket:
-            name: "s3-bucket"
-        serviceAccount:
-          name: "serviceAccountName"
+      s3Bucket:
+        name: "s3-bucket"
+      serviceAccount:
+        name: "serviceAccountName"
     asserts:
       - hasDocuments:
           count: 1
   - it: "irsa role name should be service account name"
     set:
-      global:
-        infra:
-          s3Bucket:
-            name: "s3-bucket"
-        serviceAccount:
-          name: "serviceAccountName"
+      s3Bucket:
+        name: "s3-bucket"
+      serviceAccount:
+        name: "serviceAccountName"
     asserts:
       - isKind:
           of: IrsaRole
