@@ -14,4 +14,4 @@ keywords:
 dependencies:
   - name: infra
     version: 0.0.0-alpha-12
-    repository: https://portswigger-apps.github.io/helm-charts
+    repository: file://../infra/

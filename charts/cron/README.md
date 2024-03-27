@@ -8,7 +8,7 @@ A Helm "monochart" for deploying cron jobs
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts | infra | 0.0.0-alpha-12 |
+| file://../infra/ | infra | 0.0.0-alpha-12 |
 
 ## Values
 
