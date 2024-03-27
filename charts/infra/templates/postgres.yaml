@@ -1,12 +1,12 @@
-{{- if .Values.global.infra.postgres.name }}
+{{- if .Values.postgres.name }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: PostgresInstance
 metadata:
-    name: {{ .Values.global.infra.postgres.name }}
+    name: {{ .Values.postgres.name }}
     labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
-    multiAZ: {{ .Values.global.infra.postgres.multiAz }}
-    size: {{ .Values.global.infra.postgres.size }}
-    version: {{ quote .Values.global.infra.postgres.version }}
+    multiAZ: {{ .Values.postgres.multiAz }}
+    size: {{ .Values.postgres.size }}
+    version: {{ quote .Values.postgres.version }}
 {{- end }}

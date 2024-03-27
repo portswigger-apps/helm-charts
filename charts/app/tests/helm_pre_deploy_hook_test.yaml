@@ -100,10 +100,9 @@ tests:
       image:
         name: image-name
         tag: tag
-      global:
-        infra:
-          postgres:
-            name: database-name
+      infra:
+        postgres:
+          name: database-name
       preDeployCommand:
       - python3
       - manage.py
@@ -167,10 +166,9 @@ tests:
       image:
         name: image-name
         tag: tag
-      global:
-        infra:
-          s3Bucket:
-            name: "s3-bucket-name"
+      infra:
+        s3Bucket:
+          name: "s3-bucket-name"
       preDeployCommand:
         - python3
         - manage.py
