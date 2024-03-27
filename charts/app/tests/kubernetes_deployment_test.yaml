@@ -223,9 +223,10 @@ tests:
       deployment:
         enabled: true
         kind: "Deployment"
-      infra:
-        postgres:
-          name: "database-name"
+      global:
+        infra:
+          postgres:
+            name: "database-name"
     template: kubernetes/deployment.yaml
     asserts:
       - contains:
@@ -281,9 +282,10 @@ tests:
       deployment:
         enabled: true
         kind: "Deployment"
-      infra:
-        s3Bucket:
-          name: "s3-bucket-name"
+      global:
+        infra:
+          s3Bucket:
+            name: "s3-bucket-name"
     template: kubernetes/deployment.yaml
     asserts:
       - contains:

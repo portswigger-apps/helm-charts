@@ -1,24 +1,26 @@
-# -- Postgres database configuration. Leave as null for no database.
-postgres:
-  # -- The database's name.
-  name: ""
-  # -- The instance size. Options: micro, small, medium, large or xlarge.
-  size: null
-  # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
-  version: null
-  # -- If database should be a multi-az deployment
-  multiAz: null
+global:
+  infra:
+    # -- Postgres database configuration. Leave as null for no database.
+    postgres:
+      # -- The database's name.
+      name: ""
+      # -- The instance size. Options: micro, small, medium, large or xlarge.
+      size: null
+      # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
+      version: null
+      # -- If database should be a multi-az deployment
+      multiAz: null
 
-# -- S3 Bucket configuration. Set to null for no s3 bucket.
-s3Bucket:
-  # -- Name of the bucket
-  name: ""
-  # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
-  # The status field is required on the rule object.
-  lifecycleRules:
-    - expiration:
-        - days: 0
-      status: Disabled
+    # -- S3 Bucket configuration. Set to null for no s3 bucket.
+    s3Bucket:
+      # -- Name of the bucket
+      name: ""
+      # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
+      # The status field is required on the rule object.
+      lifecycleRules:
+        - expiration:
+            - days: 0
+          status: Disabled
 
-# -- The name of the service account specified in the app chart. If not overriden in the app chart use the release name from the helmfile.yaml
-serviceAccountName: ""
+  serviceAccount:
+    name: ""

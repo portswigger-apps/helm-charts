@@ -90,11 +90,47 @@ tests:
           value:
             secretRef:
               name: RELEASE-NAME-env
+
+  - it: should add s3 credential environment variables
+    set:
+      global:
+        infra:
+          s3Bucket:
+            name: "s3-bucket-name"
+        serviceAccount:
+          name: "serviceAccountName"
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "S3_REGION"
+            valueFrom:
+              secretKeyRef:
+                name: s3-bucket-name-s3bucket
+                key: region
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "S3_ID"
+            valueFrom:
+              secretKeyRef:
+                name: s3-bucket-name-s3bucket
+                key: id
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "S3_ARN"
+            valueFrom:
+              secretKeyRef:
+                name: s3-bucket-name-s3bucket
+                key: arn
+
   - it: should add database credentials environment variables
     set:
-      infra:
-        postgres:
-          name: "database-name"
+      global:
+        infra:
+          postgres:
+            name: "database-name"
     asserts:
     - contains:
         path: spec.jobTemplate.spec.template.spec.containers[0].env

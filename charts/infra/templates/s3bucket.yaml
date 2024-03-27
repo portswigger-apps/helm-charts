@@ -1,11 +1,11 @@
-{{- if .Values.s3Bucket.name }}
+{{- if .Values.global.infra.s3Bucket.name }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: S3Bucket
 metadata:
-    name: {{ .Values.s3Bucket.name }}
+    name: {{ .Values.global.infra.s3Bucket.name }}
     labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
-   irsaRoleName: {{ .Values.serviceAccountName }}-irsarole
-   lifecycleRules: {{ toYaml .Values.s3Bucket.lifecycleRules | nindent 8 }}
+   irsaRoleName: {{ .Values.global.serviceAccount.name }}-irsarole
+   lifecycleRules: {{ toYaml .Values.global.infra.s3Bucket.lifecycleRules | nindent 4 }}
 {{- end }}

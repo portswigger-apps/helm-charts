@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.1.15](https://img.shields.io/badge/Version-0.1.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.1.16](https://img.shields.io/badge/Version-0.1.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -9,6 +9,12 @@ A Helm "monochart" for deploying common application patterns
 helm repo add helm-charts https://portswigger-apps.github.io/helm-charts/
 helm install app helm-charts/app
 ```
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../infra | infra | 0.0.0-alpha-11 |
 
 ## Values
 
@@ -25,15 +31,24 @@ helm install app helm-charts/app
 | env | object | `{}` | Environment variables that will be available in the container. Formatted as ```<environment variable name>: <plain text value>``` |
 | envFrom | list | `[]` | Used to specify environment variables from ConfigMaps. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/ |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
+| global.infra.aws.accountId | string | `"0123456789"` | The AWS account id for the deployment. |
+| global.infra.postgres | object | `{"multiAz":null,"name":"database-name","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
+| global.infra.postgres.multiAz | string | `nil` | If database should be a multi-az deployment |
+| global.infra.postgres.name | string | `"database-name"` | The database's name. |
+| global.infra.postgres.size | string | `nil` | The instance size. Options: micro, small, medium, large or xlarge. |
+| global.infra.postgres.version | string | `nil` | The postgres version to use. Options: 16.2, 15.6 or 14.11 |
+| global.infra.s3Bucket | object | `{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":"s3-bucket-name"}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| global.infra.s3Bucket.lifecycleRules | list | `[{"expiration":[{"days":0}],"status":"Disabled"}]` | Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule The status field is required on the rule object. |
+| global.infra.s3Bucket.name | string | `"s3-bucket-name"` | Name of the bucket |
+| global.serviceAccount.annotations | object | `{}` |  |
+| global.serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources. |
+| global.serviceAccount.enabled | bool | `true` |  |
+| global.serviceAccount.name | string | `"service-account-name"` | The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart. Defaults to the helmfile release name |
 | healthcheckEndpoint | object | `{"path":"/health","port":"app-port"}` | Configuration for startup, liveness and readiness probes |
 | healthcheckEndpoint.path | string | `"/health"` | The path of the healthcheck endpoint |
 | healthcheckEndpoint.port | string | `"app-port"` | The port that the healthcheck endpoint is exposed on. Referenced by the port's name |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
-| infra | object | `{"aws":{"accountId":"12345678910"},"postgres":{"name":null},"s3Bucket":{"name":null}}` | Configuration for infra |
-| infra.aws.accountId | string | `"12345678910"` | The AWS account id for the deployment. |
-| infra.postgres.name | string | `nil` | The database name. Must be the same as the name specified in the infra chart. |
-| infra.s3Bucket.name | string | `nil` | The s3 bucket's name. Must be the same as the name specified in the infra chart. |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` | Adds an ingress to expose the application to the outside world |
 | ingress.host | string | `""` | The host name the application will be accessible from |
@@ -56,9 +71,6 @@ helm install app helm-charts/app
 | secretVolume | object | `{}` | Secret values that are mounted as a file to /secrets. Formatted as ```<file name>: <base64 encoded value>``` |
 | service.annotations | object | `{}` |  |
 | service.enabled | bool | `true` | Adds a service to expose the application to the rest of the cluster |
-| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":null}` | Service account configuration. Configuration is required for accessing AWS resources |
-| serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources. |
-| serviceAccount.name | string | `nil` | The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart. Defaults to the helmfile release name |
 
 ---
 

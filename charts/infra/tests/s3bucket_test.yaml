@@ -8,8 +8,10 @@ tests:
           count: 0
   - it: "should create s3 bucket if name specified"
     set:
-      s3Bucket:
-        name: "s3-bucket"
+      global:
+        infra:
+          s3Bucket:
+            name: "s3-bucket"
     asserts:
       - hasDocuments:
           count: 1
@@ -18,32 +20,40 @@ tests:
           value: "s3-bucket"
   - it: "should set irsa role name"
     set:
-      s3Bucket:
-        name: "s3-bucket"
-      serviceAccountName: "service-account-name"
+      global:
+        infra:
+          s3Bucket:
+            name: "s3-bucket"
+        serviceAccount:
+          name: "service-account-name"
     asserts:
       - equal:
           path: "spec.irsaRoleName"
           value: "service-account-name-irsarole"
   - it: "should default to disabled lifecycle rule"
     set:
-      s3Bucket:
-        name: "s3-bucket"
-      serviceAccountName: "service-account-name"
+      global:
+        infra:
+          s3Bucket:
+            name: "s3-bucket"
+        serviceAccount:
+          name: "service-account-name"
     asserts:
       - equal:
           path: "spec.lifecycleRules[0].status"
           value: "Disabled"
   - it: "should correctly inline lifecycle rule"
     set:
-      s3Bucket:
-        name: "s3-bucket"
-        lifecycleRules:
-          - expiration:
-              - days: 50
-            filter:
-              prefix: "prefix-"
-            status: Enabled
+      global:
+        infra:
+          s3Bucket:
+            name: "s3-bucket"
+            lifecycleRules:
+              - expiration:
+                  - days: 50
+                filter:
+                  prefix: "prefix-"
+                status: Enabled
       serviceAccountName: "service-account-name"
     asserts:
       - equal:

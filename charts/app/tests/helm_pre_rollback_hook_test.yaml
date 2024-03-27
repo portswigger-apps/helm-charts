@@ -1,4 +1,4 @@
-suite: Pre Deploy Hook configuration
+suite: Pre Rollback Hook configuration
 templates:
   - helm/pre-rollback-hook.yaml
     # secret templates for checksums
@@ -100,9 +100,10 @@ tests:
       image:
         name: image-name
         tag: tag
-      infra:
-        postgres:
-          name: database-name
+      global:
+        infra:
+          postgres:
+            name: database-name
       preRollbackCommand:
       - python3
       - manage.py
@@ -166,9 +167,10 @@ tests:
       image:
         name: image-name
         tag: tag
-      infra:
-        s3Bucket:
-          name: "s3-bucket-name"
+      global:
+        infra:
+          s3Bucket:
+            name: "s3-bucket-name"
       preRollbackCommand:
         - python3
         - manage.py

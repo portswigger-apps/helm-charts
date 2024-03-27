@@ -99,17 +99,6 @@ initContainers:
   #   image: nginx
   #   command: ['sh', '-c', "echo 'output'"]
 
-# -- Service account configuration. Configuration is required for accessing AWS resources
-serviceAccount:
-  enabled: true
-  # -- (string) The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart.
-  # Defaults to the helmfile release name
-  name: null
-  # -- If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources.
-  automountServiceAccountToken: false
-  annotations: {}
-  # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
-
 # -- Configuration for the ciliumNetworkPolicy, allowing restriction of network access to pods.
 ciliumNetworkPolicy:
   enabled: false
@@ -136,18 +125,42 @@ ciliumNetworkPolicy:
 
 # -- Extra Kubernetes configuration
 extraDeploy: []
+global:
+  infra:
+    aws:
+      # -- (string) The AWS account id for the deployment.
+      accountId: "0123456789"
+    # -- Postgres database configuration. Leave as null for no database.
+    postgres:
+      # -- The database's name.
+      name: "database-name"
+      # -- The instance size. Options: micro, small, medium, large or xlarge.
+      size: null
+      # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
+      version: null
+      # -- If database should be a multi-az deployment
+      multiAz: null
 
-# -- Configuration for infra
-infra:
-  aws:
-    # -- (string) The AWS account id for the deployment.
-    accountId: "12345678910"
-  postgres:
-    # -- (string) The database name. Must be the same as the name specified in the infra chart.
-    name: null
-  s3Bucket:
-    # -- (string) The s3 bucket's name. Must be the same as the name specified in the infra chart.
-    name: null
+    # -- S3 Bucket configuration. Set to null for no s3 bucket.
+    s3Bucket:
+      # -- Name of the bucket
+      name: "s3-bucket-name"
+      # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
+      # The status field is required on the rule object.
+      lifecycleRules:
+        - expiration:
+            - days: 0
+          status: Disabled
+
+  serviceAccount:
+    enabled: true
+    # -- (string) The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart.
+    # Defaults to the helmfile release name
+    name: "service-account-name"
+    # -- If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources.
+    automountServiceAccountToken: false
+    annotations: {}
+    # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
 
 # -- (string[]) Command to run before install and upgrade of your application.
 preDeployCommand: []

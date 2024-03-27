@@ -63,45 +63,45 @@ Outputs a pod spec for use in helm hooks.
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
-          {{- if .Values.infra.s3Bucket.name }}
+          {{- if .Values.global.infra.s3Bucket.name }}
           - name: S3_REGION
             valueFrom:
              secretKeyRef:
-               name: {{ .Values.infra.s3Bucket.name}}-s3bucket
+               name: {{ .Values.global.infra.s3Bucket.name}}-s3bucket
                key: region
           - name: S3_ID
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.infra.s3Bucket.name}}-s3bucket
+                name: {{ .Values.global.infra.s3Bucket.name}}-s3bucket
                 key: id
           - name: S3_ARN
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.infra.s3Bucket.name}}-s3bucket
+                name: {{ .Values.global.infra.s3Bucket.name}}-s3bucket
                 key: arn
           {{- end }}
-          {{- if .Values.infra.postgres.name }}
+          {{- if .Values.global.infra.postgres.name }}
           - name: DATABASE_NAME
             value: app
           - name: DATABASE_HOST
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
+                name: {{ .Values.global.infra.postgres.name}}-postgres
                 key: host
           - name: DATABASE_PORT
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
+                name: {{ .Values.global.infra.postgres.name}}-postgres
                 key: port
           - name: DATABASE_USERNAME
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
+                name: {{ .Values.global.infra.postgres.name}}-postgres
                 key: username
           - name: DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
+                name: {{ .Values.global.infra.postgres.name}}-postgres
                 key: password
           - name: DATABASE_URL
             value: "postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)"
