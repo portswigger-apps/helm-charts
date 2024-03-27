@@ -32,18 +32,18 @@ helm install app helm-charts/app
 | envFrom | list | `[]` | Used to specify environment variables from ConfigMaps. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/ |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | global.infra.aws.accountId | string | `"0123456789"` | The AWS account id for the deployment. |
-| global.infra.postgres | object | `{"multiAz":null,"name":"database-name","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
+| global.infra.postgres | object | `{"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
 | global.infra.postgres.multiAz | string | `nil` | If database should be a multi-az deployment |
-| global.infra.postgres.name | string | `"database-name"` | The database's name. |
+| global.infra.postgres.name | string | `""` | The database's name. |
 | global.infra.postgres.size | string | `nil` | The instance size. Options: micro, small, medium, large or xlarge. |
 | global.infra.postgres.version | string | `nil` | The postgres version to use. Options: 16.2, 15.6 or 14.11 |
-| global.infra.s3Bucket | object | `{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":"s3-bucket-name"}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| global.infra.s3Bucket | object | `{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
 | global.infra.s3Bucket.lifecycleRules | list | `[{"expiration":[{"days":0}],"status":"Disabled"}]` | Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule The status field is required on the rule object. |
-| global.infra.s3Bucket.name | string | `"s3-bucket-name"` | Name of the bucket |
+| global.infra.s3Bucket.name | string | `""` | Name of the bucket |
 | global.serviceAccount.annotations | object | `{}` |  |
 | global.serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources. |
 | global.serviceAccount.enabled | bool | `true` |  |
-| global.serviceAccount.name | string | `"service-account-name"` | The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart. Defaults to the helmfile release name |
+| global.serviceAccount.name | string | `""` | The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart. Defaults to the helmfile release name |
 | healthcheckEndpoint | object | `{"path":"/health","port":"app-port"}` | Configuration for startup, liveness and readiness probes |
 | healthcheckEndpoint.path | string | `"/health"` | The path of the healthcheck endpoint |
 | healthcheckEndpoint.port | string | `"app-port"` | The port that the healthcheck endpoint is exposed on. Referenced by the port's name |
