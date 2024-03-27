@@ -32,7 +32,7 @@ tests:
           value:
             size: xlarge
             version: "16.2"
-            multiAz: true
+            multiAZ: true
   - it: version field is quoted
     set:
       postgres:
