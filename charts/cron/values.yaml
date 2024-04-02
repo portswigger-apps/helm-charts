@@ -50,8 +50,10 @@ resources:
 infra:
   # -- Postgres database configuration. Leave as null for no database.
   postgres:
-    # -- The database's name.
+    # -- The database's name. If the database is created in another app, use the same name as the database in that app.
     name: ""
+    # -- If a database should be created. Set to false if another app is creating the database.
+    create: true
     # -- The instance size. Options: micro, small, medium, large or xlarge.
     size: null
     # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
@@ -61,8 +63,11 @@ infra:
 
   # -- S3 Bucket configuration. Set to null for no s3 bucket.
   s3Bucket:
-    # -- Name of the bucket
+    # -- Name of the bucket. If the s3 bucket is created in another app, use the same name as the s3 bucket in that app.
+    # You must also use the same service account name, provide the aws account id and set automountServiceAccountToken to true
     name: ""
+    # -- If an s3 bucket should be created. Set to false if another app creates the s3 bucket.
+    create: true
     # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
     # The status field is required on the rule object.
     lifecycleRules:
@@ -73,8 +78,10 @@ infra:
   # -- Service account configuration. Configuration is required for accessing AWS resources
   serviceAccount:
     enabled: true
+    # -- (string) The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart.
+    # Defaults to the helmfile release name
     name: ""
-    # -- If the service account token should be mounted into pods that use the service account
+    # -- If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources.
     automountServiceAccountToken: false
     annotations: {}
     # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role

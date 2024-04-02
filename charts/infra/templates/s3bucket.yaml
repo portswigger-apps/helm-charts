@@ -1,4 +1,4 @@
-{{- if .Values.s3Bucket.name }}
+{{- if and .Values.s3Bucket.create .Values.s3Bucket.name }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: S3Bucket
 metadata:

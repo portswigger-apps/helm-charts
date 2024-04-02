@@ -2,6 +2,8 @@
 postgres:
   # -- The database's name.
   name: ""
+  # -- If a database should be created. Set to false if another app is creating the database.
+  create: true
   # -- The instance size. Options: micro, small, medium, large or xlarge.
   size: null
   # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
@@ -13,6 +15,8 @@ postgres:
 s3Bucket:
   # -- Name of the bucket
   name: ""
+  # -- If an s3 bucket should be created. Set to false if another app creates the s3 bucket.
+  create: true
   # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
   # The status field is required on the rule object.
   lifecycleRules:

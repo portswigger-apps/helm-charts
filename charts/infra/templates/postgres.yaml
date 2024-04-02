@@ -1,4 +1,4 @@
-{{- if .Values.postgres.name }}
+{{- if and .Values.postgres.create .Values.postgres.name }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: PostgresInstance
 metadata:

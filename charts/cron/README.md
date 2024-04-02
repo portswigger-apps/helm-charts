@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.0.0-alpha-5](https://img.shields.io/badge/Version-0.0.0--alpha--5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-6](https://img.shields.io/badge/Version-0.0.0--alpha--6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -8,7 +8,7 @@ A Helm "monochart" for deploying cron jobs
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../infra/ | infra | 0.0.0-alpha-12 |
+| file://../infra/ | infra | 0.0.0-alpha-13 |
 
 ## Values
 
@@ -25,17 +25,20 @@ A Helm "monochart" for deploying cron jobs
 | env | object | `{}` | List of environment variables for job container. |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
-| infra | object | `{"postgres":{"multiAz":null,"name":"","size":null,"version":null},"s3Bucket":{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":""}}` | Configuration for infra |
-| infra.postgres | object | `{"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
+| infra | object | `{"postgres":{"create":true,"multiAz":null,"name":"","size":null,"version":null},"s3Bucket":{"create":true,"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":""}}` | Configuration for infra |
+| infra.postgres | object | `{"create":true,"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
+| infra.postgres.create | bool | `true` | If a database should be created. Set to false if another app is creating the database. |
 | infra.postgres.multiAz | string | `nil` | If database should be a multi-az deployment |
-| infra.postgres.name | string | `""` | The database's name. |
+| infra.postgres.name | string | `""` | The database's name. If the database is created in another app, use the same name as the database in that app. |
 | infra.postgres.size | string | `nil` | The instance size. Options: micro, small, medium, large or xlarge. |
 | infra.postgres.version | string | `nil` | The postgres version to use. Options: 16.2, 15.6 or 14.11 |
-| infra.s3Bucket | object | `{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| infra.s3Bucket | object | `{"create":true,"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| infra.s3Bucket.create | bool | `true` | If an s3 bucket should be created. Set to false if another app creates the s3 bucket. |
 | infra.s3Bucket.lifecycleRules | list | `[{"expiration":[{"days":0}],"status":"Disabled"}]` | Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule The status field is required on the rule object. |
-| infra.s3Bucket.name | string | `""` | Name of the bucket |
+| infra.s3Bucket.name | string | `""` | Name of the bucket. If the s3 bucket is created in another app, use the same name as the s3 bucket in that app. You must also use the same service account name, provide the aws account id and set automountServiceAccountToken to true |
 | infra.serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":false,"enabled":true,"name":""}` | Service account configuration. Configuration is required for accessing AWS resources |
-| infra.serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account |
+| infra.serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources. |
+| infra.serviceAccount.name | string | `""` | The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart. Defaults to the helmfile release name |
 | pod.annotations | object | `{}` |  |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |

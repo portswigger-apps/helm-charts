@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.0.0-alpha-12](https://img.shields.io/badge/Version-0.0.0--alpha--12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-13](https://img.shields.io/badge/Version-0.0.0--alpha--13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -8,12 +8,14 @@ A Helm "monochart" for deploying common infrastructure
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| postgres | object | `{"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
+| postgres | object | `{"create":true,"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
+| postgres.create | bool | `true` | If a database should be created. Set to false if another app is creating the database. |
 | postgres.multiAz | string | `nil` | If database should be a multi-az deployment |
 | postgres.name | string | `""` | The database's name. |
 | postgres.size | string | `nil` | The instance size. Options: micro, small, medium, large or xlarge. |
 | postgres.version | string | `nil` | The postgres version to use. Options: 16.2, 15.6 or 14.11 |
-| s3Bucket | object | `{"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| s3Bucket | object | `{"create":true,"lifecycleRules":[{"expiration":[{"days":0}],"status":"Disabled"}],"name":""}` | S3 Bucket configuration. Set to null for no s3 bucket. |
+| s3Bucket.create | bool | `true` | If an s3 bucket should be created. Set to false if another app creates the s3 bucket. |
 | s3Bucket.lifecycleRules | list | `[{"expiration":[{"days":0}],"status":"Disabled"}]` | Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule The status field is required on the rule object. |
 | s3Bucket.name | string | `""` | Name of the bucket |
 | serviceAccount.name | string | `""` |  |

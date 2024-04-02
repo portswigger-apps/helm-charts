@@ -45,3 +45,21 @@ tests:
       - equal:
           path: spec.version
           value: "16.2"
+  - it: should not create database if create is false
+    set:
+      postgres:
+        name: database-name
+        version: "16.2"
+        create: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should create database if create is true
+    set:
+      postgres:
+        name: database-name
+        version: "16.2"
+        create: true
+    asserts:
+      - hasDocuments:
+          count: 1
