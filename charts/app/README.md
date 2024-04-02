@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../infra/ | infra | 0.0.0-alpha-14 |
+| file://../infra/ | infra | 0.0.0-alpha-15 |
 
 ## Values
 

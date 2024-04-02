@@ -1,4 +1,4 @@
-{{- if and .Values.s3Bucket.create .Values.s3Bucket.name }}
+{{- if include "infra.createS3Bucket" . }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: IrsaRole
 metadata:
