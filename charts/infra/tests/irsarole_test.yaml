@@ -19,10 +19,21 @@ tests:
     asserts:
       - failedTemplate:
           errorMessage: "ERROR: A service account name must be specified when using S3 buckets"
+  - it: "should not create irsa role if using s3 bucket but not creating bucket"
+    set:
+      s3Bucket:
+        create: false
+        name: "s3-bucket"
+      serviceAccount:
+        name: "serviceAccountName"
+    asserts:
+      - hasDocuments:
+          count: 0
   - it: "should create irsa role if using s3 bucket and set service account name"
     set:
       s3Bucket:
         name: "s3-bucket"
+        create: true
       serviceAccount:
         name: "serviceAccountName"
     asserts:
