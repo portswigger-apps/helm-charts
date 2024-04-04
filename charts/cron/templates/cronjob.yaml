@@ -6,6 +6,7 @@ metadata:
   {{- include "cron.labels" . | nindent 8 }}
 spec:
   schedule: {{ .Values.cron.schedule | quote }}
+  timeZone: {{ .Values.cron.timeZone | quote }}
   concurrencyPolicy: {{ .Values.cron.concurrencyPolicy }}
   jobTemplate:
     spec:

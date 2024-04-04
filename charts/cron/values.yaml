@@ -11,6 +11,7 @@ cron:
   # Allow - allows concurrently running cron jobs.
   # Forbid - No concurrent runs, if last cron job hasn't finished then skip the new run
   # Replace - Replace the currently running cron job with a new instance.
+  timeZone: "Europe/London"
   concurrencyPolicy: Allow
   # -- Number of retries on failure of job
   retries: 0
