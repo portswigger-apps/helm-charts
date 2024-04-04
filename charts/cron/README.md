@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.0.0-alpha-9](https://img.shields.io/badge/Version-0.0.0--alpha--9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-10](https://img.shields.io/badge/Version-0.0.0--alpha--10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -16,11 +16,12 @@ A Helm "monochart" for deploying cron jobs
 |-----|------|---------|-------------|
 | cron.args | string[] | `nil` | Arguments for the command |
 | cron.command | string[] | `nil` | Command to run on the image. e.g [/bin/bash, my-script.sh] |
-| cron.concurrencyPolicy | string | `"Allow"` | One of: Allow, Forbid and Replace. Allow - allows concurrently running cron jobs. Forbid - No concurrent runs, if last cron job hasn't finished then skip the new run Replace - Replace the currently running cron job with a new instance. |
+| cron.concurrencyPolicy | string | `"Allow"` |  |
 | cron.parallelism | int | `1` | Number of pods of the cron job to start |
 | cron.restartPolicy | string | `"OnFailure"` | One of: Never or OnFailure. Never - does not restart. OnFailure - will re-run the job if it fails |
 | cron.retries | int | `0` | Number of retries on failure of job |
 | cron.schedule | string | `"* * * * *"` | Cron formatted schedule for job. |
+| cron.timeZone | string | `"Europe/London"` | One of: Allow, Forbid and Replace. Allow - allows concurrently running cron jobs. Forbid - No concurrent runs, if last cron job hasn't finished then skip the new run Replace - Replace the currently running cron job with a new instance. |
 | cron.timeoutSeconds | int | `nil` | The maximum amount of time the job should run for in seconds. |
 | env | object | `{}` | List of environment variables for job container. |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
