@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.0.0-alpha-17](https://img.shields.io/badge/Version-0.0.0--alpha--17-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-18](https://img.shields.io/badge/Version-0.0.0--alpha--18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -10,6 +10,8 @@ A Helm "monochart" for deploying common infrastructure
 |-----|------|---------|-------------|
 | cloudfront.domainName | string | `""` | The domain name that the cloudfront distribution will be available on |
 | cloudfront.enabled | bool | `false` |  |
+| cloudfront.geoRestriction.locations | list | `[]` | The countries that are allowed or disallowed from accessing the cloudfront distribution |
+| cloudfront.geoRestriction.restrictionType | string | `"none"` | The restriction type for the cloudfront distribution. Options: none, whitelist, blacklist |
 | cloudfront.hostedZoneId | string | `""` | The hosted zone id of the domain name |
 | ingress.host | string | `""` | The host name the application will be accessible from |
 | postgres | object | `{"create":true,"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |

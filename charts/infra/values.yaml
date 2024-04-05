@@ -37,3 +37,8 @@ cloudfront:
   hostedZoneId: ""
   # -- The domain name that the cloudfront distribution will be available on
   domainName: ""
+  geoRestriction:
+    # -- The restriction type for the cloudfront distribution. Options: none, whitelist, blacklist
+    restrictionType: none
+    # -- The countries that are allowed or disallowed from accessing the cloudfront distribution
+    locations: []
