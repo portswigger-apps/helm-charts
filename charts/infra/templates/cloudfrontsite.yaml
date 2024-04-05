@@ -1,0 +1,12 @@
+{{- if .Values.cloudfront.enabled }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: CloudFrontSite
+metadata:
+  name: {{ include "infra.name" . }}
+  labels:
+    {{- include "infra.labels" . | nindent 8 }}
+spec:
+  targetOriginDomainName: {{ .Values.ingress.host }}
+  domainName: {{ .Values.cloudfront.domainName }}
+  hostedZoneId: {{ .Values.cloudfront.hostedZoneId }}
+{{- end -}}

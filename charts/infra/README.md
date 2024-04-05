@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.0.0-alpha-15](https://img.shields.io/badge/Version-0.0.0--alpha--15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-16](https://img.shields.io/badge/Version-0.0.0--alpha--16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -8,6 +8,10 @@ A Helm "monochart" for deploying common infrastructure
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| cloudfront.domainName | string | `""` | The domain name that the cloudfront distribution will be available on |
+| cloudfront.enabled | bool | `false` |  |
+| cloudfront.hostedZoneId | string | `""` | The hosted zone id of the domain name |
+| ingress.host | string | `""` | The host name the application will be accessible from |
 | postgres | object | `{"create":true,"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
 | postgres.create | bool | `true` | If a database should be created. Set to false if another app is creating the database. |
 | postgres.multiAz | string | `nil` | If database should be a multi-az deployment |

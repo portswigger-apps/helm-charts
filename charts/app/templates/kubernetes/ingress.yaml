@@ -1,21 +1,21 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.infra.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "app.name" . }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.infra.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.ingress.className }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.infra.ingress.className }}
+  ingressClassName: {{ .Values.infra.ingress.className }}
   {{- end }}
   rules:
-  - {{ if .Values.ingress.host -}}
-    host: {{ .Values.ingress.host }}
+  - {{ if .Values.infra.ingress.host -}}
+    host: {{ .Values.infra.ingress.host }}
     {{- else }}
     {{- fail "ERROR: A unique hostname must be set if creating an ingress" -}}
     {{- end }}
@@ -23,7 +23,7 @@ spec:
       paths:
       {{- range $portName, $portSpec := .Values.ports }}
       {{- if $portSpec.expose }}
-      {{- range $.Values.ingress.paths }}
+      {{- range $.Values.infra.ingress.paths }}
       - path: {{ . }}
         pathType: Prefix
         backend:

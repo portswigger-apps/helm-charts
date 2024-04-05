@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../infra/ | infra | 0.0.0-alpha-15 |
+| file://../infra/ | infra | 0.0.0-alpha-16 |
 
 ## Values
 
@@ -37,6 +37,10 @@ helm install app helm-charts/app
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
 | infra.aws.accountId | string | `"0123456789"` | The AWS account id for the deployment. |
+| infra.ingress.annotations | object | `{}` |  |
+| infra.ingress.enabled | bool | `false` | Adds an ingress to expose the application to the outside world |
+| infra.ingress.host | string | `""` | The host name the application will be accessible from |
+| infra.ingress.paths | list | `["/"]` | The path prefixes that are exposed |
 | infra.postgres | object | `{"multiAz":null,"name":"","size":null,"version":null}` | Postgres database configuration. Leave as null for no database. |
 | infra.postgres.multiAz | string | `nil` | If database should be a multi-az deployment |
 | infra.postgres.name | string | `""` | The database's name. |
@@ -49,10 +53,6 @@ helm install app helm-charts/app
 | infra.serviceAccount.automountServiceAccountToken | bool | `false` | If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources. |
 | infra.serviceAccount.enabled | bool | `true` |  |
 | infra.serviceAccount.name | string | `""` | The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart. Defaults to the helmfile release name |
-| ingress.annotations | object | `{}` |  |
-| ingress.enabled | bool | `false` | Adds an ingress to expose the application to the outside world |
-| ingress.host | string | `""` | The host name the application will be accessible from |
-| ingress.paths | list | `["/"]` | The path prefixes that are exposed |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. |
 | metricsEndpoint.path | string | `"/metrics"` | The path of the metrics endpoint |
 | metricsEndpoint.port | string | `"app-port"` | The port that the metrics endpoint is exposed on. Referenced by the port's name |

@@ -1,0 +1,26 @@
+suite: CloudFrontSite test
+templates:
+  - cloudfrontsite.yaml
+tests:
+  - it: should render successfully
+    set:
+      ingress:
+        host: example.com
+      cloudfront:
+        enabled: true
+        domainName: cloudfront.example.com
+        hostedZoneId: ZABCDEFGHIJKL
+    asserts:
+      - isKind:
+          of: CloudFrontSite
+      - isNotEmpty:
+          path: metadata.name
+      - equal:
+          path: spec.targetOriginDomainName
+          value: example.com
+      - equal:
+          path: spec.domainName
+          value: cloudfront.example.com
+      - equal:
+          path: spec.hostedZoneId
+          value: ZABCDEFGHIJKL

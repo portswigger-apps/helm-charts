@@ -45,8 +45,9 @@ tests:
         ingressControllerEndpointMatchLabels:
           endpoint-match-label-1: value1
           endpoint-match-label-2: value2
-      ingress:
-        enabled: true
+      infra:
+        ingress:
+          enabled: true
       ports:
         app-port:
           port: 8080

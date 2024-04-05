@@ -82,16 +82,6 @@ service:
   enabled: true
   annotations: {}
 
-ingress:
-  # -- Adds an ingress to expose the application to the outside world
-  enabled: false
-  annotations: {}
-  # -- The host name the application will be accessible from
-  host: ""
-  # -- The path prefixes that are exposed
-  paths:
-    - "/"
-
 # -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
 initContainers:
   []
@@ -126,6 +116,15 @@ ciliumNetworkPolicy:
 # -- Extra Kubernetes configuration
 extraDeploy: []
 infra:
+  ingress:
+    # -- Adds an ingress to expose the application to the outside world
+    enabled: false
+    annotations: {}
+    # -- The host name the application will be accessible from
+    host: ""
+    # -- The path prefixes that are exposed
+    paths:
+      - "/"
   aws:
     # -- (string) The AWS account id for the deployment.
     accountId: "0123456789"

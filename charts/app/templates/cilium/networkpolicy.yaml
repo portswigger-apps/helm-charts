@@ -18,7 +18,7 @@ spec:
       - protocol: {{ $portSpec.protocol }}
         port: {{ $portSpec.port | quote }}
       {{- end }}
-  {{- if .Values.ingress.enabled }}
+  {{- if .Values.infra.ingress.enabled }}
   - fromEndpoints:
     - matchLabels: {{ toYaml .Values.ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | nindent 8 }}
     toPorts:

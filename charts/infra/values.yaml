@@ -26,3 +26,14 @@ s3Bucket:
 
 serviceAccount:
   name: ""
+
+ingress:
+  # -- The host name the application will be accessible from
+  host: ""
+
+cloudfront:
+  enabled: false
+  # -- The hosted zone id of the domain name
+  hostedZoneId: ""
+  # -- The domain name that the cloudfront distribution will be available on
+  domainName: ""

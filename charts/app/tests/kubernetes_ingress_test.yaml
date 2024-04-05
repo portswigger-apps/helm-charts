@@ -4,19 +4,21 @@ templates:
 tests:
   - it: should not create ingress if not enabled
     set:
-      ingress:
-        enabled: false
+      infra:
+        ingress:
+          enabled: false
     asserts:
       - hasDocuments:
          count: 0
 
   - it: should expose port if expose enabled
     set:
-      ingress:
-        enabled: true
-        host: my-host.com
-        paths:
-        - "/my-path"
+      infra:
+        ingress:
+          enabled: true
+          host: my-host.com
+          paths:
+          - "/my-path"
       ports:
         app-port:
           port: 1234
@@ -40,11 +42,12 @@ tests:
 
   - it: should not expose port if expose not enabled
     set:
-      ingress:
-        enabled: true
-        host: my-host.com
-        paths:
-        - "/my-path"
+      infra:
+        ingress:
+          enabled: true
+          host: my-host.com
+          paths:
+          - "/my-path"
       ports:
         app-port:
           port: 1234
@@ -58,11 +61,12 @@ tests:
 
   - it: fail if no host name
     set:
-      ingress:
-        host: null
-        enabled: true
-        paths:
-        - "/my-path"
+      infra:
+        ingress:
+          host: null
+          enabled: true
+          paths:
+          - "/my-path"
       ports:
         app-port:
           port: 1234
