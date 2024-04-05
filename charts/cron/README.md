@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.0.0-alpha-10](https://img.shields.io/badge/Version-0.0.0--alpha--10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.0.0-alpha-11](https://img.shields.io/badge/Version-0.0.0--alpha--11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -8,7 +8,7 @@ A Helm "monochart" for deploying cron jobs
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../infra/ | infra | 0.0.0-alpha-15 |
+| file://../infra/ | infra | 0.0.0-alpha-16 |
 
 ## Values
 
