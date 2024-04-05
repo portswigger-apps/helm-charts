@@ -6,10 +6,8 @@ metadata:
   labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
+  geoRestriction: {{ .Values.cloudfront.geoRestriction | toYaml | nindent 4 }}
   targetOriginDomainName: {{ .Values.ingress.host }}
   domainName: {{ .Values.cloudfront.domainName }}
   hostedZoneId: {{ .Values.cloudfront.hostedZoneId }}
-  {{- if .Values.cloudfront.geoRestriction }}
-    geoRestriction: {{ .Values.cloudfront.geoRestriction | toYaml | nindent 2 }}
-  {{- end }}
 {{- end -}}

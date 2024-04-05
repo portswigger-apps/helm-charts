@@ -10,6 +10,9 @@ tests:
         enabled: true
         domainName: cloudfront.example.com
         hostedZoneId: ZABCDEFGHIJKL
+        geoRestriction:
+          restrictionType: none
+          locations: []
     asserts:
       - isKind:
           of: CloudFrontSite
@@ -24,3 +27,8 @@ tests:
       - equal:
           path: spec.hostedZoneId
           value: ZABCDEFGHIJKL
+      - equal:
+          path: spec.geoRestriction
+          value:
+            restrictionType: none
+            locations: []
