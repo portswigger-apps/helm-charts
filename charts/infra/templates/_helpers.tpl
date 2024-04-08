@@ -32,14 +32,3 @@ app.kubernetes.io/part-of: {{ template "infra.name" . }}
 app.kubernetes.io/managed-by: Helm
 helm.sh/chart: {{ template "infra.chart" . }}
 {{- end -}}
-
-{{/*
-Helper for if a s3 bucket should be created. True returns "true". False returns empty string.
-*/}}
-{{- define "infra.createS3Bucket" -}}
-{{- if and .Values.s3Bucket.create .Values.s3Bucket.name }}
-true
-{{- else }}
-{{- end -}}
-{{/* NULL */}}
-{{- end }}

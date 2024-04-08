@@ -1,14 +1,10 @@
-{{- if include "infra.createS3Bucket" . }}
+{{- if or (and .Values.s3Bucket.enabled .Values.s3Bucket.create) }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: IrsaRole
 metadata:
-  name: {{ .Values.serviceAccount.name }}
+  name: {{ default ( include "infra.name" . ) .Values.global.serviceAccount.name }}
   labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
-  {{ if .Values.serviceAccount.name }}
-  serviceAccountName: {{ .Values.serviceAccount.name }}
-  {{- else }}
-  {{- fail "ERROR: A service account name must be specified when using S3 buckets" -}}
-  {{- end }}
+  serviceAccountName: {{ default ( include "infra.name" . ) .Values.global.serviceAccount.name }}
 {{- end }}

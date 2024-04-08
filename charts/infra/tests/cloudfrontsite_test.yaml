@@ -1,11 +1,16 @@
-suite: CloudFrontSite test
+suite: CloudfrontSite
 templates:
   - cloudfrontsite.yaml
 tests:
-  - it: should render successfully
+  - it: should not create a CloudFrontSite by default
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should create a CloudFrontSite with configured fields
     set:
-      ingress:
-        host: example.com
+      global:
+        ingress:
+          host: example.com
       cloudfront:
         enabled: true
         domainName: cloudfront.example.com
