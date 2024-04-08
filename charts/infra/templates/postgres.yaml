@@ -1,8 +1,8 @@
-{{- if and .Values.postgres.create .Values.postgres.name }}
+{{- if and .Values.postgres.enabled .Values.postgres.create }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: PostgresInstance
 metadata:
-    name: {{ .Values.postgres.name }}
+    name: {{ default ( include "infra.name" . ) .Values.postgres.nameOverride }}
     labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:

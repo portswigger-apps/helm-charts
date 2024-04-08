@@ -1,11 +1,11 @@
-{{- if include "infra.createS3Bucket" . }}
+{{- if and .Values.s3Bucket.enabled .Values.s3Bucket.create }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: S3Bucket
 metadata:
-    name: {{ .Values.s3Bucket.name }}
-    labels:
+  name: {{ default ( include "infra.name" . ) .Values.s3Bucket.nameOverride }}
+  labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
-   irsaRoleName: {{ .Values.serviceAccount.name }}-irsarole
+   irsaRoleName: {{ default ( include "infra.name" . ) .Values.global.serviceAccount.name }}-irsarole
    lifecycleRules: {{ toYaml .Values.s3Bucket.lifecycleRules | nindent 4 }}
 {{- end }}

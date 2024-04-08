@@ -1,44 +1,87 @@
-# -- Postgres database configuration. Leave as null for no database.
+global:
+  ingress:
+    # global.ingress.host -- Ingress host used to configure cloudfront target
+    # @section -- global
+    host: ""
+
+  serviceAccount:
+    # global.serviceAccount.name -- ServiceAccount name to configure IRSA role and IAM Policies for: s3Bucket
+    # @section -- global
+    name: ""
+
 postgres:
-  # -- The database's name.
-  name: ""
-  # -- If a database should be created. Set to false if another app is creating the database.
+  # postgres.enabled -- Set to `true` to deploy a `PostgresInstance` resource
+  # @section -- postgres
+  enabled: false
+
+  # postgres.create -- Set to `false` to skip creation of the `PostgresInstance` if it has been created elsewhere
+  # @section -- postgres
   create: true
-  # -- The instance size. Options: micro, small, medium, large or xlarge.
+
+  # postgres.nameOverride -- Override the `PostgresInstance` name or use with `create: false` to map the secrets of an instance created elsewhere
+  # @section -- postgres
+  nameOverride: ""
+
+  # postgres.size -- Options: micro, small, medium, large or xlarge
+  # @default -- `micro`
+  # @section -- postgres
   size: null
-  # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
+
+  # postgres.version -- Options: 16.2, 15.6 or 14.11
+  # @default -- `"16.2"`
+  # @section -- postgres
   version: null
-  # -- If database should be a multi-az deployment
+
+  # postgres.multiAz -- (bool) Set to `true` to deploy the `PostgresInstance` across multiple availability zones
+  # @default -- `false`
+  # @section -- postgres
   multiAz: null
 
-# -- S3 Bucket configuration. Set to null for no s3 bucket.
 s3Bucket:
-  # -- Name of the bucket
-  name: ""
-  # -- If an s3 bucket should be created. Set to false if another app creates the s3 bucket.
+  # s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
+  # @section -- s3Bucket
+  enabled: false
+
+  # s3Bucket.create -- Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere
+  # @section -- s3Bucket
   create: true
-  # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
-  # The status field is required on the rule object.
+
+  # s3Bucket.nameOverride -- Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere
+  # @section -- s3Bucket
+  nameOverride: ""
+
+  # s3Bucket.lifecycleRules -- (list) Configure the `s3Bucket` storage [lifecycle rules](https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule)
+  # @default -- `[]`
+  # @section -- s3Bucket
   lifecycleRules:
     - expiration:
         - days: 0
       status: Disabled
 
-serviceAccount:
-  name: ""
-
-ingress:
-  # -- The host name the application will be accessible from
-  host: ""
-
 cloudfront:
+  # cloudfront.enabled -- Set to `true` to deploy an `CloudFrontSite` resource
+  # @section -- cloudfront
   enabled: false
-  # -- The hosted zone id of the domain name
+
+  # cloudfront.hostedZoneId -- The Route53 hosted zone ID to create the certificates and domain names for the `CloudFrontSite` resource
+  # @section -- cloudfront
   hostedZoneId: ""
-  # -- The domain name that the cloudfront distribution will be available on
+
+  # cloudfront.domainName -- The presentation domain name for the `CloudFrontSite` resource
+  # @section -- cloudfront
   domainName: ""
+
+  # cloudfront.targetOriginDomainName -- The target origin domain name that the `CloudFrontSite` resource fronts
+  # @default -- `.Values.global.ingress.host`
+  # @section -- cloudfront
+  targetOriginDomainName: ""
+
   geoRestriction:
-    # -- The restriction type for the cloudfront distribution. Options: none, whitelist, blacklist
-    restrictionType: none
-    # -- The countries that are allowed or disallowed from accessing the cloudfront distribution
-    locations: []
+    # cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
+    # @section -- cloudfront
+    restrictionType: allow
+
+    # cloudfront.geoRestriction.locations -- A list of ISO ALPHA-2 country codes to apply restrictions to
+    # @section -- cloudfront
+    locations:
+      - GB

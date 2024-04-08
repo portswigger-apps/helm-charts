@@ -1,56 +1,45 @@
-suite: IRSA role test
+suite: IrsaRole
 templates:
   - irsarole.yaml
 tests:
-  - it: "should not create irsa role if not using infrastructure that needs irsa role"
+  - it: should not create IrsaRole if not using infrastructure that needs irsa role
     asserts:
       - hasDocuments:
           count: 0
-  - it: "should not create irsa role if not using s3 bucket"
-    set:
-      serviceAccountName: "serviceAccountName"
-    asserts:
-      - hasDocuments:
-          count: 0
-  - it: "should fail if s3 bucket without service account name"
+  - it: should not create IrsaRole when enabling infrastructure but not creating it
     set:
       s3Bucket:
-        name: "s3-bucket"
-    asserts:
-      - failedTemplate:
-          errorMessage: "ERROR: A service account name must be specified when using S3 buckets"
-  - it: "should not create irsa role if using s3 bucket but not creating bucket"
-    set:
-      s3Bucket:
+        enabled: true
         create: false
-        name: "s3-bucket"
-      serviceAccount:
-        name: "serviceAccountName"
     asserts:
       - hasDocuments:
           count: 0
-  - it: "should create irsa role if using s3 bucket and set service account name"
+  - it: should create default named IrsaRole when enabling s3Bucket
     set:
       s3Bucket:
-        name: "s3-bucket"
-        create: true
-      serviceAccount:
-        name: "serviceAccountName"
+        enabled: true
     asserts:
       - hasDocuments:
           count: 1
-  - it: "irsa role name should be service account name"
-    set:
-      s3Bucket:
-        name: "s3-bucket"
-      serviceAccount:
-        name: "serviceAccountName"
-    asserts:
-      - isKind:
-          of: IrsaRole
       - equal:
           path: metadata.name
-          value: "serviceAccountName"
+          value: RELEASE-NAME
       - equal:
           path: spec.serviceAccountName
-          value: "serviceAccountName"
+          value: RELEASE-NAME
+  - it: should create default named IrsaRole with custom serviceAccountName when enabling s3Bucket serviceAccount name
+    set:
+      s3Bucket:
+        enabled: true
+      global:
+        serviceAccount:
+          name: my-cool-service-account
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: my-cool-service-account
+      - equal:
+          path: spec.serviceAccountName
+          value: my-cool-service-account
