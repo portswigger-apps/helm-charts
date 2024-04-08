@@ -150,6 +150,19 @@ infra:
           - days: 0
         status: Disabled
 
+  # -- Cloudfront configuration
+  cloudfront:
+    enabled: false
+    # -- The hosted zone id of the domain name
+    hostedZoneId: ""
+    # -- The domain name that the cloudfront distribution will be available on
+    domainName: ""
+    geoRestriction:
+      # -- The restriction type for the cloudfront distribution. Options: none, whitelist, blacklist
+      restrictionType: none
+      # -- The countries that are allowed or disallowed from accessing the cloudfront distribution
+      locations: []
+
   serviceAccount:
     enabled: true
     # -- (string) The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart.
