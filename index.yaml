@@ -909,6 +909,18 @@ entries:
   infra:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2024-04-09T13:09:37.176575605Z"
+    description: A Helm "monochart" for deploying common infrastructure
+    digest: 874b4d06b46db97b7cbfc646c6580c10caba7c84b1d84bf2ba7fe8f6b0fad89e
+    keywords:
+    - infra
+    name: infra
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.3/infra-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2024-04-09T09:27:28.768422277Z"
     description: A Helm "monochart" for deploying common infrastructure
     digest: a6273b8b11577bc6b26f8d38253c381ad1f082b5052ceb724f5c50101388f0fc
@@ -1029,9 +1041,33 @@ entries:
     version: 0.0.0-alpha-4
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2024-03-11T13:49:21.210963194Z"
+    description: A Helm "monochart" for deploying common infrastructure
+    digest: f08ac0fdcc84fdc0ac3a6444d50ca389b435ef10426960938699680ec40932d3
+    keywords:
+    - infra
+    name: infra
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-3/infra-0.0.0-alpha-3.tgz
+    version: 0.0.0-alpha-3
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2024-03-07T14:57:59.919714239Z"
     description: A Helm "monochart" for deploying common infrastructure
     digest: da45b37165dd9c22c291b2e24850e92dbcf58dff05174515a8ec44b24899ef46
+    keywords:
+    - infra
+    name: infra
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-3/infra-0.0.0-alpha-3.tgz
+    version: 0.0.0-alpha-3
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2024-03-11T13:42:59.446229044Z"
+    description: A Helm "monochart" for deploying common infrastructure
+    digest: f45feb87290138262375460998ee01dc69ba361e4a3d507fe18b66433adb6ed2
     keywords:
     - infra
     name: infra
@@ -1056,30 +1092,6 @@ entries:
     created: "2024-03-12T10:03:28.782598342Z"
     description: A Helm "monochart" for deploying common infrastructure
     digest: 36a29bff7fa6a10d6c628e7ac3afc6810592aca753740833f7532c7761b1deec
-    keywords:
-    - infra
-    name: infra
-    type: application
-    urls:
-    - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-3/infra-0.0.0-alpha-3.tgz
-    version: 0.0.0-alpha-3
-  - apiVersion: v2
-    appVersion: 0.0.0
-    created: "2024-03-11T13:42:59.446229044Z"
-    description: A Helm "monochart" for deploying common infrastructure
-    digest: f45feb87290138262375460998ee01dc69ba361e4a3d507fe18b66433adb6ed2
-    keywords:
-    - infra
-    name: infra
-    type: application
-    urls:
-    - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-3/infra-0.0.0-alpha-3.tgz
-    version: 0.0.0-alpha-3
-  - apiVersion: v2
-    appVersion: 0.0.0
-    created: "2024-03-11T13:49:21.210963194Z"
-    description: A Helm "monochart" for deploying common infrastructure
-    digest: f08ac0fdcc84fdc0ac3a6444d50ca389b435ef10426960938699680ec40932d3
     keywords:
     - infra
     name: infra
@@ -1255,4 +1267,4 @@ entries:
     urls:
     - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-1/infra-0.0.0-alpha-1.tgz
     version: 0.0.0-alpha-1
-generated: "2024-04-09T09:27:28.769095813Z"
+generated: "2024-04-09T13:09:37.176978523Z"
