@@ -85,3 +85,48 @@ cloudfront:
     # @section -- cloudfront
     locations:
       - GB
+
+  defaultCacheBehavior:
+    # cloudfront.defaultCacheBehavior.allowedMethods -- The HTTP methods that the `CloudFrontSite` allows
+    # @section -- cloudfront
+    allowedMethods:
+      - GET
+      - HEAD
+      - OPTIONS
+
+    # cloudfront.defaultCacheBehavior.cachedMethods -- The HTTP methods that the `CloudFrontSite` caches
+    # @section -- cloudfront
+    cachedMethods:
+      - GET
+      - HEAD
+
+    # cloudfront.defaultCacheBehavior.ttl -- The time-to-live for the `CloudFrontSite` cache
+    # @section -- cloudfront
+    ttl: 3600
+
+    cookies:
+      # cloudfront.defaultCacheBehavior.cookies.behavior -- Whether 'All', 'None' or 'Whitelist'ed cookies are included in the cache key.
+      # @section -- cloudfront
+      behavior: all
+
+      # cloudfront.defaultCacheBehavior.cookies.allowlistedNames -- A list of cookie names to include in the cache key.
+      # @section -- cloudfront
+      allowlistedNames: []
+
+    headers:
+      # cloudfront.defaultCacheBehavior.headers.behavior -- Whether 'All', 'None' or 'Whitelist'ed headers are included in the cache key.
+      # @section -- cloudfront
+      behavior: all
+
+      # cloudfront.defaultCacheBehavior.headers.allowlistedNames -- A list of header names to include in the cache key.
+      # @section -- cloudfront
+      allowlistedNames: []
+
+    queryStrings:
+      # cloudfront.defaultCacheBehavior.queryStrings.behavior -- Whether 'All', 'None' or 'Whitelist'ed query parameters are included in the cache key.
+      # @section -- cloudfront
+      behavior: none
+
+      # cloudfront.defaultCacheBehavior.queryStrings.allowlistedNames -- A list of query parameter names to include in the cache key.
+      # @section -- cloudfront
+      allowlistedNames: []
