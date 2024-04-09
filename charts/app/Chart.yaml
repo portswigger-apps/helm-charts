@@ -10,8 +10,7 @@ appVersion: 0.0.0
 
 keywords:
   - app
-
-dependencies:
-  - name: infra
-    version: 0.0.0-alpha-18
-    repository: file://../infra/
+# dependencies:
+#   - name: infra
+#     version: 0.0.0-alpha-18
+#     repository: file://../infra/

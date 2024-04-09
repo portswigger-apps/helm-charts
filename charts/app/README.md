@@ -10,12 +10,6 @@ helm repo add helm-charts https://portswigger-apps.github.io/helm-charts/
 helm install app helm-charts/app
 ```
 
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../infra/ | infra | 0.0.0-alpha-18 |
-
 ## Values
 
 | Key | Type | Default | Description |
