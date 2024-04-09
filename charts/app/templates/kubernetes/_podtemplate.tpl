@@ -7,8 +7,8 @@ Outputs a pod spec for use in different resources.
 {{- define "app.podTemplate" }}
     metadata:
       annotations:
-        checksum/secret-env: {{ $envSec := include (print $.Template.BasePath "/kubernetes/secret-env.yaml") . | fromYaml }}{{ $envSec.data | toYaml | sha256sum }}
-        checksum/secret-volume: {{ $envSec := include (print $.Template.BasePath "/kubernetes/secret-volume.yaml") . | fromYaml }}{{ $envSec.data | toYaml | sha256sum }}
+        checksum/secret-env: {{ (fromYaml (include (print $.Template.BasePath "/kubernetes/secret-env.yaml") . )).data | toYaml | sha256sum}}
+        checksum/secret-volume: {{ (fromYaml (include (print $.Template.BasePath "/kubernetes/secret-volume.yaml") .)).data | toYaml | sha256sum }}
       {{- with .Values.pod.annotations }}
       {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -97,54 +97,11 @@ Outputs a pod spec for use in different resources.
                 fieldPath: status.podIP
           - name: IMAGE_TAG
             value: {{ .Values.image.tag | quote }}
+          {{- include "app.s3BucketConnectionSecretEnv" . | nindent 10 }}
+          {{- include "app.postgresConnectionSecretEnv" . | nindent 10 }}
           {{- range $key, $value := .Values.env}}
           - name: {{ $key }}
             value: {{ $value | quote }}
-          {{- end }}
-          {{- if .Values.infra.s3Bucket.name }}
-          - name: S3_REGION
-            valueFrom:
-             secretKeyRef:
-               name: {{ .Values.infra.s3Bucket.name}}-s3bucket
-               key: region
-          - name: S3_ID
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.s3Bucket.name}}-s3bucket
-                key: id
-          - name: S3_ARN
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.s3Bucket.name}}-s3bucket
-                key: arn
-          {{- end }}
-          {{- if .Values.infra.postgres.name }}
-          - name: DATABASE_NAME
-            value: app
-          - name: DATABASE_HOST
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
-                key: host
-          - name: DATABASE_PORT
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
-                key: port
-          - name: DATABASE_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
-                key: username
-          - name: DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.infra.postgres.name}}-postgres
-                key: password
-          - name: DATABASE_URL
-            value: "postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)"
-          - name: JDBC_DATABASE_URL
-            value: "jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)"
           {{- end }}
         {{- if or .Values.envFrom .Values.secretEnv}}
         envFrom:

@@ -10,7 +10,7 @@ spec:
     kind: Deployment
     name: {{ template "app.name" . }}
   minReplicas: {{ .Values.deployment.replicas }}
-  maxReplicas: {{ max .Values.deployment.maxReplicas .Values.deployment.replicas | default .Values.deployment.replicas }}
+  maxReplicas: {{ max .Values.deployment.maxReplicas .Values.deployment.replicas }}
   metrics:
   - type: Resource
     resource:

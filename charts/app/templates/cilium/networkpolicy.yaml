@@ -7,7 +7,9 @@ spec:
   endpointSelector:
     matchLabels:
       {{- include "app.labelselector" . | nindent 6 }}
+
   ingress:
+
   - fromEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: {{ .Release.Namespace }}
@@ -18,7 +20,18 @@ spec:
       - protocol: {{ $portSpec.protocol }}
         port: {{ $portSpec.port | quote }}
       {{- end }}
-  {{- if .Values.infra.ingress.enabled }}
+
+
+  - fromEndpoints:
+    - matchLabels: {{ toYaml .Values.ciliumNetworkPolicy.observabilityAgentEndpointMatchLabels | nindent 8 }}
+    toPorts:
+    - ports:
+      {{- $portName := .Values.metricsEndpoint.port }}
+      {{- $portSpec := get .Values.ports $portName }}
+      - protocol: {{ $portSpec.protocol }}
+        port: {{ $portSpec.port | quote }}
+
+  {{- if .Values.global.ingress.enabled }}
   - fromEndpoints:
     - matchLabels: {{ toYaml .Values.ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | nindent 8 }}
     toPorts:
@@ -30,10 +43,13 @@ spec:
       {{- end }}
       {{- end }}
   {{- end }}
+
   {{- range .Values.ciliumNetworkPolicy.ingress }}
   - {{ toYaml . | nindent 4 | trim }}
   {{- end }}
+
   egress:
+
   - toEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: kube-system
@@ -45,6 +61,7 @@ spec:
       rules:
         dns:
         - matchPattern: "*"
+
   {{- range .Values.ciliumNetworkPolicy.egress }}
   - {{ toYaml . | nindent 4 | trim }}
   {{- end }}

@@ -1,3 +1,6 @@
+## CiliumNetworkPolicy examples
+
+```
 # Ingress Example
 - fromEndpoints:
   - matchLabels:
@@ -24,3 +27,4 @@
 # Egress Example
 - toFQDNs:
   - matchName: "my-remote-service.com"
+```

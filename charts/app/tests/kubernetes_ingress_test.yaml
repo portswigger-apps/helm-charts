@@ -1,24 +1,24 @@
 suite: Ingress configuration
 templates:
-      - kubernetes/ingress.yaml
+  - kubernetes/ingress.yaml
 tests:
   - it: should not create ingress if not enabled
     set:
-      infra:
+      global:
         ingress:
           enabled: false
     asserts:
       - hasDocuments:
-         count: 0
+          count: 0
 
   - it: should expose port if expose enabled
     set:
-      infra:
+      global:
         ingress:
           enabled: true
           host: my-host.com
           paths:
-          - "/my-path"
+            - "/my-path"
       ports:
         app-port:
           port: 1234
@@ -42,12 +42,12 @@ tests:
 
   - it: should not expose port if expose not enabled
     set:
-      infra:
+      global:
         ingress:
           enabled: true
           host: my-host.com
           paths:
-          - "/my-path"
+            - "/my-path"
       ports:
         app-port:
           port: 1234
@@ -61,12 +61,12 @@ tests:
 
   - it: fail if no host name
     set:
-      infra:
+      global:
         ingress:
           host: null
           enabled: true
           paths:
-          - "/my-path"
+            - "/my-path"
       ports:
         app-port:
           port: 1234
@@ -74,4 +74,4 @@ tests:
           expose: false
     asserts:
       - failedTemplate:
-          errorMessage: "ERROR: A unique hostname must be set if creating an ingress"
+          errorMessage: "A unique hostname must be set if creating an ingress"
