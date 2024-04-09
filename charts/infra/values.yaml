@@ -105,7 +105,7 @@ cloudfront:
     ttl: 3600
 
     cookies:
-      # cloudfront.defaultCacheBehavior.cookies.behavior -- Whether 'All', 'None' or 'Whitelist'ed cookies are included in the cache key.
+      # cloudfront.defaultCacheBehavior.cookies.behavior -- Whether 'All', 'AllExcept', 'None' or 'Whitelist'ed cookies are included in the cache key.
       # @section -- cloudfront
       behavior: all
 
@@ -114,16 +114,16 @@ cloudfront:
       allowlistedNames: []
 
     headers:
-      # cloudfront.defaultCacheBehavior.headers.behavior -- Whether 'All', 'None' or 'Whitelist'ed headers are included in the cache key.
+      # cloudfront.defaultCacheBehavior.headers.behavior -- Whether 'None' or 'Whitelist'ed headers are included in the cache key.
       # @section -- cloudfront
-      behavior: all
+      behavior: none
 
       # cloudfront.defaultCacheBehavior.headers.allowlistedNames -- A list of header names to include in the cache key.
       # @section -- cloudfront
       allowlistedNames: []
 
     queryStrings:
-      # cloudfront.defaultCacheBehavior.queryStrings.behavior -- Whether 'All', 'None' or 'Whitelist'ed query parameters are included in the cache key.
+      # cloudfront.defaultCacheBehavior.queryStrings.behavior -- Whether 'All', 'AllExcept', 'None' or 'Whitelist'ed  query parameters are included in the cache key.
       # @section -- cloudfront
       behavior: none
 

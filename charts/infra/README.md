@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -19,11 +19,11 @@ helm install infra helm-charts/infra
 | cloudfront.defaultCacheBehavior.allowedMethods | list | `["GET","HEAD","OPTIONS"]` | The HTTP methods that the `CloudFrontSite` allows |
 | cloudfront.defaultCacheBehavior.cachedMethods | list | `["GET","HEAD"]` | The HTTP methods that the `CloudFrontSite` caches |
 | cloudfront.defaultCacheBehavior.cookies.allowlistedNames | list | `[]` | A list of cookie names to include in the cache key. |
-| cloudfront.defaultCacheBehavior.cookies.behavior | string | `"all"` | Whether 'All', 'None' or 'Whitelist'ed cookies are included in the cache key. |
+| cloudfront.defaultCacheBehavior.cookies.behavior | string | `"all"` | Whether 'All', 'AllExcept', 'None' or 'Whitelist'ed cookies are included in the cache key. |
 | cloudfront.defaultCacheBehavior.headers.allowlistedNames | list | `[]` | A list of header names to include in the cache key. |
-| cloudfront.defaultCacheBehavior.headers.behavior | string | `"all"` | Whether 'All', 'None' or 'Whitelist'ed headers are included in the cache key. |
+| cloudfront.defaultCacheBehavior.headers.behavior | string | `"none"` | Whether 'None' or 'Whitelist'ed headers are included in the cache key. |
 | cloudfront.defaultCacheBehavior.queryStrings.allowlistedNames | list | `[]` | A list of query parameter names to include in the cache key. |
-| cloudfront.defaultCacheBehavior.queryStrings.behavior | string | `"none"` | Whether 'All', 'None' or 'Whitelist'ed query parameters are included in the cache key. |
+| cloudfront.defaultCacheBehavior.queryStrings.behavior | string | `"none"` | Whether 'All', 'AllExcept', 'None' or 'Whitelist'ed  query parameters are included in the cache key. |
 | cloudfront.defaultCacheBehavior.ttl | int | `3600` | The time-to-live for the `CloudFrontSite` cache |
 | cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | cloudfront.enabled | bool | `false` | Set to `true` to deploy an `CloudFrontSite` resource |
