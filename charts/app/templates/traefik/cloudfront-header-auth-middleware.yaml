@@ -8,8 +8,8 @@ spec:
     bouncer:
       headers:
         - header:
-            name: X-Cloudfront-Auth
-            values:
-              - {{ template "app.cloudfrontSecretValue" . }}
-            matchtype: one
+          name: X-Cloudfront-Auth
+          values:
+            - {{ template "app.cloudfrontSecretValue" . }}
+          matchtype: one
 {{- end }}
