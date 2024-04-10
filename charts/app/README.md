@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.2.3](https://img.shields.io/badge/Version-0.2.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.2.4](https://img.shields.io/badge/Version-0.2.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -9,6 +9,12 @@ A Helm "monochart" for deploying common application patterns
 helm repo add helm-charts https://portswigger-apps.github.io/helm-charts/
 helm install app helm-charts/app
 ```
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../infra/ | infra | 0.0.4 |
 
 ## Values
 

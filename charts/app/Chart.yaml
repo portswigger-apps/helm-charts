@@ -4,13 +4,13 @@ description: A Helm "monochart" for deploying common application patterns
 
 type: application
 
-version: 0.2.3
+version: 0.2.4
 
 appVersion: 0.0.0
 
 keywords:
   - app
-# dependencies:
-#   - name: infra
-#     version: 0.0.4
-#     repository: file://../infra/
+dependencies:
+   - name: infra
+     version: 0.0.4
+     repository: file://../infra/
