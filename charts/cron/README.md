@@ -14,7 +14,7 @@ helm install cron helm-charts/cron
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../infra/ | infra | 0.0.0-alpha-18 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.0.0-alpha-18 |
 
 ## Values
 

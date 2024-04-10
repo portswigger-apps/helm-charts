@@ -298,10 +298,9 @@ infra:
       locations:
         - GB
 
-    headerAuth:
-      # infra.cloudfront.headerAuth.enabled -- Set to 'true' to enable authentication between CloudFront and the origin
-      # @section -- infra
-      enabled: false
+    # infra.cloudfront.originHeaderAuth -- Set to 'true' to enable authentication between CloudFront and the origin
+    # @section -- infra
+    originHeaderAuth: true
 
 # extraDeploy -- Extra Kubernetes configuration
 extraDeploy: []

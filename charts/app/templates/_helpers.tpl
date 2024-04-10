@@ -138,10 +138,3 @@ s3Bucket connection secret env variables
   value: "https://s3.$(AWS_REGION).amazonaws.com/"
 {{- end -}}
 {{- end -}}
-
-{{/*
-Secret value used to authenticate CloudFront with the origin
-*/}}
-{{- define "app.cloudfrontSecretValue" -}}
-{{- .Values.global.ingress.host | sha256sum }}
-{{- end -}}
