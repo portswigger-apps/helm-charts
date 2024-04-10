@@ -236,6 +236,29 @@ tests:
           path: spec.template.metadata.annotations.checksum/secret-volume
           value: "b22c5dbc326b68af72972b3d026a37205fc3cf41f320708717d5a9ac310a13ec"
 
+  - it: should create Deployment with a custom serviceAccountName
+    template: kubernetes/deployment.yaml
+    set:
+      global:
+        serviceAccount:
+          enabled: false
+          name: already-created
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: already-created
+
+  - it: should create Deployment with the default serviceAccountName
+    template: kubernetes/deployment.yaml
+    set:
+      global:
+        serviceAccount:
+          enabled: false
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: default
+
   - it: should create Deployment with postgres database connection details
     set:
       infra:

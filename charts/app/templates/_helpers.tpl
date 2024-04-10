@@ -54,7 +54,7 @@ The name of the service account to use
 */}}
 {{- define "app.serviceAccountName" -}}
 {{- if .Values.global.serviceAccount.enabled }}
-{{- default (include "app.name" .) .Values.global.serviceAccount.name }}
+{{- default ( include "app.name" . ) .Values.global.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.global.serviceAccount.name }}
 {{- end }}
