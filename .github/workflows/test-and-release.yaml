@@ -38,16 +38,7 @@ jobs:
 
       - name: Test
         run: helm unittest --strict charts/*/
-        
-      - name: Release Infra Chart
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: helm/chart-releaser-action@v1.5.0
-        with:
-          charts_dir: charts/infra
-        env:
-          CR_SKIP_EXISTING: "true"
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          
+
       - name: Release
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: helm/chart-releaser-action@v1.5.0
