@@ -43,6 +43,33 @@ tests:
                   - port: "8080"
                     protocol: TCP
 
+  - it: should allow ingress from configured apps
+    set:
+      ciliumNetworkPolicy:
+        fromApps:
+          - name: admin-ui
+          - name: api-gateway
+            namespace: ingress
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            fromEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/app: RELEASE-NAME
+                  app.kubernetes.io/instance: app-RELEASE-NAME
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  app.kubernetes.io/app: admin-ui
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  app.kubernetes.io/app: api-gateway
+                  k8s:io.kubernetes.pod.namespace: ingress
+            toPorts:
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+
   - it: should allow ingress from the observability agent by default
     asserts:
       - contains:
@@ -89,6 +116,10 @@ tests:
           path: spec.ingress
           content:
             fromEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/app: RELEASE-NAME
+                  app.kubernetes.io/instance: app-RELEASE-NAME
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
               - matchLabels:
                   app.kubernetes.io/name: traefik
                   k8s:io.kubernetes.pod.namespace: ingress
@@ -142,3 +173,72 @@ tests:
               - ports:
                   - port: "443"
                     protocol: TCP
+
+  - it: should add egress rules for RDS when postgres is enabled
+    set:
+      infra:
+        postgres:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: RELEASE-NAME.*.*.rds.amazonaws.com
+            toPorts:
+              - ports:
+                  - port: "5432"
+                    protocol: TCP
+
+  - it: should add egress rules for S3 when s3Bucket is enabled
+    set:
+      infra:
+        s3Bucket:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: s3.*.amazonaws.com
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
+  - it: should add egress rules for externalHttpsServices
+    set:
+      ciliumNetworkPolicy:
+        externalHttpsServices:
+          - api.openai.com
+          - api.zoom.us
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: api.openai.com
+              - matchName: api.zoom.us
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
+  - it: should add egress rules for toApps
+    set:
+      ciliumNetworkPolicy:
+        toApps:
+          - name: prompt-router
+          - name: license-checker
+            namespace: web
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/app: prompt-router
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  app.kubernetes.io/app: license-checker
+                  k8s:io.kubernetes.pod.namespace: web

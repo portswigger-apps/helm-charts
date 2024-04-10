@@ -9,18 +9,22 @@ spec:
       {{- include "app.labelselector" . | nindent 6 }}
 
   ingress:
-
   - fromEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: {{ .Release.Namespace }}
         {{- include "app.labelselector" . | nindent 8 }}
+    {{- range .Values.ciliumNetworkPolicy.fromApps }}
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: {{ default $.Release.Namespace .namespace }}
+        app.kubernetes.io/app: {{ .name }}
+    {{- end }}
+    {{- if .Values.global.ingress.enabled }}
+    - matchLabels: {{ toYaml .Values.ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | nindent 8 }}
+    {{- end }}
     toPorts:
     - ports:
-      {{- range $portName, $portSpec := .Values.ports }}
-      - protocol: {{ $portSpec.protocol }}
-        port: {{ $portSpec.port | quote }}
-      {{- end }}
-
+      - protocol: {{ (get .Values.ports "app-port").protocol }}
+        port: {{ (get .Values.ports "app-port").port | quote }}
 
   - fromEndpoints:
     - matchLabels: {{ toYaml .Values.ciliumNetworkPolicy.observabilityAgentEndpointMatchLabels | nindent 8 }}
@@ -31,25 +35,11 @@ spec:
       - protocol: {{ $portSpec.protocol }}
         port: {{ $portSpec.port | quote }}
 
-  {{- if .Values.global.ingress.enabled }}
-  - fromEndpoints:
-    - matchLabels: {{ toYaml .Values.ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | nindent 8 }}
-    toPorts:
-    - ports:
-      {{- range $portName, $portSpec := .Values.ports }}
-      {{- if $portSpec.expose }}
-      - protocol: {{ $portSpec.protocol }}
-        port: {{ $portSpec.port | quote }}
-      {{- end }}
-      {{- end }}
-  {{- end }}
-
   {{- range .Values.ciliumNetworkPolicy.ingress }}
   - {{ toYaml . | nindent 4 | trim }}
   {{- end }}
 
   egress:
-
   - toEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: kube-system
@@ -61,6 +51,44 @@ spec:
       rules:
         dns:
         - matchPattern: "*"
+
+  {{- with .Values.ciliumNetworkPolicy.toApps }}
+  - toEndpoints:
+    {{- range . }}
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: {{ default $.Release.Namespace .namespace }}
+        app.kubernetes.io/app: {{ .name }}
+    {{- end }}
+  {{- end }}
+
+  {{- if .Values.infra.s3Bucket.enabled }}
+  - toFQDNs:
+    - matchPattern: s3.*.amazonaws.com
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  {{- end }}
+
+  {{- if .Values.infra.postgres.enabled }}
+  - toFQDNs:
+    - matchPattern: {{ default .Release.Name .Values.infra.postgres.nameOverride }}.*.*.rds.amazonaws.com
+    toPorts:
+    - ports:
+      - port: "5432"
+        protocol: TCP
+  {{- end }}
+
+  {{- with .Values.ciliumNetworkPolicy.externalHttpsServices }}
+  - toFQDNs:
+    {{- range . }}
+    - matchName: {{ . }}
+    {{- end }}
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  {{- end }}
 
   {{- range .Values.ciliumNetworkPolicy.egress }}
   - {{ toYaml . | nindent 4 | trim }}

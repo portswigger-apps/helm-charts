@@ -23,12 +23,32 @@ helm install app helm-charts/app
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | args | list | `[]` | Arguments to be passed to your application container |
+| deployment.maxReplicas | int | `.Values.deployment.replicas | The maximum number of replicas of the application |
+| deployment.replicas | int | `1` | The minimum number of replicas of the application |
 | env | object | `{}` | **Non-secret** environment variables to configure your application. Formatted as `ENV_VAR_NAME: env-var-value` |
 | envFrom | list | `[]` | Create environment variables from `Secret` or `ConfigMap` resources. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/ |
+| healthcheckEndpoint.path | string | `"/health"` | The path of the applications HTTP healthcheck endpoint |
+| healthcheckEndpoint.port | string | `"app-port"` | TThe name of the port that the healthcheck endpoint is listening on |
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The tag for the image that you want to deploy |
+| metricsEndpoint.path | string | `"/metrics"` | The path to a Prometheus compatible metrics endpoint |
+| metricsEndpoint.port | string | `"app-port"` | The name of the port that the metrics endpoint is listening on |
+| ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world |
+| ports.app-port.port | int | `8080` | The port the application is listening on |
+| ports.app-port.protocol | string | `"TCP"` | The protocol the application uses. This should alost always be TCP |
+| resources.cpu | string | `"100m"` | Requested CPU time for the pod |
+| resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
 | secretEnv | object | `{}` | Secret values that are mounted as environment variables. Formatted as `ENV_VAR_NAME: env-var-value` in a SOPS encrypted `secrets.yaml` file |
 | secretVolume | object | `{}` | Secret values that will be available as files in `/secrets` inside the container. Formatted as `file.name: <base64 encoded file>` |
+
+### network
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| ciliumNetworkPolicy.egress | list | `[]` | Cilium egress rules. See examples in values.yaml |
+| ciliumNetworkPolicy.ingress | list | `[]` | Cilium ingress rules. See examples in values.yaml |
+| service.annotations | object | `{}` | Add annotations to the Service resource |
+| service.enabled | bool | `true` | Set to true to expose your application within the Kubernetes cluster |
 
 ### global
 
@@ -70,32 +90,16 @@ helm install app helm-charts/app
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| ciliumNetworkPolicy | object | `{"egress":[],"enabled":true,"ingress":[],"ingressControllerEndpointMatchLabels":{"app.kubernetes.io/name":"traefik","k8s:io.kubernetes.pod.namespace":"ingress"},"observabilityAgentEndpointMatchLabels":{"app.kubernetes.io/name":"grafana-agent","k8s:io.kubernetes.pod.namespace":"observability"}}` | Configuration for the ciliumNetworkPolicy, allowing restriction of network access to pods. |
-| ciliumNetworkPolicy.egress | list | `[]` | Cilium egress rules. See examples below. |
-| ciliumNetworkPolicy.ingress | list | `[]` | Cilium ingress rules. See examples below. |
-| ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | object | `{"app.kubernetes.io/name":"traefik","k8s:io.kubernetes.pod.namespace":"ingress"}` | Label matchers for the ingress controller. Used so that the ingress controller can access your application. |
-| deployment.maxReplicas | int | `.Values.deployment.replicas` | The maximum number of replicas of the application |
-| deployment.replicas | int | `1` | The minimum number of replicas of the application |
+| ciliumNetworkPolicy.externalHttpsServices | list | `[]` |  |
+| ciliumNetworkPolicy.fromApps | list | `[]` |  |
+| ciliumNetworkPolicy.toApps | list | `[]` |  |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
-| healthcheckEndpoint | object | `{"path":"/health","port":"app-port"}` | Configuration for startup, liveness and readiness probes |
-| healthcheckEndpoint.path | string | `"/health"` | The path of the healthcheck endpoint |
-| healthcheckEndpoint.port | string | `"app-port"` | The port that the healthcheck endpoint is exposed on. Referenced by the port's name |
-| initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. |
-| metricsEndpoint.path | string | `"/metrics"` | The path of the metrics endpoint |
-| metricsEndpoint.port | string | `"app-port"` | The port that the metrics endpoint is exposed on. Referenced by the port's name |
+| initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
 | pod.additionalVolumeMounts | list | `[]` | Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml |
 | pod.additionalVolumes | list | `[]` | Configuration for additional volumes. See example in values.yaml |
-| podLogs.pipelineStages | list | `[]` | Grafana Loki pipeline stages configuration. See https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/ |
-| ports | object | `{"app-port":{"expose":true,"port":8080,"protocol":"TCP"}}` | Configuration for the ports that the application listens on. |
-| ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world. |
-| ports.app-port.port | int | `8080` | The port the application is running on |
-| ports.app-port.protocol | string | `"TCP"` | The protocol the application uses |
-| preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. |
-| preRollbackCommand | string[] | `[]` | Command to run before a rollback. |
-| resources.cpu | string | `"100m"` | Requested CPU time for the pod |
-| resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
-| service.annotations | object | `{}` |  |
-| service.enabled | bool | `true` | Adds a service to expose the application to the rest of the cluster |
+| podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/) |
+| preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. See examples in values.yaml |
+| preRollbackCommand | string[] | `[]` | Command to run before a rollback. See examples in values.yaml |
 
 ---
 
