@@ -1,11 +1,14 @@
 suite: IrsaRole
+
 templates:
   - irsarole.yaml
+
 tests:
   - it: should not create IrsaRole if not using infrastructure that needs irsa role
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should not create IrsaRole when enabling infrastructure but not creating it
     set:
       s3Bucket:
@@ -14,6 +17,7 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should create default named IrsaRole when enabling s3Bucket
     set:
       s3Bucket:
@@ -27,6 +31,7 @@ tests:
       - equal:
           path: spec.serviceAccountName
           value: RELEASE-NAME
+
   - it: should create default named IrsaRole with custom serviceAccountName when enabling s3Bucket serviceAccount name
     set:
       s3Bucket:

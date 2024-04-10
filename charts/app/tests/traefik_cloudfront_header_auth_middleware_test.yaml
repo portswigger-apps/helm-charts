@@ -1,6 +1,8 @@
-suite: CloudFront header auth middleware configuration
+suite: Middleware (cfauth)
+
 templates:
   - traefik/cloudfront-header-auth-middleware.yaml
+
 tests:
   - it: "should not create CloudFront header auth middleware when not enabled"
     set:
@@ -11,6 +13,7 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
   - it: "should create CloudFront header auth middleware when enabled"
     set:
       infra:

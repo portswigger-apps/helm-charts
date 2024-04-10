@@ -10,7 +10,6 @@ spec:
   targetOriginDomainName: {{ default .Values.cloudfront.targetOriginDomainName .Values.global.ingress.host }}
   domainName: {{ .Values.cloudfront.domainName }}
   hostedZoneId: {{ .Values.cloudfront.hostedZoneId }}
-  headerSecret: {{ template "app.cloudfrontSecretValue" . }}
   defaultCacheBehavior:
     allowedMethods: {{ .Values.cloudfront.defaultCacheBehavior.allowedMethods | toYaml | nindent 6 }}
     cachedMethods: {{ .Values.cloudfront.defaultCacheBehavior.cachedMethods | toYaml | nindent 6 }}

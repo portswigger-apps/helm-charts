@@ -1,11 +1,14 @@
 suite: PostgresInstance
+
 templates:
   - postgres.yaml
+
 tests:
   - it: should not create a PostgresInstance by default
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should not create database if create is false
     set:
       postgres:
@@ -14,6 +17,7 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should create a PostgresInstance if enabled
     set:
       postgres:
@@ -24,6 +28,7 @@ tests:
       - equal:
           path: metadata.name
           value: RELEASE-NAME
+
   - it: should create a PostgresInstance with custom fields
     set:
       postgres:

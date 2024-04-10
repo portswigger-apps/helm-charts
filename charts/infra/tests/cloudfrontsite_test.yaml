@@ -1,11 +1,14 @@
-suite: CloudfrontSite
+suite: CloudFrontSite
+
 templates:
   - cloudfrontsite.yaml
+
 tests:
   - it: should not create a CloudFrontSite by default
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should create a CloudFrontSite with configured fields
     set:
       global:
@@ -20,9 +23,9 @@ tests:
           locations: []
         defaultCacheBehavior:
           allowedMethods:
-              - GET
+            - GET
           cachedMethods:
-              - GET
+            - GET
           ttl: 3601
           cookies:
             behavior: allowlist
@@ -59,22 +62,19 @@ tests:
           path: spec.defaultCacheBehavior
           value:
             allowedMethods:
-            - GET
+              - GET
             cachedMethods:
-            - GET
+              - GET
             ttl: 3601
             cookies:
               behavior: allowlist
               allowlistedNames:
-                  - my-cookie
+                - my-cookie
             headers:
               behavior: allowlist
               allowlistedNames:
-                  - my-header
+                - my-header
             queryStrings:
               behavior: allowlist
               allowlistedNames:
-                  - my-query-string
-      - equal:
-          path: spec.headerSecret
-          value: a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947
+                - my-query-string

@@ -1,11 +1,14 @@
 suite: S3Bucket
+
 templates:
   - s3bucket.yaml
+
 tests:
   - it: should not create an S3Bucket by default
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should not create an S3Bucket if create is false
     set:
       s3Bucket:
@@ -14,6 +17,7 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should create an S3Bucket if enabled
     set:
       s3Bucket:
@@ -33,6 +37,7 @@ tests:
             - expiration:
                 - days: 0
               status: Disabled
+
   - it: should create an s3Bucket with configured values
     set:
       global:
