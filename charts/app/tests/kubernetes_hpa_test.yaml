@@ -1,35 +1,37 @@
-suite: Horizontal pod autoscaler configuration
+suite: HorizontalPodAutoscaler
+
 templates:
-      - kubernetes/hpa.yaml
+  - kubernetes/hpa.yaml
+
 tests:
-  - it: should set min and max replicas
+  - it: Should create a HorizontalPodAutoscaler with 1 replica by default
+    set:
+      template: kubernetes/hpa.yaml
+    asserts:
+      - isKind:
+          of: HorizontalPodAutoscaler
+      - equal:
+          path: spec.minReplicas
+          value: 1
+      - equal:
+          path: spec.maxReplicas
+          value: 1
+
+  - it: Should create a HorizontalPodAutoscaler with configured replicas
     set:
       deployment:
         replicas: 5
         maxReplicas: 10
     template: kubernetes/hpa.yaml
     asserts:
-      - isKind:
-          of: HorizontalPodAutoscaler
       - equal:
           path: spec.minReplicas
           value: 5
       - equal:
           path: spec.maxReplicas
           value: 10
-  - it: should set max replicas to min if not present
-    set:
-      deployment:
-        replicas: 5
-    template: kubernetes/hpa.yaml
-    asserts:
-      - equal:
-          path: spec.minReplicas
-          value: 5
-      - equal:
-          path: spec.maxReplicas
-          value: 5
-  - it: should set max replicas to larger of max or min
+
+  - it: Should create a HorizontalPodAutoscaler with configured replicas if maxReplicas < replicas
     set:
       deployment:
         replicas: 10

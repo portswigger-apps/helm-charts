@@ -1,20 +1,20 @@
-suite: Pod Disruption Budget configuration
+suite: PodDisruptionBudget
+
 templates:
-      - kubernetes/pdb.yaml
+  - kubernetes/pdb.yaml
+
 tests:
-  - it: should not create pdb if 1 replica
-    set:
-      deployment:
-        replicas: 1
+  - it: should not create a PodDisruptionBudget by default
     asserts:
       - hasDocuments:
-         count: 0
-  - it: should create pdb if more than 1 replicas
+          count: 0
+
+  - it: should create a PodDisruptionBudget if replicas is greater than 1
     set:
       deployment:
         replicas: 2
     asserts:
+      - hasDocuments:
+          count: 1
       - isKind:
           of: PodDisruptionBudget
-      - hasDocuments:
-         count: 1

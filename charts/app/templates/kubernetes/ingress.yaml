@@ -17,17 +17,14 @@ spec:
   - host: {{ required "A unique hostname must be set if creating an ingress" .Values.global.ingress.host }}
     http:
       paths:
-      {{- range $portName, $portSpec := .Values.ports }}
-      {{- if $portSpec.expose }}
-      {{- range $.Values.global.ingress.paths }}
+      {{- $_ := required "A port named \"app-port\" MUST exist and MUST be exposed" (ternary "exposed" "" (get .Values.ports "app-port").expose) }}
+      {{- range .Values.global.ingress.paths }}
       - path: {{ . }}
         pathType: Prefix
         backend:
           service:
             name: {{ include "app.name" $ }}
             port:
-              number: {{ $portSpec.port }}
-      {{- end }}
-      {{- end }}
+              number: {{ (get $.Values.ports "app-port").port }}
       {{- end }}
 {{- end -}}
