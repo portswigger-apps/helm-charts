@@ -14,6 +14,12 @@ tests:
       - isKind:
           of: Deployment
 
+  - it: should create Deployment without replicas configured
+    template: kubernetes/deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.replicas
+
   - it: should create Deployment with a securely configured app container by default
     template: kubernetes/deployment.yaml
     asserts:
