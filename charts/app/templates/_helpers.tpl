@@ -53,13 +53,91 @@ Usage:
 The name of the service account to use
 */}}
 {{- define "app.serviceAccountName" -}}
-{{- if .Values.infra.serviceAccount.enabled }}
-{{- default (include "app.name" .) .Values.infra.serviceAccount.name }}
+{{- if .Values.global.serviceAccount.enabled }}
+{{- default ( include "app.name" . ) .Values.global.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.infra.serviceAccount.name }}
+{{- default "default" .Values.global.serviceAccount.name }}
 {{- end }}
 {{- end -}}
 
+
+{{/*
+The name of the service account to use
+*/}}
+{{- define "app.serviceAccountAnnotations" -}}
+{{- range $k, $v := .Values.global.serviceAccount.annotations }}
+{{ $k }}: {{ $v }}
+{{- end }}
+{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled) }}
+eks.amazonaws.com/role-arn: arn:aws:iam::{{- .Values.global.aws.accountId }}:role/product-roles/{{ include "app.serviceAccountName" . }}-irsarole
+{{- end }}
+{{- end -}}
+
+
+{{/*
+Name of the secret that stores postgres connection details
+*/}}
+{{- define "app.postgresConnectionSecretName" -}}
+{{ default .Release.Name .Values.infra.postgres.nameOverride }}-postgres
+{{- end -}}
+
+{{/*
+Postgres connection secret env variables
+*/}}
+{{- define "app.postgresConnectionSecretEnv" -}}
+{{- if .Values.infra.postgres.enabled -}}
+- name: DATABASE_NAME
+  value: app
+- name: DATABASE_HOST
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.postgresConnectionSecretName" . }}
+      key: host
+- name: DATABASE_PORT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.postgresConnectionSecretName" . }}
+      key: port
+- name: DATABASE_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.postgresConnectionSecretName" . }}
+      key: username
+- name: DATABASE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.postgresConnectionSecretName" . }}
+      key: password
+- name: DATABASE_URL
+  value: "postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)"
+- name: JDBC_DATABASE_URL
+  value: "jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)"
+{{- end -}}
+{{- end -}}
+
+{{/*
+Name of the secret that stores s3Bucket connection details
+*/}}
+{{- define "app.s3BucketConnectionSecretName" -}}
+{{ default .Release.Name .Values.infra.s3Bucket.nameOverride }}-s3bucket
+{{- end -}}
+
+{{/*
+s3Bucket connection secret env variables
+*/}}
+{{- define "app.s3BucketConnectionSecretEnv" -}}
+{{- if .Values.infra.s3Bucket.enabled -}}
+- name: S3_BUCKET_NAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.s3BucketConnectionSecretName" . }}
+      key: id
+- name: S3_BUCKET_URL
+  value: "s3://$(S3_BUCKET_NAME)/"
+- name: S3_ENDPOINT_URL
+  value: "https://s3.$(AWS_REGION).amazonaws.com/"
+{{- end -}}
+{{- end -}}
 
 {{/*
 Secret value used to authenticate CloudFront with the origin

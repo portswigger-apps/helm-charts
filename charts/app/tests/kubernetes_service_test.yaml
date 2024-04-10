@@ -1,43 +1,82 @@
-suite: Service configuration
+suite: Service
+
 templates:
-      - kubernetes/service.yaml
+  - kubernetes/service.yaml
+
 tests:
-  - it: should not create service if not enabled
+  - it: should create a Service by default
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Service
+      - equal:
+          path: spec
+          value:
+            type: ClusterIP
+            ports:
+              - port: 8080
+                protocol: TCP
+                targetPort: app-port
+            selector:
+              app.kubernetes.io/app: RELEASE-NAME
+              app.kubernetes.io/instance: app-RELEASE-NAME
+
+  - it: should not create a Service if enabled is set to false
     set:
       service:
         enabled: false
     asserts:
       - hasDocuments:
-         count: 0
+          count: 0
 
-  - it: should create service if enabled and port exposed
+  - it: should create a Service with custom ports if expose is true
     set:
       service:
         enabled: true
       ports:
-        app-port:
+        admin-port:
           expose: true
-          port: 8080
+          port: 9000
           protocol: TCP
     asserts:
       - isKind:
           of: Service
       - equal:
-          path: spec.ports[?(@.targetPort == "app-port")]
+          path: spec
           value:
-            port: 8080
-            protocol: TCP
-            targetPort: app-port
+            type: ClusterIP
+            ports:
+              - port: 9000
+                protocol: TCP
+                targetPort: admin-port
+              - port: 8080
+                protocol: TCP
+                targetPort: app-port
+            selector:
+              app.kubernetes.io/app: RELEASE-NAME
+              app.kubernetes.io/instance: app-RELEASE-NAME
 
-  - it: should not add port if port not exposed
+  - it: should create a Service without custom ports if expose is false
     set:
       service:
         enabled: true
       ports:
-        app-port:
+        admin-port:
           expose: false
-          port: 8080
+          port: 9000
           protocol: TCP
     asserts:
-      - isEmpty:
-          path: spec.ports
+      - isKind:
+          of: Service
+      - equal:
+          path: spec
+          value:
+            type: ClusterIP
+            ports:
+              - port: 8080
+                protocol: TCP
+                targetPort: app-port
+            selector:
+              app.kubernetes.io/app: RELEASE-NAME
+              app.kubernetes.io/instance: app-RELEASE-NAME

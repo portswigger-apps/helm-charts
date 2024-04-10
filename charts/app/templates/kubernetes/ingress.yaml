@@ -1,11 +1,11 @@
-{{- if .Values.infra.ingress.enabled -}}
+{{- if .Values.global.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "app.name" . }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
-  {{- with .Values.infra.ingress.annotations }}
+  {{- with .Values.global.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
     {{- if $.Values.infra.cloudfront.headerAuth.enabled }}
@@ -13,28 +13,21 @@ metadata:
     {{- end }}
   {{- end }}
 spec:
-  {{- if .Values.infra.ingress.className }}
-  ingressClassName: {{ .Values.infra.ingress.className }}
+  {{- if .Values.global.ingress.className }}
+  ingressClassName: {{ .Values.global.ingress.className }}
   {{- end }}
   rules:
-  - {{ if .Values.infra.ingress.host -}}
-    host: {{ .Values.infra.ingress.host }}
-    {{- else }}
-    {{- fail "ERROR: A unique hostname must be set if creating an ingress" -}}
-    {{- end }}
+  - host: {{ required "A unique hostname must be set if creating an ingress" .Values.global.ingress.host }}
     http:
       paths:
-      {{- range $portName, $portSpec := .Values.ports }}
-      {{- if $portSpec.expose }}
-      {{- range $.Values.infra.ingress.paths }}
+      {{- $_ := required "A port named \"app-port\" MUST exist and MUST be exposed" (ternary "exposed" "" (get .Values.ports "app-port").expose) }}
+      {{- range .Values.global.ingress.paths }}
       - path: {{ . }}
         pathType: Prefix
         backend:
           service:
             name: {{ include "app.name" $ }}
             port:
-              number: {{ $portSpec.port }}
-      {{- end }}
-      {{- end }}
+              number: {{ (get $.Values.ports "app-port").port }}
       {{- end }}
 {{- end -}}

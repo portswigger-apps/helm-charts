@@ -1,122 +1,244 @@
-suite: Cilium network policy configuration
-templates:
-      - cilium/networkpolicy.yaml
-tests:
-  - it: should not create network policy if not enabled
-    set:
-      ciliumNetworkPolicy:
-        enabled: false
-    asserts:
-      - hasDocuments:
-          count: 0
+suite: CiliumNetworkPolicy
 
-  - it: should create network policy if enabled and set default values
-    set:
-      ciliumNetworkPolicy:
-        enabled: true
+templates:
+  - cilium/networkpolicy.yaml
+
+tests:
+  - it: should create a CiliumNetworkPolicy by default
     asserts:
       - hasDocuments:
           count: 1
       - isKind:
           of: CiliumNetworkPolicy
-      - equal:
-          path: spec.endpointSelector.matchLabels
-          value:
-            app.kubernetes.io/app: RELEASE-NAME
-            app.kubernetes.io/instance: app-RELEASE-NAME
+
+  - it: should allow egress to kube-dns ONLY by default
+    asserts:
       - equal:
           path: spec.egress
           value:
-          - toEndpoints:
-            - matchLabels:
-                k8s:io.kubernetes.pod.namespace: kube-system
-                k8s-app: kube-dns
+            - toEndpoints:
+                - matchLabels:
+                    k8s-app: kube-dns
+                    k8s:io.kubernetes.pod.namespace: kube-system
+              toPorts:
+                - ports:
+                    - port: "53"
+                      protocol: ANY
+                  rules:
+                    dns:
+                      - matchPattern: "*"
+
+  - it: should allow ingress from self by default
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            fromEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/app: RELEASE-NAME
+                  app.kubernetes.io/instance: app-RELEASE-NAME
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
             toPorts:
-            - ports:
-              - port: "53"
-                protocol: ANY
-              rules:
-                dns:
-                - matchPattern: "*"
-  - it: should add ports and match labels
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+
+  - it: should allow ingress from configured apps
     set:
       ciliumNetworkPolicy:
-        enabled: true
-        ingressControllerEndpointMatchLabels:
-          endpoint-match-label-1: value1
-          endpoint-match-label-2: value2
-      infra:
+        fromApps:
+          - name: admin-ui
+          - name: api-gateway
+            namespace: ingress
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            fromEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/app: RELEASE-NAME
+                  app.kubernetes.io/instance: app-RELEASE-NAME
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  app.kubernetes.io/app: admin-ui
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  app.kubernetes.io/app: api-gateway
+                  k8s:io.kubernetes.pod.namespace: ingress
+            toPorts:
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+
+  - it: should allow ingress from the observability agent by default
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            fromEndpoints:
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: observability
+                  app.kubernetes.io/name: grafana-agent
+            toPorts:
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+
+  - it: should allow ingress from the observability agent to configured metrics ports
+    set:
+      ports:
+        metrics-port:
+          port: 8081
+          protocol: TCP
+      metricsEndpoint:
+        path: /metrics
+        port: metrics-port
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            fromEndpoints:
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: observability
+                  app.kubernetes.io/name: grafana-agent
+            toPorts:
+              - ports:
+                  - port: "8081"
+                    protocol: TCP
+
+  - it: should allow access from ingress controller if configured
+    set:
+      global:
         ingress:
           enabled: true
-      ports:
-        app-port:
-          port: 8080
-          protocol: TCP
-          expose: true
     asserts:
-      - equal:
-          path: spec.ingress[0].toPorts
-          value:
-            - ports:
-              - port: "8080"
-                protocol: TCP
-      - equal:
-          path: spec.ingress[1].toPorts
-          value:
-            - ports:
-              - port: "8080"
-                protocol: TCP
-      - equal:
-          path: spec.ingress[1].fromEndpoints
-          value:
+      - contains:
+          path: spec.ingress
+          content:
+            fromEndpoints:
               - matchLabels:
-                  app.kubernetes.io/name: nginx
-                  endpoint-match-label-1: value1
-                  endpoint-match-label-2: value2
+                  app.kubernetes.io/app: RELEASE-NAME
+                  app.kubernetes.io/instance: app-RELEASE-NAME
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  app.kubernetes.io/name: traefik
                   k8s:io.kubernetes.pod.namespace: ingress
+            toPorts:
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+
   - it: should add custom ingress rules
     set:
       ciliumNetworkPolicy:
-        enabled: true
         ingress:
           - fromEndpoints:
-            - matchLabels:
-                app.kubernetes.io/name: frontend
-            toPorts:
-            - ports:
-              - port: "8080"
-                protocol: TCP
-      ports:
-        app-port:
-          port: 8080
-          protocol: TCP
-          expose: true
-    asserts:
-      - equal:
-          path: spec.ingress[1]
-          value:
-            fromEndpoints:
-            - matchLabels:
-                app.kubernetes.io/name: frontend
+              - matchLabels:
+                  app.kubernetes.io/name: frontend
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
             toPorts:
               - ports:
-                - port: "8080"
-                  protocol: TCP
+                  - port: "8080"
+                    protocol: TCP
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            fromEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: frontend
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+            toPorts:
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+
   - it: should add custom egress rules
     set:
       ciliumNetworkPolicy:
-        enabled: true
         egress:
           - toFQDNs:
-            - matchName: "my-remote-service.com"
-      ports:
-        app-port:
-          port: 8080
-          protocol: TCP
-          expose: true
+              - matchName: "my-remote-service.com"
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
     asserts:
-      - equal:
-          path: spec.egress[1]
-          value:
+      - contains:
+          path: spec.egress
+          content:
             toFQDNs:
-            - matchName: "my-remote-service.com"
+              - matchName: "my-remote-service.com"
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
+  - it: should add egress rules for RDS when postgres is enabled
+    set:
+      infra:
+        postgres:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: RELEASE-NAME.*.*.rds.amazonaws.com
+            toPorts:
+              - ports:
+                  - port: "5432"
+                    protocol: TCP
+
+  - it: should add egress rules for S3 when s3Bucket is enabled
+    set:
+      infra:
+        s3Bucket:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: s3.*.amazonaws.com
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
+  - it: should add egress rules for externalHttpsServices
+    set:
+      ciliumNetworkPolicy:
+        externalHttpsServices:
+          - api.openai.com
+          - api.zoom.us
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: api.openai.com
+              - matchName: api.zoom.us
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
+  - it: should add egress rules for toApps
+    set:
+      ciliumNetworkPolicy:
+        toApps:
+          - name: prompt-router
+          - name: license-checker
+            namespace: web
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/app: prompt-router
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  app.kubernetes.io/app: license-checker
+                  k8s:io.kubernetes.pod.namespace: web

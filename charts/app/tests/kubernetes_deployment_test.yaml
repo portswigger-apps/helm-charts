@@ -1,60 +1,28 @@
-suite: Deployment configuration
+suite: Deployment
+
 templates:
-      - kubernetes/deployment.yaml
-      # secret templates for checksums
-      - kubernetes/secret-env.yaml
-      - kubernetes/secret-volume.yaml
-      # included to test shared templating
-      - helm/pre-deploy-hook.yaml
+  - kubernetes/deployment.yaml
+  - kubernetes/secret-env.yaml
+  - kubernetes/secret-volume.yaml
+
 tests:
   - it: should create Deployment with default values
-    set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
-      pre-deploy-command: ["sleep", "50"]
     template: kubernetes/deployment.yaml
     asserts:
-      # Deployment assertions
+      - hasDocuments:
+          count: 1
       - isKind:
           of: Deployment
-      - equal:
-          path: metadata.name
-          value: RELEASE-NAME
-      - isNull:
-          path: metadata.namespace
-      - isNull:
+
+  - it: should create Deployment without replicas configured
+    template: kubernetes/deployment.yaml
+    asserts:
+      - notExists:
           path: spec.replicas
-      - equal:
-          path: spec.strategy
-          value:
-            rollingUpdate:
-              maxSurge: 50%
-              maxUnavailable: 25%
-            type: RollingUpdate
 
-        # Pod value assertions
-      - exists:
-          path: spec.template.metadata.annotations.checksum/secret-env
-      - exists:
-          path: spec.template.metadata.annotations.checksum/secret-volume
-      - exists:
-          path: spec.template.metadata.labels["helm.sh/chart"]
-      - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/app"]
-          value: "RELEASE-NAME"
-      - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/instance"]
-          value: "app-RELEASE-NAME"
-      - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/instance"]
-          value: "app-RELEASE-NAME"
-
-
-      # Container value assertions
-      - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].image
-          value: "public.ecr.aws/nginx/nginx:alpine"
+  - it: should create Deployment with a securely configured app container by default
+    template: kubernetes/deployment.yaml
+    asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].securityContext
           value:
@@ -66,106 +34,156 @@ tests:
             runAsNonRoot: true
             runAsUser: 1000
 
-      # Environment assertions
-      - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          value:
-            - name: NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: IMAGE_TAG
-              value: alpine
-      - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].volumeMounts
-          value:
-           - mountPath: /tmp
-             name: tmp-volume
-
-  - it: should set probes correct
-    set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
-      healthcheckEndpoint:
-        path: /my-health-check-endpoint
-        port: my-port
+  - it: should create Deployment with a /tmp volume by default
     template: kubernetes/deployment.yaml
     asserts:
       - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].startupProbe.httpGet
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].volumeMounts
           value:
-            path: /my-health-check-endpoint
-            port: my-port
-            scheme: HTTP
+            - mountPath: /tmp
+              name: tmp-volume
       - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe.httpGet
+          path: spec.template.spec.volumes
           value:
-            path: /my-health-check-endpoint
-            port: my-port
-            scheme: HTTP
-      - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.httpGet
-          value:
-            path: /my-health-check-endpoint
-            port: my-port
-            scheme: HTTP
+            - emptyDir: {}
+              name: tmp-volume
 
-  - it: should set ports correct
+  - it: should create Deployment with startup, liveness and readiness probes by default
+    template: kubernetes/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].startupProbe
+          value:
+            httpGet:
+              path: /health
+              port: app-port
+              scheme: HTTP
+            failureThreshold: 60
+            periodSeconds: 5
+            timeoutSeconds: 2
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe
+          value:
+            httpGet:
+              path: /health
+              port: app-port
+              scheme: HTTP
+            failureThreshold: 1
+            successThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe
+          value:
+            httpGet:
+              path: /health
+              port: app-port
+              scheme: HTTP
+            failureThreshold: 3
+            successThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
+
+  - it: should create Deployment with custom startup, liveness and readiness probes
+    template: kubernetes/deployment.yaml
     set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
-      ports:
-        app-port:
-          port: 1234
-          protocol: TCP
+      healthcheckEndpoint:
+        path: /-/health
+        port: metrics-port
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].startupProbe
+          value:
+            httpGet:
+              path: /-/health
+              port: metrics-port
+              scheme: HTTP
+            failureThreshold: 60
+            periodSeconds: 5
+            timeoutSeconds: 2
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe
+          value:
+            httpGet:
+              path: /-/health
+              port: metrics-port
+              scheme: HTTP
+            failureThreshold: 1
+            successThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe
+          value:
+            httpGet:
+              path: /-/health
+              port: metrics-port
+              scheme: HTTP
+            failureThreshold: 3
+            successThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
+
+  - it: should create Deployment with default ports configured
     template: kubernetes/deployment.yaml
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].ports
           value:
             - name: app-port
-              containerPort: 1234
+              containerPort: 8080
               protocol: TCP
 
-  - it: should set requests and limits correct
+  - it: should create Deployment with custom ports configured
+    template: kubernetes/deployment.yaml
     set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
-      resources:
-        memory: 89Mi
-        cpu: 452m
+      ports:
+        metrics-port:
+          port: 9090
+          protocol: TCP
+
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].ports
+          value:
+            - name: app-port
+              containerPort: 8080
+              protocol: TCP
+            - name: metrics-port
+              containerPort: 9090
+              protocol: TCP
+
+  - it: should create Deployment with requests and limits set by default
     template: kubernetes/deployment.yaml
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].resources.requests
           value:
-            memory: 89Mi
-            cpu: 452m
+            cpu: 100m
+            memory: 64Mi
       - equal:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].resources.limits
           value:
-            memory: 89Mi
+            memory: 64Mi
 
-  - it: should have correct checksum for no secrets
+  - it: should create Deployment with custom requests and limits set
+    template: kubernetes/deployment.yaml
     set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
+      resources:
+        cpu: 2
+        memory: 4Gi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].resources.requests
+          value:
+            cpu: "2"
+            memory: 4Gi
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].resources.limits
+          value:
+            memory: 4Gi
+
+  - it: should create Deployment with secret checksums for no secrets
     template: kubernetes/deployment.yaml
     asserts:
       - equal:
@@ -175,13 +193,10 @@ tests:
           path: spec.template.metadata.annotations.checksum/secret-volume
           value: "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
 
-  - it: should add environment secrets
+  - it: should create Deployment with secret checksums for environment secrets
     set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
       secretEnv:
-        my-key: my-value
+        ENV_VAR: hello
     template: kubernetes/deployment.yaml
     asserts:
       - equal:
@@ -191,15 +206,15 @@ tests:
                 name: RELEASE-NAME-env
       - equal:
           path: spec.template.metadata.annotations.checksum/secret-env
-          value: "4ea0fc2d4d2c6ba772445da8ad357f2719453fa0f6462c2feb73476b7aafc2b7"
+          value: "b791b878161d295e24357159b7d26ce7da282343b491ffb8e5ae89a405de3bf8"
+      - equal:
+          path: spec.template.metadata.annotations.checksum/secret-volume
+          value: "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
 
-  - it: should add volume secrets
+  - it: should create Deployment with secret checksums for file-based secrets
     set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
       secretVolume:
-        my-key: my-value
+        secretfile.txt: c2VjcmV0IGZpbGUgY29udGVudHMK
     template: kubernetes/deployment.yaml
     asserts:
       - equal:
@@ -215,98 +230,112 @@ tests:
             secret:
               secretName: RELEASE-NAME-volume
       - equal:
+          path: spec.template.metadata.annotations.checksum/secret-env
+          value: "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+      - equal:
           path: spec.template.metadata.annotations.checksum/secret-volume
-          value: "b93e8ed7da9e1df7cade422ad14c91a0f5555449296010ff93504bb2024f5d79"
+          value: "b22c5dbc326b68af72972b3d026a37205fc3cf41f320708717d5a9ac310a13ec"
 
-  - it: should add database credentials environment variables
+  - it: should create Deployment with a custom serviceAccountName
+    template: kubernetes/deployment.yaml
     set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
+      global:
+        serviceAccount:
+          enabled: false
+          name: already-created
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: already-created
+
+  - it: should create Deployment with the default serviceAccountName
+    template: kubernetes/deployment.yaml
+    set:
+      global:
+        serviceAccount:
+          enabled: false
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: default
+
+  - it: should create Deployment with postgres database connection details
+    set:
       infra:
         postgres:
-          name: "database-name"
+          enabled: true
     template: kubernetes/deployment.yaml
     asserts:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_NAME"
-              value: app
+            name: "DATABASE_NAME"
+            value: app
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_HOST"
-              valueFrom:
-                secretKeyRef:
-                  key: host
-                  name: database-name-postgres
+            name: "DATABASE_HOST"
+            valueFrom:
+              secretKeyRef:
+                key: host
+                name: RELEASE-NAME-postgres
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_PORT"
-              valueFrom:
-                secretKeyRef:
-                  key: port
-                  name: database-name-postgres
+            name: "DATABASE_PORT"
+            valueFrom:
+              secretKeyRef:
+                key: port
+                name: RELEASE-NAME-postgres
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_USERNAME"
-              valueFrom:
-                secretKeyRef:
-                  key: username
-                  name: database-name-postgres
+            name: "DATABASE_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: RELEASE-NAME-postgres
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_PASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: database-name-postgres
+            name: "DATABASE_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: RELEASE-NAME-postgres
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: DATABASE_URL
-              value: postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
+            name: DATABASE_URL
+            value: postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: JDBC_DATABASE_URL
-              value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)
+            name: JDBC_DATABASE_URL
+            value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)
 
-  - it: should add s3 bucket environment variables
+  - it: should create Deployment with s3Bucket connection details
     set:
-      deployment:
-        enabled: true
-        kind: "Deployment"
       infra:
         s3Bucket:
-          name: "s3-bucket-name"
+          enabled: true
     template: kubernetes/deployment.yaml
     asserts:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: "S3_REGION"
+            name: S3_BUCKET_NAME
             valueFrom:
               secretKeyRef:
-                name: s3-bucket-name-s3bucket
-                key: region
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: "S3_ID"
-            valueFrom:
-              secretKeyRef:
-                name: s3-bucket-name-s3bucket
+                name: RELEASE-NAME-s3bucket
                 key: id
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: "S3_ARN"
-            valueFrom:
-              secretKeyRef:
-                name: s3-bucket-name-s3bucket
-                key: arn
+            name: S3_BUCKET_URL
+            value: s3://$(S3_BUCKET_NAME)/
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: S3_ENDPOINT_URL
+            value: https://s3.$(AWS_REGION).amazonaws.com/

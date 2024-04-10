@@ -1,4 +1,5 @@
 {{- if .Values.preDeployCommand }}
+{{- $ctx := merge (dict "JobCommand" .Values.preDeployCommand) $ }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -10,7 +11,5 @@ metadata:
     "helm.sh/hook-weight": "0"
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
-  {{ $ctx := dict "command" .Values.preDeployCommand }}
-  {{ $ctx = merge $ctx . }}
   template: {{ template "app.hookPodTemplate" $ctx }}
 {{- end }}

@@ -1,35 +1,43 @@
-suite: PodMonitor configuration
+suite: PodMonitor
+
 templates:
   - grafana-agent-operator/podmonitor.yaml
+
 tests:
-  - it: should create PodMonitor with correct selectors when enabled
-    release:
-      name: testing
-      namespace: testns
-    set:
-      metricsEndpoint.path: /metrics
-      metricsEndpoint.port: metrics-port
+  - it: should create a PodMonitor by default
     asserts:
+      - hasDocuments:
+          count: 1
       - isKind:
           of: PodMonitor
       - equal:
-          path: metadata.name
-          value: testing
-      - equal:
-          path: spec.jobLabel
-          value: testns-testing
-      - equal:
-          path: spec.namespaceSelector.matchNames
+          path: spec
           value:
-            - testns
-      - equal:
+            jobLabel: NAMESPACE-RELEASE-NAME
+            namespaceSelector:
+              matchNames:
+                - NAMESPACE
+            podMetricsEndpoints:
+              - interval: 15s
+                path: /metrics
+                port: app-port
+            podTargetLabels:
+              - app.kubernetes.io/app
+              - app.kubernetes.io/version
+            selector:
+              matchLabels:
+                app.kubernetes.io/app: RELEASE-NAME
+                app.kubernetes.io/instance: app-RELEASE-NAME
+
+  - it: should create a PodMonitor on a configured endpoint
+    set:
+      metricsEndpoint:
+        path: /health/metrics
+        port: metrics-port
+    asserts:
+      - contains:
           path: spec.podMetricsEndpoints
-          value:
-          - interval: 15s
-            path: /metrics
+          content:
+            interval: 15s
+            path: /health/metrics
             port: metrics-port
-      - equal:
-          path: spec.selector.matchLabels
-          value:
-            app.kubernetes.io/app: testing
-            app.kubernetes.io/instance: app-testing

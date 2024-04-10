@@ -1,201 +1,144 @@
-suite: Pre Deploy Hook configuration
+suite: PreDeployHook
+
 templates:
   - helm/pre-deploy-hook.yaml
-    # secret templates for checksums
-  - kubernetes/secret-env.yaml
-  - kubernetes/secret-volume.yaml
-    # included for shared templating
-  - kubernetes/deployment.yaml
+
 tests:
-  - it: should not create job without command set
-    template: helm/pre-deploy-hook.yaml
-    set:
-      preDeployCommand: null
+  - it: should not create a PreDeployHook by default
     asserts:
       - hasDocuments:
           count: 0
 
-  - it: should add secrets
-    template: helm/pre-deploy-hook.yaml
+  - it: should create a PreDeployHook with a given command
     set:
-      preDeployCommand:
-      - python3
-      - manage.py
-      - migrate
-      secretEnv:
-        KEY: value
-      secretVolume:
-        file: aGVsbG8K
+      preDeployCommand: ["python3", "manage.py", "migrate"]
     asserts:
+      - hasDocuments:
+          count: 1
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0]
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].command
           value:
-            secretRef:
-              name: RELEASE-NAME-env
-      - equal:
-          path: spec.template.spec.containers[0].volumeMounts[1]
-          value:
-            mountPath: /secrets
-            name: RELEASE-NAME-volume
-            readOnly: true
-      - equal:
-          path: spec.template.spec.volumes[1]
-          value:
-            name: RELEASE-NAME-volume
-            secret:
-              secretName: RELEASE-NAME-volume
+            - python3
+            - manage.py
+            - migrate
 
-  - it: should not have health check and ports
-    template: helm/pre-deploy-hook.yaml
+  - it: should create a PreDeployHook with database environment variables
     set:
-      preDeployCommand:
-      - python3
-      - manage.py
-      - migrate
-      healthcheckEndpoint:
-        path: /health
-        port: app-port
-      ports:
-        app-port:
-          port: 8080
-          protocol: TCP
-          expose: true
-    asserts:
-      - notExists:
-          path: spec.template.spec.containers[0].ports
-      - notExists:
-          path: spec.template.spec.containers[0].livenessProbe
-
-  - it: should add command to pod
-    template: helm/pre-deploy-hook.yaml
-    set:
-      preDeployCommand:
-        - python3
-        - manage.py
-        - migrate
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].command
-          value:
-          - "python3"
-          - "manage.py"
-          - "migrate"
-
-  - it: should not add args to pod
-    template: helm/pre-deploy-hook.yaml
-    set:
-      preDeployCommand:
-        - python3
-        - manage.py
-        - migrate
-      args:
-        - my-arg
-    asserts:
-      - notExists:
-          path: spec.template.spec.containers[0].args
-
-  - it: should add database environment variables
-    template: helm/pre-deploy-hook.yaml
-    set:
-      image:
-        name: image-name
-        tag: tag
+      preDeployCommand: ["python3"]
       infra:
         postgres:
-          name: database-name
-      preDeployCommand:
-      - python3
-      - manage.py
-      - migrate
+          enabled: true
     asserts:
-      - isKind:
-          of: Job
-      - equal:
-          path: spec.template.spec.containers[0].image
-          value: "image-name:tag"
+      - hasDocuments:
+          count: 1
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_NAME"
-              value: app
+            name: "DATABASE_NAME"
+            value: app
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_HOST"
-              valueFrom:
-                secretKeyRef:
-                  key: host
-                  name: database-name-postgres
+            name: "DATABASE_HOST"
+            valueFrom:
+              secretKeyRef:
+                key: host
+                name: RELEASE-NAME-postgres
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_PORT"
-              valueFrom:
-                secretKeyRef:
-                  key: port
-                  name: database-name-postgres
+            name: "DATABASE_PORT"
+            valueFrom:
+              secretKeyRef:
+                key: port
+                name: RELEASE-NAME-postgres
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_USERNAME"
-              valueFrom:
-                secretKeyRef:
-                  key: username
-                  name: database-name-postgres
+            name: "DATABASE_USERNAME"
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: RELEASE-NAME-postgres
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: "DATABASE_PASSWORD"
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: database-name-postgres
+            name: "DATABASE_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: RELEASE-NAME-postgres
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: DATABASE_URL
-              value: postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
+            name: DATABASE_URL
+            value: postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-              name: JDBC_DATABASE_URL
-              value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)
+            name: JDBC_DATABASE_URL
+            value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)
 
-  - it: should add s3 bucket environment variables
+  - it: should create a PreDeployHook with database environment variables when a postgres nameOverride is set
     set:
-      image:
-        name: image-name
-        tag: tag
+      preDeployCommand: ["python3"]
+      infra:
+        postgres:
+          enabled: true
+          create: false
+          nameOverride: database-name
+    asserts:
+      - hasDocuments:
+          count: 1
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "DATABASE_HOST"
+            valueFrom:
+              secretKeyRef:
+                key: host
+                name: database-name-postgres
+
+  - it: should create a PreDeployHook with s3Bucket environment variables
+    set:
       infra:
         s3Bucket:
-          name: "s3-bucket-name"
-      preDeployCommand:
-        - python3
-        - manage.py
-        - migrate
-    template: helm/pre-deploy-hook.yaml
+          enabled: true
+      preDeployCommand: ["python3"]
     asserts:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: "S3_REGION"
+            name: S3_BUCKET_NAME
             valueFrom:
               secretKeyRef:
-                name: s3-bucket-name-s3bucket
-                key: region
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: "S3_ID"
-            valueFrom:
-              secretKeyRef:
-                name: s3-bucket-name-s3bucket
+                name: RELEASE-NAME-s3bucket
                 key: id
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: "S3_ARN"
+            name: "S3_BUCKET_URL"
+            value: s3://$(S3_BUCKET_NAME)/
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "S3_ENDPOINT_URL"
+            value: "https://s3.$(AWS_REGION).amazonaws.com/"
+
+  - it: should create a PreDeployHook with s3Bucket environment variables if nameOverride set
+    set:
+      infra:
+        s3Bucket:
+          enabled: true
+          create: false
+          nameOverride: cool-bucket
+      preDeployCommand: ["python3"]
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: S3_BUCKET_NAME
             valueFrom:
               secretKeyRef:
-                name: s3-bucket-name-s3bucket
-                key: arn
+                name: cool-bucket-s3bucket
+                key: id

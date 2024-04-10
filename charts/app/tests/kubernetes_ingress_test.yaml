@@ -1,77 +1,60 @@
-suite: Ingress configuration
+suite: Ingress
+
 templates:
-      - kubernetes/ingress.yaml
+  - kubernetes/ingress.yaml
+
 tests:
-  - it: should not create ingress if not enabled
-    set:
-      infra:
-        ingress:
-          enabled: false
+  - it: should not create an Ingress by default
     asserts:
       - hasDocuments:
-         count: 0
+          count: 0
 
-  - it: should expose port if expose enabled
+  - it: should create an Ingress if configured
     set:
-      infra:
+      global:
         ingress:
           enabled: true
           host: my-host.com
           paths:
-          - "/my-path"
-      ports:
-        app-port:
-          port: 1234
-          protocol: TCP
-          expose: true
+            - "/my-path"
     asserts:
+      - hasDocuments:
+          count: 1
       - isKind:
           of: Ingress
-      - exists:
-          path: spec.rules[?(@.host == "my-host.com")]
       - equal:
-          path: spec.rules[?(@.host == "my-host.com")].http.paths[?(@.path == "/my-path")]
+          path: spec
           value:
-            path: "/my-path"
-            pathType: Prefix
-            backend:
-              service:
-                name: RELEASE-NAME
-                port:
-                  number: 1234
+            rules:
+              - host: my-host.com
+                http:
+                  paths:
+                    - backend:
+                        service:
+                          name: RELEASE-NAME
+                          port:
+                            number: 8080
+                      path: /my-path
+                      pathType: Prefix
 
-  - it: should not expose port if expose not enabled
+  - it: should fail to create an Ingress if configured without a hostname
     set:
-      infra:
+      global:
+        ingress:
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "A unique hostname must be set if creating an ingress"
+
+  - it: should fail to create an Ingress if configured and app-port is not exposed
+    set:
+      global:
         ingress:
           enabled: true
           host: my-host.com
-          paths:
-          - "/my-path"
       ports:
         app-port:
-          port: 1234
-          protocol: TCP
-          expose: false
-    asserts:
-      - exists:
-          path: spec.rules[?(@.host == "my-host.com")]
-      - isEmpty:
-          path: spec.rules[?(@.host == "my-host.com")].http.paths
-
-  - it: fail if no host name
-    set:
-      infra:
-        ingress:
-          host: null
-          enabled: true
-          paths:
-          - "/my-path"
-      ports:
-        app-port:
-          port: 1234
-          protocol: TCP
           expose: false
     asserts:
       - failedTemplate:
-          errorMessage: "ERROR: A unique hostname must be set if creating an ingress"
+          errorMessage: A port named "app-port" MUST exist and MUST be exposed

@@ -1,23 +1,39 @@
-suite: PodLogs configuration
+suite: PodLogs
+
 templates:
   - grafana-agent-operator/podlogs.yaml
+
 tests:
-  - it: should create PodLogs with correct selectors when enabled
-    release:
-      name: testing
-      namespace: testns
+  - it: should create a PodLogs resource by default
     asserts:
+      - hasDocuments:
+          count: 1
       - isKind:
           of: PodLogs
       - equal:
-          path: metadata.name
-          value: testing
-      - equal:
-          path: spec.namespaceSelector.matchNames
+          path: spec
           value:
-            - testns
-      - equal:
-          path: spec.selector.matchLabels
-          value:
-            app.kubernetes.io/app: testing
-            app.kubernetes.io/instance: app-testing
+            namespaceSelector:
+              matchNames:
+                - NAMESPACE
+            pipelineStages:
+              - cri: {}
+            selector:
+              matchLabels:
+                app.kubernetes.io/app: RELEASE-NAME
+                app.kubernetes.io/instance: app-RELEASE-NAME
+
+  - it: should create a PodLogs resource with configured pipelineStages
+    set:
+      podLogs:
+        pipelineStages:
+          - multiline:
+              firstLine: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2} '
+              maxWaitTime: 2s
+    asserts:
+      - contains:
+          path: spec.pipelineStages
+          content:
+            multiline:
+              firstLine: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2} '
+              maxWaitTime: 2s

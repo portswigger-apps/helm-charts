@@ -21,9 +21,8 @@ helm install {{ template "chart.name" . }} helm-charts/{{ template "chart.name" 
 
 {{ template "chart.valuesSection" . }}
 
+{{ range $path, $_ := (.Files.Glob ".readme-extra/**.md").AsMap }}
 ---
 
-## Cilium Network Policy Examples
-```
-{{ .Files.Get "cilium-network-policy-examples.yaml" }}
-```
+{{ $.Files.Get $path }}
+{{ end }}

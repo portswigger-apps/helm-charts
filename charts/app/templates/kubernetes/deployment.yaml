@@ -1,4 +1,3 @@
-{{- if .Values.deployment.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,10 +15,4 @@ spec:
       maxSurge: 50%
       maxUnavailable: 25%
   minReadySeconds: 5
-    {{ $ctx := dict "includePorts" true
-                  "includeProbes" true
-                  "useValuesArgs" true
-  }}
-  {{ $ctx = merge $ctx . }}
-  template: {{ template "app.podTemplate" $ctx }}
-  {{- end -}}
+  template: {{ template "app.podTemplate" . }}

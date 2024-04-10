@@ -1,99 +1,175 @@
+global:
+  aws:
+    # global.aws.accountId -- The AWS account that this application is being deployed into
+    # @default -- Taken from deployment pipeline environment
+    # @section -- global
+    accountId: ""
+  ingress:
+    # global.ingress.enabled -- Set to `true` to expose the application with a Kubernetes `Ingress`
+    # @section -- global
+    enabled: false
+
+    # global.ingress.host -- Ingress host used to configure cloudfront target
+    # @section -- global
+    host: ""
+
+    # global.ingress.annotations -- Set annotations on the `Ingress`
+    # @section -- global
+    annotations: {}
+
+    # global.ingress.className --  Override the `Ingress` class. In most cases this should be left as default
+    # @section -- global
+    className: ""
+
+    # global.ingress.paths -- Path prefixes that you want to make available externally with the `Ingress`
+    # @section -- global
+    paths:
+      - "/"
+
+  serviceAccount:
+    # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
+    # @section -- global
+    enabled: true
+
+    # global.serviceAccount.name -- `ServiceAccount` name. Use with `global.serviceAccount.enabled: false`
+    # to use an existing `ServiceAccount`
+    # @default -- `.Release.Name`
+    # @section -- global
+    name: ""
+
+    # global.serviceAccount.automountServiceAccountToken -- Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false`
+    # @section -- global
+    automountServiceAccountToken: false
+
+    # global.serviceAccount.annotations --Set annotations on the `ServiceAccount`
+    # @section -- global
+    annotations: {}
+
 image:
-  # -- The container image of your application
+  # image.name -- The container image of your application
+  # @section -- application
   name: "public.ecr.aws/nginx/nginx"
-  # -- The container tag that will be run
+
+  # image.tag -- The tag for the image that you want to deploy
+  # @section -- application
   tag: "alpine"
 
-# -- Arguments to be passed to the container
+# args -- Arguments to be passed to your application container
+# @section -- application
 args: []
 
-# -- Environment variables that will be available in the container. Formatted as ```<environment variable name>: <plain text value>```
-env:
-  {}
-  # MY_ENVIRONMENT_VARIABLE: "my_value"
+# env -- **Non-secret** environment variables to configure your application. Formatted as `ENV_VAR_NAME: env-var-value`
+# @section -- application
+env: {}
 
-# -- Used to specify environment variables from ConfigMaps. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+# envFrom -- Create environment variables from `Secret` or `ConfigMap` resources.
+# See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+# @section -- application
 envFrom: []
-# - configMapRef
-#     name: "config-map-name"
 
-# -- Secret values that are mounted as environment variables. Formatted as ```<environment variable name>: <plain text value>```
+# secretEnv -- Secret values that are mounted as environment variables. Formatted as `ENV_VAR_NAME: env-var-value`
+# in a SOPS encrypted `secrets.yaml` file
+# @section -- application
 secretEnv: {}
-  # secret_key: secret_value
 
-# -- Secret values that are mounted as a file to /secrets. Formatted as ```<file name>: <base64 encoded value>```
+# secretVolume -- Secret values that will be available as files in `/secrets` inside the container.
+# Formatted as `file.name: <base64 encoded file>`
+# @section -- application
 secretVolume: {}
-  # file-name.txt: aGVsbG8gMTIz
 
 deployment:
-  enabled: true
-  # -- The minimum number of replicas of the application
+  # deployment.replicas -- The minimum number of replicas of the application
+  # @section -- application
   replicas: 1
-  # -- (int) The maximum number of replicas of the application
+
+  # deployment.maxReplicas -- (int) The maximum number of replicas of the application
+  # @default -- `.Values.deployment.replicas
+  # @section -- application
   maxReplicas: null
 
+ports:
+  app-port:
+    # ports.app-port.port -- The port the application is listening on
+    # @section -- application
+    port: 8080
+
+    # ports.app-port.protocol -- The protocol the application uses. This should alost always be TCP
+    # @section -- application
+    protocol: TCP
+
+    # ports.app-port.expose -- Whether the port should be accessible to the cluster and outside world
+    # @section -- application
+    expose: true
+
+metricsEndpoint:
+  # metricsEndpoint.path -- The path to a Prometheus compatible metrics endpoint
+  # @section -- application
+  path: /metrics
+
+  # metricsEndpoint.port -- The name of the port that the metrics endpoint is listening on
+  # @section -- application
+  port: app-port
+
+healthcheckEndpoint:
+  # healthcheckEndpoint.path -- The path of the applications HTTP healthcheck endpoint
+  # @section -- application
+  path:
+    /health
+
+    # healthcheckEndpoint.port -- TThe name of the port that the healthcheck endpoint is listening on
+    # @section -- application
+  port: app-port
+
+resources:
+  # resources.cpu -- Requested CPU time for the pod
+  # @section -- application
+  cpu: "100m"
+
+  # resources.memory -- Maximum memory usage for the pod
+  # @section -- application
+  memory: "64Mi"
+
 pod:
-  # -- Configuration for additional volumes. See example in values.yaml
+  # pod.additionalVolumes -- Configuration for additional volumes. See example in values.yaml
   additionalVolumes: []
   # - name: dsdsocket
   #   hostPath:
   #     path: /var/run/statsd-exporter
 
-  # -- Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml
+  # pod.additionalVolumeMounts -- Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml
   additionalVolumeMounts: []
   # - name: dsdsocket
   #   mountPath: /socket
 
-resources:
-  # -- Requested CPU time for the pod
-  cpu: "100m"
-  # -- Maximum memory usage for the pod
-  memory: "64Mi"
-
-# -- Configuration for the ports that the application listens on.
-ports:
-  app-port:
-    # -- The port the application is running on
-    port: 8080
-    # -- The protocol the application uses
-    protocol: TCP
-    # -- Whether the port should be accessible to the cluster and outside world.
-    expose: true
-
-metricsEndpoint:
-  # -- The path of the metrics endpoint
-  path: /metrics
-  # -- The port that the metrics endpoint is exposed on. Referenced by the port's name
-  port: app-port
-
-# -- Configuration for startup, liveness and readiness probes
-healthcheckEndpoint:
-  # -- The path of the healthcheck endpoint
-  path: /health
-  # -- The port that the healthcheck endpoint is exposed on. Referenced by the port's name
-  port: app-port
-
 podLogs:
-  # -- Grafana Loki pipeline stages configuration. See https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/
+  # podLogs.pipelineStages -- Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/)
   pipelineStages: []
 
-service:
-  # -- Adds a service to expose the application to the rest of the cluster
-  enabled: true
-  annotations: {}
-
-# -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
+# initContainers -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
+# @section == application
 initContainers:
   []
   # - name: init-myservice
   #   image: nginx
   #   command: ['sh', '-c', "echo 'output'"]
 
-# -- Configuration for the ciliumNetworkPolicy, allowing restriction of network access to pods.
-ciliumNetworkPolicy:
-  enabled: false
+service:
+  # service.enabled -- Set to true to expose your application within the Kubernetes cluster
+  # @section -- network
+  enabled: true
 
-  # -- Cilium ingress rules. See examples below.
+  # service.annotations -- Add annotations to the Service resource
+  # @section -- network
+  annotations: {}
+
+ciliumNetworkPolicy:
+  # ciliumNetworkPolicy.enabled -- Set to false to remove the CiliumNetworkPolicy. You should keep it and configure it
+  # @section -- network
+  # @ignored
+  enabled: true
+
+  # ciliumNetworkPolicy.ingress -- Cilium ingress rules. See examples in values.yaml
+  # @section -- network
   ingress: []
   # fromEndpoints:
   # - matchLabels:
@@ -103,89 +179,143 @@ ciliumNetworkPolicy:
   #       - port: "8080"
   #         protocol: TCP
 
-  # -- Cilium egress rules. See examples below.
+  # ciliumNetworkPolicy.egress -- Cilium egress rules. See examples in values.yaml
+  # @section -- network
   egress: []
   # - toFQDNs:
   #   - matchName: "my-remote-service.com"
+  #   toPorts:
+  #     - ports:
+  #         - port: "443"
+  #           protocol: TCP
 
-  # -- Label matchers for the ingress controller. Used so that the ingress controller can access your application.
+  #ciliumNetworkPolicy.externalHttpsServices -- A list of external domain names that your app depends on. See examples in values.yaml
+  # @section -- network
+  externalHttpsServices: []
+  #  - discord.com
+  #  - api.openai.com
+  #  - api.zoom.us
+
+  # ciliumNetworkPolicy.fromApps -- A list of app names and optional namespace to allow ingress from. See examples in values.yaml
+  # @section -- network
+  fromApps: []
+  # - name: hakawai-gateway
+  # - name: email-marketing
+  #   namespace: web
+
+  # ciliumNetworkPolicy.toApps -- A list of app names and optional namespace to allow egress to. See examples in values.yaml
+  # @section -- network
+  toApps: []
+  # - name: hakawai-hello-service
+  # - name: license-checker
+  #   namespace: web
+
+  # @ignored
   ingressControllerEndpointMatchLabels:
     k8s:io.kubernetes.pod.namespace: ingress
-    app.kubernetes.io/name: nginx
+    app.kubernetes.io/name: traefik
 
-# -- Extra Kubernetes configuration
-extraDeploy: []
+  # @ignored
+  observabilityAgentEndpointMatchLabels:
+    k8s:io.kubernetes.pod.namespace: observability
+    app.kubernetes.io/name: grafana-agent
+
 infra:
-  ingress:
-    # -- Adds an ingress to expose the application to the outside world
-    enabled: false
-    annotations: {}
-    # -- The host name the application will be accessible from
-    host: ""
-    # -- The path prefixes that are exposed
-    paths:
-      - "/"
-  aws:
-    # -- (string) The AWS account id for the deployment.
-    accountId: "0123456789"
-  # -- Postgres database configuration. Leave as null for no database.
   postgres:
-    # -- The database's name.
-    name: ""
-    # -- The instance size. Options: micro, small, medium, large or xlarge.
+    # infra.postgres.enabled -- Set to `true` to deploy a `PostgresInstance` resource
+    # @section -- infra
+    enabled: false
+
+    # infra.postgres.create -- Set to `false` to skip creation of the `PostgresInstance` if it has been created elsewhere
+    # @section -- infra
+    create: true
+
+    # infra.postgres.nameOverride -- Override the `PostgresInstance` name or use with `create: false` to map the secrets of an instance created elsewhere
+    # @section -- infra
+    nameOverride: ""
+
+    # infra.postgres.size -- Options: micro, small, medium, large or xlarge
+    # @default -- `micro`
+    # @section -- infra
     size: null
-    # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
+
+    # infra.postgres.version -- Options: 16.2, 15.6 or 14.11
+    # @default -- `"16.2"`
+    # @section -- infra
     version: null
-    # -- If database should be a multi-az deployment
+
+    # infra.postgres.multiAz -- (bool) Set to `true` to deploy the `PostgresInstance` across multiple availability zones
+    # @default -- `false`
+    # @section -- infra
     multiAz: null
 
-  # -- S3 Bucket configuration. Set to null for no s3 bucket.
   s3Bucket:
-    # -- Name of the bucket
-    name: ""
-    # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
-    # The status field is required on the rule object.
+    # infra.s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
+    # @section -- infra
+    enabled: false
+
+    # infra.s3Bucket.create -- Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere
+    # @section -- infra
+    create: true
+
+    # infra.s3Bucket.nameOverride -- Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere
+    # @section -- infra
+    nameOverride: ""
+
+    # infra.s3Bucket.lifecycleRules -- (list) Configure the `s3Bucket` storage [lifecycle rules](https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule)
+    # @default -- `[]`
+    # @section -- infra
     lifecycleRules:
       - expiration:
           - days: 0
         status: Disabled
 
-  # -- Cloudfront configuration
   cloudfront:
+    # infra.cloudfront.enabled -- Set to `true` to deploy an `CloudFrontSite` resource
+    # @section -- infra
     enabled: false
-    # -- The hosted zone id of the domain name
+
+    # infra.cloudfront.hostedZoneId -- The Route53 hosted zone ID to create the certificates and domain names for the `CloudFrontSite` resource
+    # @section -- infra
     hostedZoneId: ""
-    # -- The domain name that the cloudfront distribution will be available on
+
+    # infra.cloudfront.domainName -- The presentation domain name for the `CloudFrontSite` resource
+    # @section -- infra
     domainName: ""
+
+    # infra.cloudfront.targetOriginDomainName -- The target origin domain name that the `CloudFrontSite` resource fronts
+    # @default -- `.Values.global.ingress.host`
+    # @section -- infra
+    targetOriginDomainName: ""
+
     geoRestriction:
-      # -- The restriction type for the cloudfront distribution. Options: none, whitelist, blacklist
-      restrictionType: none
-      # -- The countries that are allowed or disallowed from accessing the cloudfront distribution
-      locations: []
+      # infra.cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
+      # @section -- infra
+      restrictionType: allow
+
+      # infra.cloudfront.geoRestriction.locations -- A list of ISO ALPHA-2 country codes to apply restrictions to
+      # @section -- infra
+      locations:
+        - GB
 
     headerAuth:
-      # cloudfront.headerAuth.enabled - Set to 'true' to enable authentication between CloudFront and the origin
-      # @section -- cloudfront
+      # infra.cloudfront.headerAuth.enabled -- Set to 'true' to enable authentication between CloudFront and the origin
+      # @section -- infra
       enabled: false
 
-  serviceAccount:
-    enabled: true
-    # -- (string) The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart.
-    # Defaults to the helmfile release name
-    name: ""
-    # -- If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources.
-    automountServiceAccountToken: false
-    annotations: {}
-    # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
+# extraDeploy -- Extra Kubernetes configuration
+extraDeploy: []
 
-# -- (string[]) Command to run before install and upgrade of your application.
-preDeployCommand: []
+# preDeployCommand -- (string[]) Command to run before install and upgrade of your application. See examples in values.yaml
+preDeployCommand:
+  []
   # - python
   # - manage.py
   # - migrate
 
-# -- (string[]) Command to run before a rollback.
-preRollbackCommand: []
+# preRollbackCommand -- (string[]) Command to run before a rollback. See examples in values.yaml
+preRollbackCommand:
+  []
   # - python
   # - manage.py
   # - rollback
