@@ -16,7 +16,7 @@ tests:
       - hasDocuments:
           count: 1
       - equal:
-          path: spec.template.spec.containers[0].command
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].command
           value:
             - python3
             - manage.py
@@ -32,12 +32,12 @@ tests:
       - hasDocuments:
           count: 1
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "DATABASE_NAME"
             value: app
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "DATABASE_HOST"
             valueFrom:
@@ -45,7 +45,7 @@ tests:
                 key: host
                 name: RELEASE-NAME-postgres
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "DATABASE_PORT"
             valueFrom:
@@ -53,7 +53,7 @@ tests:
                 key: port
                 name: RELEASE-NAME-postgres
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "DATABASE_USERNAME"
             valueFrom:
@@ -61,7 +61,7 @@ tests:
                 key: username
                 name: RELEASE-NAME-postgres
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "DATABASE_PASSWORD"
             valueFrom:
@@ -69,12 +69,12 @@ tests:
                 key: password
                 name: RELEASE-NAME-postgres
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: DATABASE_URL
             value: postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: JDBC_DATABASE_URL
             value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)
@@ -91,7 +91,7 @@ tests:
       - hasDocuments:
           count: 1
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "DATABASE_HOST"
             valueFrom:
@@ -107,7 +107,7 @@ tests:
       preDeployCommand: ["python3"]
     asserts:
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: S3_BUCKET_NAME
             valueFrom:
@@ -115,12 +115,12 @@ tests:
                 name: RELEASE-NAME-s3bucket
                 key: id
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "S3_BUCKET_URL"
             value: s3://$(S3_BUCKET_NAME)/
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "S3_ENDPOINT_URL"
             value: "https://s3.$(AWS_REGION).amazonaws.com/"
@@ -135,7 +135,7 @@ tests:
       preDeployCommand: ["python3"]
     asserts:
       - contains:
-          path: spec.template.spec.containers[0].env
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: S3_BUCKET_NAME
             valueFrom:
