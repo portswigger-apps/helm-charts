@@ -59,3 +59,11 @@ The name of the service account to use
 {{- default "default" .Values.infra.serviceAccount.name }}
 {{- end }}
 {{- end -}}
+
+
+{{/*
+Secret value used to authenticate CloudFront with the origin
+*/}}
+{{- define "app.cloudfrontSecretValue" -}}
+{{- .Values.global.ingress.host | sha256sum }}
+{{- end -}}

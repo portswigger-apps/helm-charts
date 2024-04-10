@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 0.2.3](https://img.shields.io/badge/Version-0.2.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -31,7 +31,7 @@ helm install app helm-charts/app
 | image.name | string | `"public.ecr.aws/nginx/nginx"` | The container image of your application |
 | image.tag | string | `"alpine"` | The container tag that will be run |
 | infra.aws.accountId | string | `"0123456789"` | The AWS account id for the deployment. |
-| infra.cloudfront | object | `{"domainName":"","enabled":false,"geoRestriction":{"locations":[],"restrictionType":"none"},"hostedZoneId":""}` | Cloudfront configuration |
+| infra.cloudfront | object | `{"domainName":"","enabled":false,"geoRestriction":{"locations":[],"restrictionType":"none"},"headerAuth":{"enabled":false},"hostedZoneId":""}` | Cloudfront configuration |
 | infra.cloudfront.domainName | string | `""` | The domain name that the cloudfront distribution will be available on |
 | infra.cloudfront.geoRestriction.locations | list | `[]` | The countries that are allowed or disallowed from accessing the cloudfront distribution |
 | infra.cloudfront.geoRestriction.restrictionType | string | `"none"` | The restriction type for the cloudfront distribution. Options: none, whitelist, blacklist |

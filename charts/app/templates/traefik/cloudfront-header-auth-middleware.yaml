@@ -1,0 +1,15 @@
+{{- if .Values.infra.cloudfront.headerAuth.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-cloudfront-auth
+spec:
+  plugin:
+    bouncer:
+      headers:
+        - header:
+            name: X-Cloudfront-Auth
+            values:
+              - {{ template "app.cloudfrontSecretValue" . }}
+            matchtype: one
+{{- end }}

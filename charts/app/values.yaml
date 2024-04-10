@@ -163,6 +163,11 @@ infra:
       # -- The countries that are allowed or disallowed from accessing the cloudfront distribution
       locations: []
 
+    headerAuth:
+      # cloudfront.headerAuth.enabled - Set to 'true' to enable authentication between CloudFront and the origin
+      # @section -- cloudfront
+      enabled: false
+
   serviceAccount:
     enabled: true
     # -- (string) The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart.

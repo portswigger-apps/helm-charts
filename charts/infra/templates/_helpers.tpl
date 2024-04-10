@@ -32,3 +32,10 @@ app.kubernetes.io/part-of: {{ template "infra.name" . }}
 app.kubernetes.io/managed-by: Helm
 helm.sh/chart: {{ template "infra.chart" . }}
 {{- end -}}
+
+{{/*
+Secret value used to authenticate CloudFront with the origin
+*/}}
+{{- define "app.cloudfrontSecretValue" -}}
+{{- .Values.global.ingress.host | sha256sum }}
+{{- end -}}

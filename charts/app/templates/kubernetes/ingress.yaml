@@ -8,6 +8,9 @@ metadata:
   {{- with .Values.infra.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
+    {{- if $.Values.infra.cloudfront.headerAuth.enabled }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ $.Release.Name }}-cloudfront-auth@kubernetescrd }}
+    {{- end }}
   {{- end }}
 spec:
   {{- if .Values.infra.ingress.className }}
