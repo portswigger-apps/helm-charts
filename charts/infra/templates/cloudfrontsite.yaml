@@ -10,15 +10,5 @@ spec:
   targetOriginDomainName: {{ default .Values.cloudfront.targetOriginDomainName .Values.global.ingress.host }}
   domainName: {{ .Values.cloudfront.domainName }}
   hostedZoneId: {{ .Values.cloudfront.hostedZoneId }}
-  defaultCacheBehavior:
-    allowedMethods: {{ .Values.cloudfront.defaultCacheBehavior.allowedMethods | toYaml | nindent 6 }}
-    cachedMethods: {{ .Values.cloudfront.defaultCacheBehavior.cachedMethods | toYaml | nindent 6 }}
-    ttl: {{ .Values.cloudfront.defaultCacheBehavior.ttl }}
-    queryStrings:
-      behavior: {{ .Values.cloudfront.defaultCacheBehavior.queryStrings.behavior }}
-      allowlistedNames: {{ .Values.cloudfront.defaultCacheBehavior.queryStrings.allowlistedNames | toYaml | nindent 8 }}
-    headers: {{ .Values.cloudfront.defaultCacheBehavior.headers | toYaml | nindent 6 }}
-    cookies:
-      behavior: {{ .Values.cloudfront.defaultCacheBehavior.cookies.behavior }}
-      allowlistedNames: {{ .Values.cloudfront.defaultCacheBehavior.cookies.allowlistedNames | toYaml | nindent 8 }}
+  defaultCacheBehavior: {{ .Values.cloudfront.defaultCacheBehavior | toYaml | nindent 4 }}
 {{- end -}}

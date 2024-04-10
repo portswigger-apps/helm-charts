@@ -1,6 +1,0 @@
-dependencies:
-- name: infra
-  repository: https://portswigger-apps.github.io/helm-charts/
-  version: 0.0.1
-digest: sha256:adee1fbb488e86b6706e06044cd9eb221561fdda49c9594a12784d756d464b18
-generated: "2024-04-09T11:48:15.654435+01:00"
