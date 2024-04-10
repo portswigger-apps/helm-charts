@@ -17,9 +17,7 @@ spec:
     queryStrings:
       behavior: {{ .Values.cloudfront.defaultCacheBehavior.queryStrings.behavior }}
       allowlistedNames: {{ .Values.cloudfront.defaultCacheBehavior.queryStrings.allowlistedNames | toYaml | nindent 8 }}
-    headers:
-      behavior: {{ .Values.cloudfront.defaultCacheBehavior.headers.behavior }}
-      allowlistedNames: {{ .Values.cloudfront.defaultCacheBehavior.headers.allowlistedNames | toYaml | nindent 8 }}
+    headers: {{ .Values.cloudfront.defaultCacheBehavior.headers | toYaml | nindent 6 }}
     cookies:
       behavior: {{ .Values.cloudfront.defaultCacheBehavior.cookies.behavior }}
       allowlistedNames: {{ .Values.cloudfront.defaultCacheBehavior.cookies.allowlistedNames | toYaml | nindent 8 }}
