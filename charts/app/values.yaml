@@ -189,28 +189,26 @@ ciliumNetworkPolicy:
   #         - port: "443"
   #           protocol: TCP
 
-  # ciliumNetworkPolicy.externalHttpsServices -- A list of external domain names that your app depends on. See examples in values.yaml
+  #ciliumNetworkPolicy.externalHttpsServices -- A list of external domain names that your app depends on. See examples in values.yaml
   # @section -- network
   externalHttpsServices: []
   #  - discord.com
   #  - api.openai.com
   #  - api.zoom.us
 
-  # ciliumNetworkPolicy.fromApps -- A list of app names and optional namespace to allow ingress from. See examples in values.yaml
+  # ciliumNetworkPolicy.fromApps -- A list of app names and optional namespace to allow ingress from. See examples in values.yaml
   # @section -- network
-  fromApps:
-    []
-    # - name: hakawai-gateway
-    # - name: email-marketing
-    #   namespace: web
+  fromApps: []
+  # - name: hakawai-gateway
+  # - name: email-marketing
+  #   namespace: web
 
-  # ciliumNetworkPolicy.toApps -- A list of app names and optional namespace to allow egress to. See examples in values.yaml
+  # ciliumNetworkPolicy.toApps -- A list of app names and optional namespace to allow egress to. See examples in values.yaml
   # @section -- network
-  toApps:
-    []
-    # - name: hakawai-hello-service
-    # - name: license-checker
-    #   namespace: web
+  toApps: []
+  # - name: hakawai-hello-service
+  # - name: license-checker
+  #   namespace: web
 
   # @ignored
   ingressControllerEndpointMatchLabels:
@@ -299,9 +297,9 @@ infra:
       # @section -- infra
       locations:
         - GB
-        
+
     headerAuth:
-      # infra.cloudfront.headerAuth.enabled - Set to 'true' to enable authentication between CloudFront and the origin
+      # infra.cloudfront.headerAuth.enabled -- Set to 'true' to enable authentication between CloudFront and the origin
       # @section -- infra
       enabled: false
 
