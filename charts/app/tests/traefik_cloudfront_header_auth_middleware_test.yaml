@@ -1,0 +1,35 @@
+suite: CloudFront header auth middleware configuration
+templates:
+  - traefik/cloudfront-header-auth-middleware.yaml
+tests:
+  - it: "should not create CloudFront header auth middleware when not enabled"
+    set:
+      infra:
+        cloudfront:
+          headerAuth:
+            enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: "should create CloudFront header auth middleware when enabled"
+    set:
+      infra:
+        cloudfront:
+          headerAuth:
+            enabled: true
+      global:
+        ingress:
+          host: docs-site.platform-dev.portswigger.io
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.plugin.bouncer.headers[0]
+          value:
+            header:
+            name: X-Cloudfront-Auth
+            values:
+              - 12c772c0c15bc525bd439a1774f21db7e1db1126788001af4818b219483f8f18
+            matchtype: one

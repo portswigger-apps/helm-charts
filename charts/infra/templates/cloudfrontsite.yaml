@@ -10,4 +10,18 @@ spec:
   targetOriginDomainName: {{ default .Values.cloudfront.targetOriginDomainName .Values.global.ingress.host }}
   domainName: {{ .Values.cloudfront.domainName }}
   hostedZoneId: {{ .Values.cloudfront.hostedZoneId }}
+  headerSecret: {{ template "app.cloudfrontSecretValue" . }}
+  defaultCacheBehavior:
+    allowedMethods: {{ .Values.cloudfront.defaultCacheBehavior.allowedMethods | toYaml | nindent 6 }}
+    cachedMethods: {{ .Values.cloudfront.defaultCacheBehavior.cachedMethods | toYaml | nindent 6 }}
+    ttl: {{ .Values.cloudfront.defaultCacheBehavior.ttl }}
+    queryStrings:
+      behavior: {{ .Values.cloudfront.defaultCacheBehavior.queryStrings.behavior }}
+      allowlistedNames: {{ .Values.cloudfront.defaultCacheBehavior.queryStrings.allowlistedNames | toYaml | nindent 8 }}
+    headers:
+      behavior: {{ .Values.cloudfront.defaultCacheBehavior.headers.behavior }}
+      allowlistedNames: {{ .Values.cloudfront.defaultCacheBehavior.headers.allowlistedNames | toYaml | nindent 8 }}
+    cookies:
+      behavior: {{ .Values.cloudfront.defaultCacheBehavior.cookies.behavior }}
+      allowlistedNames: {{ .Values.cloudfront.defaultCacheBehavior.cookies.allowlistedNames | toYaml | nindent 8 }}
 {{- end -}}
