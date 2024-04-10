@@ -29,7 +29,7 @@ tests:
           path: spec.plugin.bouncer.headers[0]
           value:
             header:
-              name: X-Cloudfront-Auth
-              values:
-                - 12c772c0c15bc525bd439a1774f21db7e1db1126788001af4818b219483f8f18
-              matchtype: one
+            name: X-Cloudfront-Auth
+            values:
+              - 12c772c0c15bc525bd439a1774f21db7e1db1126788001af4818b219483f8f18
+            matchtype: one
