@@ -1,0 +1,60 @@
+suite: Middleware
+
+templates:
+  - traefik/middleware-chain.yaml
+
+tests:
+  - it: should not create chain middleware by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create chain middleware when ingress enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            chain:
+              middlewares:
+                - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
+
+  - it: should not create chain middleware if not using traefik
+    set:
+      global:
+        ingress:
+          host: app.example.io
+          className: tyk
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create chain middleware with cloudfront auth middleware
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            chain:
+              middlewares:
+                - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-cloudfront-auth@kubernetescrd

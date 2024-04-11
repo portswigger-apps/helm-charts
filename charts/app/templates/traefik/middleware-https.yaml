@@ -1,0 +1,9 @@
+{{- if and .Values.global.ingress.enabled (eq .Values.global.ingress.className "traefik") }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-https
+spec:
+  redirectScheme:
+    scheme: https
+{{- end }}

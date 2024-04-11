@@ -138,3 +138,15 @@ s3Bucket connection secret env variables
   value: "https://s3.$(AWS_REGION).amazonaws.com/"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Ingress annotations
+*/}}
+{{- define "app.ingressAnnotations" -}}
+{{- range $k, $v := .Values.global.ingress.annotations }}
+{{ $k }}: {{ $v }}
+{{- end }}
+{{- if (eq .Values.global.ingress.className "traefik") }}
+traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Release.Name }}-chain@kubernetescrd
+{{- end }}
+{{- end -}}

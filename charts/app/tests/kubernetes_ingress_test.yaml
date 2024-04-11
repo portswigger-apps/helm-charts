@@ -23,8 +23,13 @@ tests:
       - isKind:
           of: Ingress
       - equal:
+          path: metadata.annotations
+          value:
+            traefik.ingress.kubernetes.io/router.middlewares: NAMESPACE-RELEASE-NAME-chain@kubernetescrd
+      - equal:
           path: spec
           value:
+            ingressClassName: traefik
             rules:
               - host: my-host.com
                 http:
@@ -36,6 +41,19 @@ tests:
                             number: 8080
                       path: /my-path
                       pathType: Prefix
+
+  - it: should not create traefik middleware annotation if IngressClass is not traefik
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: my-host.com
+          className: tyk
+          paths:
+            - "/my-path"
+    asserts:
+      - notExists:
+          path: metadata.annotations
 
   - it: should fail to create an Ingress if configured without a hostname
     set:

@@ -19,7 +19,7 @@ global:
 
     # global.ingress.className --  Override the `Ingress` class. In most cases this should be left as default
     # @section -- global
-    className: ""
+    className: "traefik"
 
     # global.ingress.paths -- Path prefixes that you want to make available externally with the `Ingress`
     # @section -- global

@@ -5,12 +5,9 @@ metadata:
   name: {{ include "app.name" . }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
-  {{- with .Values.global.ingress.annotations }}
+  {{- with include "app.ingressAnnotations" . }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-    {{- if $.Values.infra.cloudfront.headerAuth.enabled }}
-    traefik.ingress.kubernetes.io/router.middlewares: {{ $.Release.Namespace }}-{{ $.Release.Name }}-cloudfront-auth@kubernetescrd
-    {{- end }}
+    {{- . | nindent 4 }}
   {{- end }}
 spec:
   {{- if .Values.global.ingress.className }}

@@ -1,3 +1,4 @@
+{{- if and .Values.global.ingress.enabled (eq .Values.global.ingress.className "traefik") }}
 {{- if and .Values.infra.cloudfront.enabled .Values.infra.cloudfront.originHeaderAuth }}
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -5,11 +6,11 @@ metadata:
   name: {{ .Release.Name }}-cloudfront-auth
 spec:
   plugin:
-    bouncer:
+    checkheaders:
       headers:
-        - header:
-          name: X-Cloudfront-Auth
+        - name: X-Cloudfront-Auth
           values:
-            - {{ .Values.global.ingress.host | sha256sum }}
+            - {{ printf "%s-%s" .Values.infra.cloudfront.hostedZoneId .Values.global.ingress.host | sha256sum }}
           matchtype: one
+{{- end }}
 {{- end }}

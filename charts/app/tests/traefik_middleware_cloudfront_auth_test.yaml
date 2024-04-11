@@ -1,0 +1,59 @@
+suite: Middleware
+
+templates:
+  - traefik/middleware-cloudfront-auth.yaml
+
+tests:
+  - it: should not create cloudfront-auth middleware by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create cloudfront-auth middleware if not using traefik
+    set:
+      global:
+        ingress:
+          host: app.example.io
+          className: tyk
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create cloudfront-auth middleware with cloudfront and ingress enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            plugin:
+              checkheaders:
+                headers:
+                  - matchtype: one
+                    name: X-Cloudfront-Auth
+                    values:
+                      - 0ab5d2b6e2680c039a3303224a726f611964d43929eb99dd6eff4a9c86b23e9f
+
+  - it: should not create cloudfront-auth middleware with cloudfront and ingress not traefik
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          className: tyk
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
