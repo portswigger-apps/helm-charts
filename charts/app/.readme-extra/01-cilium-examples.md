@@ -1,30 +1,39 @@
 ## CiliumNetworkPolicy examples
 
+Allow access from an app named `my-other-app` in your product namespace
+```yaml
+ciliumNetworkPolicy:
+  fromApps:
+    - name: my-other-app
 ```
-# Ingress Example
-- fromEndpoints:
-  - matchLabels:
-      app.kubernetes.io/name: frontend # Pods with this label will be able to access your application
-  toPorts:
-    - ports:
-      - port: "8080"
-        protocol: TCP
 
+Allow access from an app named `admin-frontend` in the `web` product namespace
+```yaml
+ciliumNetworkPolicy:
+  fromApps:
+    - name: admin-frontend
+      namespace: web
+```
 
-# Egress Example
-- toEndpoints:
-  - matchLabels:
-    k8s:io.kubernetes.pod.namespace: kube-system
-    k8s-app: kube-dns
-  toPorts:
-  - ports:
-     - port: "53"
-       protocol: ANY
-    rules:
-      dns:
-      - matchPattern: "*"
+Allow access to an app named `orders` in your product namespace
+```yaml
+ciliumNetworkPolicy:
+  toApps:
+    - name: orders
+```
 
-# Egress Example
-- toFQDNs:
-  - matchName: "my-remote-service.com"
+Allow access to an app named `updates` in the `web` product namespace
+```yaml
+ciliumNetworkPolicy:
+  toApps:
+    - name: updates
+      namespace: web
+```
+
+Allow access to a HTTPS API `api.example.com` and `api.openai.com`
+```yaml
+ciliumNetworkPolicy:
+  externalHttpsServices:
+    - api.example.com
+    - api.openai.com
 ```
