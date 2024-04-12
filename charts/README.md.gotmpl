@@ -27,3 +27,5 @@ helm install {{ template "chart.name" . }} helm-charts/{{ template "chart.name" 
 
 {{ $.Files.Get ( printf "../../%s" $path) }}
 {{ end }}
+
+{{ template "chart.footer" . }}
