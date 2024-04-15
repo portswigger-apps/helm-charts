@@ -141,6 +141,15 @@ pod:
   # - name: dsdsocket
   #   mountPath: /socket
 
+  # pod.labels -- Additional labels to add to pods
+  labels: {}
+
+  # pod.annotations -- Additional annotations to add to pods
+  annotations: {}
+
+  # pod.nodeSelector -- Set a nodeSelector(s) on your pods
+  nodeSelector: {}
+
 podLogs:
   # podLogs.pipelineStages -- Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/)
   pipelineStages: []

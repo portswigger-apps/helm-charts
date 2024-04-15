@@ -4,14 +4,15 @@ description: A Helm "monochart" for deploying cron jobs
 
 type: application
 
-version: 0.0.0-alpha-13
+version: 0.0.1
 
-appVersion: 0.0.0
+appVersion: 0.0.1
 
 keywords:
   - cron
+  - infra
 
 dependencies:
   - name: infra
-    version: 0.0.0-alpha-18
+    version: 0.1.0
     repository: https://portswigger-apps.github.io/helm-charts/

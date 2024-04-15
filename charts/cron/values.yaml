@@ -1,88 +1,142 @@
+global:
+  aws:
+    # global.aws.accountId -- The AWS account that this application is being deployed into
+    # @default -- Taken from deployment pipeline environment
+    # @section -- global
+    accountId: ""
+
+  serviceAccount:
+    # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
+    # @section -- global
+    enabled: true
+
+    # global.serviceAccount.name -- `ServiceAccount` name. Use with `global.serviceAccount.enabled: false`
+    # to use an existing `ServiceAccount`
+    # @default -- `.Release.Name`
+    # @section -- global
+    name: ""
+
+    # global.serviceAccount.automountServiceAccountToken -- Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false`
+    # @section -- global
+    automountServiceAccountToken: false
+
+    # global.serviceAccount.annotations --Set annotations on the `ServiceAccount`
+    # @section -- global
+    annotations: {}
+
 image:
-  # -- The container image of your application
+  # image.name -- The container image of your application
+  # @section -- application
   name: "public.ecr.aws/nginx/nginx"
-  # -- The container tag that will be run
+
+  # image.tag -- The tag for the image that you want to deploy
+  # @section -- application
   tag: "alpine"
 
 cron:
-  # -- Cron formatted schedule for job.
-  schedule: "* * * * *"
-  # -- One of: Allow, Forbid and Replace.
-  # Allow - allows concurrently running cron jobs.
-  # Forbid - No concurrent runs, if last cron job hasn't finished then skip the new run
-  # Replace - Replace the currently running cron job with a new instance.
+  # cron.schedule -- Cron formatted schedule for job
+  # @section -- cron
+  schedule: "0 1 31 2 *"
+
+  # cron.timeZone -- A valid IANA TZ name
+  # @section -- cron
   timeZone: "Europe/London"
-  concurrencyPolicy: Allow
-  # -- Number of retries on failure of job
+
+  # cron.concurrencyPolicy -- WHether or not to allow the cron to overlap with the previous run. Valid values are: `Allow`, `Forbid` or `Replace`
+  # @section -- cron
+  concurrencyPolicy: Forbid
+
+  # cron.retries -- Number of retries on failure of job
+  # @section -- cron
   retries: 0
-  # -- Number of pods of the cron job to start
+
+  # cron.parallelism -- Number of pods of the cron job to start
+  # @section -- cron
   parallelism: 1
-  # -- (string[]) Command to run on the image. e.g [/bin/bash, my-script.sh]
-  command: null
-  # -- (string[]) Arguments for the command
-  args: null
-  # -- One of: Never or OnFailure. Never - does not restart. OnFailure - will re-run the job if it fails
-  restartPolicy: OnFailure
-  # -- (int) The maximum amount of time the job should run for in seconds.
-  timeoutSeconds: null
 
-# -- List of environment variables for job container.
+  # cron.command -- Command to run on the image. e.g [/bin/bash, my-script.sh]
+  # @section -- application
+  command: []
+
+  # cron.args -- Arguments for the command
+  # @section -- application
+  args: []
+
+  # cron.restartPolicy -- Whether or not the pod should restart on failure. Valid values are: `Never` or `onFailure`
+  # @section -- cron
+  restartPolicy: Never
+
+  # cron.timeoutSeconds -- The maximum amount of time the job should run for in seconds.
+  # @section -- cron
+  timeoutSeconds: 86400
+
+# env -- **Non-secret** environment variables to configure your application. Formatted as `ENV_VAR_NAME: env-var-value`
+# @section -- application
 env: {}
-  # KEY: value
 
-# -- Secret values that are mounted as environment variables. Formatted as ```<environment variable name>: <plain text value>```
+# secretEnv -- Secret values that are mounted as environment variables. Formatted as `ENV_VAR_NAME: env-var-value`
+# in a SOPS encrypted `secrets.yaml` file
+# @section -- application
 secretEnv: {}
-  # secret_key: secret_value
 
-# -- Secret values that are mounted as a file to /secrets. Formatted as ```<file name>: <base64 encoded value>```
+# secretVolume -- Secret values that will be available as files in `/secrets` inside the container.
+# Formatted as `file.name: <base64 encoded file>`
+# @section -- application
 secretVolume: {}
-  # file-name.txt: aGVsbG8gMTIz
-
-pod:
-  annotations: {}
 
 resources:
-  # -- Requested CPU time for the pod
+  # resources.cpu -- Requested CPU time for the pod
+  # @section -- application
   cpu: "100m"
-  # -- Maximum memory usage for the pod
+
+  # resources.memory -- Maximum memory usage for the pod
+  # @section -- application
   memory: "64Mi"
 
-# -- Configuration for infra
+pod:
+  # pod.additionalVolumes -- Configuration for additional volumes. See example in values.yaml
+  additionalVolumes: []
+  # - name: dsdsocket
+  #   hostPath:
+  #     path: /var/run/statsd-exporter
+
+  # pod.additionalVolumeMounts -- Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml
+  additionalVolumeMounts: []
+  # - name: dsdsocket
+  #   mountPath: /socket
+
+  # pod.labels -- Additional labels to add to pods
+  labels: {}
+
+  # pod.annotations -- Additional annotations to add to pods
+  annotations: {}
+
+  # pod.nodeSelector -- Set a nodeSelector(s) on your pods
+  nodeSelector: {}
+
 infra:
-  # -- Postgres database configuration. Leave as null for no database.
   postgres:
-    # -- The database's name. If the database is created in another app, use the same name as the database in that app.
-    name: ""
-    # -- If a database should be created. Set to false if another app is creating the database.
-    create: true
-    # -- The instance size. Options: micro, small, medium, large or xlarge.
-    size: null
-    # -- The postgres version to use. Options: 16.2, 15.6 or 14.11
-    version: null
-    # -- If database should be a multi-az deployment
-    multiAz: null
+    # infra.postgres.enabled -- Set to `true` to deploy a `PostgresInstance` resource
+    # @section -- infra
+    enabled: false
 
-  # -- S3 Bucket configuration. Set to null for no s3 bucket.
+    # infra.postgres.create -- Set to `false` to skip creation of the `PostgresInstance` if it has been created elsewhere
+    # @section -- infra
+    create: false
+
+    # infra.postgres.nameOverride -- Override the `PostgresInstance` name or use with `create: false` to map the secrets of an instance created elsewhere
+    # @section -- infra
+    nameOverride: ""
+
   s3Bucket:
-    # -- Name of the bucket. If the s3 bucket is created in another app, use the same name as the s3 bucket in that app.
-    # You must also use the same service account name, provide the aws account id and set automountServiceAccountToken to true
-    name: ""
-    # -- If an s3 bucket should be created. Set to false if another app creates the s3 bucket.
-    create: true
-    # -- Lifecycle rules. See docs at https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule
-    # The status field is required on the rule object.
-    lifecycleRules:
-      - expiration:
-          - days: 0
-        status: Disabled
+    # infra.s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
+    # @section -- infra
+    enabled: false
 
-  # -- Service account configuration. Configuration is required for accessing AWS resources
-  serviceAccount:
-    enabled: true
-    # -- (string) The name of the service account. If accessing S3 buckets, this name must match the serviceAccountName in the infra chart.
-    # Defaults to the helmfile release name
-    name: ""
-    # -- If the service account token should be mounted into pods that use the service account. Set to true if using AWS resources.
-    automountServiceAccountToken: false
-    annotations: {}
-    # eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/my-role
+    # infra.s3Bucket.create -- Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere
+    # @section -- infra
+    create: false
+
+    # infra.s3Bucket.nameOverride -- Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere
+    # @section -- infra
+    nameOverride: ""

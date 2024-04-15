@@ -1,23 +1,21 @@
-suite: Cronjob configuration
+suite: Cronjob
+
 templates:
-      - cronjob.yaml
+  - cronjob.yaml
 tests:
   - it: should create default cronjob
     asserts:
       - isKind:
           of: CronJob
       - equal:
-          path: metadata.name
-          value: RELEASE-NAME
-      - equal:
           path: spec.schedule
-          value: "* * * * *"
+          value: "0 1 31 2 *"
       - equal:
           path: spec.timeZone
           value: "Europe/London"
       - equal:
           path: spec.concurrencyPolicy
-          value: Allow
+          value: Forbid
       - equal:
           path: spec.jobTemplate.spec.parallelism
           value: 1
@@ -25,54 +23,31 @@ tests:
           path: spec.jobTemplate.spec.backoffLimit
           value: 0
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].name
-          value: RELEASE-NAME
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].image
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].image
           value: "public.ecr.aws/nginx/nginx:alpine"
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].securityContext
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].securityContext
           value:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
             capabilities:
-                drop:
-                    - ALL
+              drop:
+                - ALL
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].volumeMounts
           value:
-            - name: NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: IMAGE_TAG
-              value: alpine
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].volumeMounts
-          value:
-           - mountPath: /tmp
-             name: tmp-volume
+            - mountPath: /tmp
+              name: tmp-volume
+
   - it: should add volume secrets
     set:
       secretVolume:
         file-name.txt: aGVsbG8K
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].volumeMounts[1]
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].volumeMounts[1]
           value:
             mountPath: /secrets
             name: RELEASE-NAME-volume
@@ -89,94 +64,86 @@ tests:
         ENV: hello
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].envFrom[0]
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].envFrom[0]
           value:
             secretRef:
               name: RELEASE-NAME-env
 
-  - it: should add s3 credential environment variables
+  - it: should create a Pod with s3Bucket connection details
     set:
       infra:
         s3Bucket:
-          name: "s3-bucket-name"
-        serviceAccount:
-          name: "serviceAccountName"
+          enabled: true
     asserts:
       - contains:
           path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: "S3_REGION"
+            name: S3_BUCKET_NAME
             valueFrom:
               secretKeyRef:
-                name: s3-bucket-name-s3bucket
-                key: region
-      - contains:
-          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: "S3_ID"
-            valueFrom:
-              secretKeyRef:
-                name: s3-bucket-name-s3bucket
                 key: id
+                name: RELEASE-NAME-s3bucket
       - contains:
           path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: "S3_ARN"
-            valueFrom:
-              secretKeyRef:
-                name: s3-bucket-name-s3bucket
-                key: arn
+            name: S3_BUCKET_URL
+            value: s3://$(S3_BUCKET_NAME)/
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: S3_ENDPOINT_URL
+            value: https://s3.$(AWS_REGION).amazonaws.com/
 
-  - it: should add database credentials environment variables
+  - it: should create a Pod with PostgresInstance connection details
     set:
       infra:
         postgres:
-          name: "database-name"
+          enabled: true
     asserts:
-    - contains:
-        path: spec.jobTemplate.spec.template.spec.containers[0].env
-        content:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
             name: "DATABASE_NAME"
             value: app
-    - contains:
-        path: spec.jobTemplate.spec.template.spec.containers[0].env
-        content:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
             name: "DATABASE_HOST"
             valueFrom:
-                secretKeyRef:
-                  key: host
-                  name: database-name-postgres
-    - contains:
-        path: spec.jobTemplate.spec.template.spec.containers[0].env
-        content:
+              secretKeyRef:
+                key: host
+                name: RELEASE-NAME-postgres
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
             name: "DATABASE_PORT"
             valueFrom:
-                secretKeyRef:
-                  key: port
-                  name: database-name-postgres
-    - contains:
-        path: spec.jobTemplate.spec.template.spec.containers[0].env
-        content:
+              secretKeyRef:
+                key: port
+                name: RELEASE-NAME-postgres
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
             name: "DATABASE_USERNAME"
             valueFrom:
-                secretKeyRef:
-                  key: username
-                  name: database-name-postgres
-    - contains:
-        path: spec.jobTemplate.spec.template.spec.containers[0].env
-        content:
+              secretKeyRef:
+                key: username
+                name: RELEASE-NAME-postgres
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
             name: "DATABASE_PASSWORD"
             valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: database-name-postgres
-    - contains:
-        path: spec.jobTemplate.spec.template.spec.containers[0].env
-        content:
+              secretKeyRef:
+                key: password
+                name: RELEASE-NAME-postgres
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
             name: DATABASE_URL
             value: postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
-    - contains:
-        path: spec.jobTemplate.spec.template.spec.containers[0].env
-        content:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
             name: JDBC_DATABASE_URL
             value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)

@@ -96,6 +96,9 @@ helm install app helm-charts/app
 |-----|------|---------|-------------|
 | pod.additionalVolumes | list | `[]` | Configuration for additional volumes. See example in values.yaml |
 | pod.additionalVolumeMounts | list | `[]` | Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml |
+| pod.labels | object | `{}` | Additional labels to add to pods |
+| pod.annotations | object | `{}` | Additional annotations to add to pods |
+| pod.nodeSelector | object | `{}` | Set a nodeSelector(s) on your pods |
 | podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/) |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
