@@ -89,6 +89,12 @@ helm install app helm-charts/app
 | infra.cloudfront.geoRestriction.restrictionType | string | `"allow"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
 | infra.cloudfront.geoRestriction.locations | list | `["GB"]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
 | infra.cloudfront.originHeaderAuth | bool | `true` | Set to 'true' to enable authentication between CloudFront and the origin |
+| infra.redis.enabled | bool | `false` | Set to `true` to deploy a `RedisCluster` resource |
+| infra.redis.nodeGroups | int | `1` | Set the number of node groups for the `RedisCluster` |
+| infra.redis.replicasPerNodeGroup | int | `0` | Set the number of replicas per node group for the `RedisCluster` |
+| infra.redis.size | string | `micro` | Options: micro, small, medium, large or xlarge |
+| infra.redis.version | float | `7.1` | Options: 7.1, 7.0 |
+| infra.redis.multiAz | bool | `false` | Set to `true` to deploy the `RedisCluster` across multiple availability zones |
 
 ### Other Values
 
@@ -101,12 +107,6 @@ helm install app helm-charts/app
 | pod.nodeSelector | object | `{}` | Set a nodeSelector(s) on your pods |
 | podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/) |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
-| infra.redis.enabled | bool | `false` |  |
-| infra.redis.nodeGroups | int | `1` |  |
-| infra.redis.replicasPerNodeGroup | int | `0` |  |
-| infra.redis.size | string | `"micro"` |  |
-| infra.redis.version | float | `7.1` |  |
-| infra.redis.multiAz | bool | `false` |  |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. See examples in values.yaml |
 | preRollbackCommand | string[] | `[]` | Command to run before a rollback. See examples in values.yaml |
