@@ -339,3 +339,55 @@ tests:
           content:
             name: S3_ENDPOINT_URL
             value: https://s3.$(AWS_REGION).amazonaws.com/
+
+  - it: should create Deployment with single node group redis connection details
+    set:
+      infra:
+       redis:
+         enabled: true
+         nodeGroups: 1
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_PRIMARY_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: RELEASE-NAME-redis-connection
+                key: primaryEndpointAddress
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_READER_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: RELEASE-NAME-redis-connection
+                key: readerEndpointAddress
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_USERNAME
+            value: RELEASE-NAME-redis
+
+  - it: should create Deployment with multi node group redis connection details
+    set:
+      infra:
+        redis:
+          enabled: true
+          nodeGroups: 4
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_CONFIGURATION_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: RELEASE-NAME-redis-connection
+                key: configurationEndpointAddress
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_USERNAME
+            value: RELEASE-NAME-redis

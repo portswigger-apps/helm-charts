@@ -206,6 +206,22 @@ tests:
                   - port: "443"
                     protocol: TCP
 
+  - it: should add egress rules for ElastiCache when redis is enabled
+    set:
+      infra:
+        redis:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: "*.*.*.*.cache.amazonaws.com"
+            toPorts:
+              - ports:
+                  - port: "6379"
+                    protocol: TCP
+
   - it: should add egress rules for externalHttpsServices
     set:
       ciliumNetworkPolicy:

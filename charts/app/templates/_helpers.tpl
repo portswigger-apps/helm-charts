@@ -150,3 +150,38 @@ Ingress annotations
 traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Release.Name }}-chain@kubernetescrd
 {{- end }}
 {{- end -}}
+
+{{/*
+Name of the secret that stores redis connection details
+*/}}
+{{- define "app.redisConnectionSecretName" -}}
+{{- include "app.name" . -}}-redis-connection
+{{- end -}}
+
+{{/*
+Redis connection secret env variables
+*/}}
+{{- define "app.redisConnectionSecretEnv" -}}
+{{- if .Values.infra.redis.enabled -}}
+- name: REDIS_USERNAME
+  value: {{ include "app.name" . -}}-redis
+{{- if gt (int .Values.infra.redis.nodeGroups) 1}}
+- name: REDIS_CONFIGURATION_ENDPOINT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.redisConnectionSecretName" . }}
+      key: configurationEndpointAddress
+{{- else }}
+- name: REDIS_PRIMARY_ENDPOINT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.redisConnectionSecretName" . }}
+      key: primaryEndpointAddress
+- name: REDIS_READER_ENDPOINT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.redisConnectionSecretName" . }}
+      key: readerEndpointAddress
+{{- end -}}
+{{- end -}}
+{{- end -}}

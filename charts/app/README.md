@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
+![Version: 0.4.1](https://img.shields.io/badge/Version-0.4.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.1](https://img.shields.io/badge/AppVersion-0.4.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.1.0 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.1.1 |
 
 ## Values
 
@@ -101,6 +101,12 @@ helm install app helm-charts/app
 | pod.nodeSelector | object | `{}` | Set a nodeSelector(s) on your pods |
 | podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/) |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
+| infra.redis.enabled | bool | `false` |  |
+| infra.redis.nodeGroups | int | `1` |  |
+| infra.redis.replicasPerNodeGroup | int | `0` |  |
+| infra.redis.size | string | `"micro"` |  |
+| infra.redis.version | float | `7.1` |  |
+| infra.redis.multiAz | bool | `false` |  |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. See examples in values.yaml |
 | preRollbackCommand | string[] | `[]` | Command to run before a rollback. See examples in values.yaml |

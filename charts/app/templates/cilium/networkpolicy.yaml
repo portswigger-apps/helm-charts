@@ -70,6 +70,15 @@ spec:
         protocol: TCP
   {{- end }}
 
+  {{- if .Values.infra.redis.enabled }}
+  - toFQDNs:
+      - matchPattern: "*.*.*.*.cache.amazonaws.com"
+    toPorts:
+      - ports:
+          - port: "6379"
+            protocol: TCP
+  {{- end }}
+
   {{- if .Values.infra.postgres.enabled }}
   - toFQDNs:
     - matchPattern: {{ default .Release.Name .Values.infra.postgres.nameOverride }}.*.*.rds.amazonaws.com
