@@ -39,3 +39,15 @@ Secret value used to authenticate CloudFront with the origin
 {{- define "app.cloudfrontSecretValue" -}}
 {{- .Values.global.ingress.host | sha256sum }}
 {{- end -}}
+
+
+{{/*
+Name of parameter group used in Redis Cluster
+*/}}
+{{- define "infra.redisParameterGroupName" -}}
+{{- if gt (int .Values.redis.nodeGroups) 1 -}}
+"default.redis7.cluster.on"
+{{- else -}}
+"default.redis7"
+{{- end -}}
+{{- end -}}

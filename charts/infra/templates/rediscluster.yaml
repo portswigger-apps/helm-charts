@@ -1,0 +1,18 @@
+{{- if .Values.redis.enabled }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: RedisCluster
+metadata:
+  name: {{ include "infra.name" . }}
+  labels:
+    {{- include "infra.labels" . | nindent 8 }}
+spec:
+  nodeGroups: {{ .Values.redis.nodeGroups }}
+  replicasPerNodeGroup: {{ .Values.redis.replicasPerNodeGroup }}
+  size: {{ .Values.redis.size }}
+  version: {{ .Values.redis.version }}
+  multiAZ: {{ .Values.redis.multiAz }}
+  automaticFailoverEnabled: {{ gt (int .Values.redis.nodeGroups) 1 }}
+  writeConnectionSecretToRef:
+    name: {{ include "infra.name" . }}-redis-connection
+  parameterGroupName: {{ include "infra.redisParameterGroupName" . }}
+{{- end -}}

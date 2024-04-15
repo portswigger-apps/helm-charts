@@ -130,3 +130,26 @@ cloudfront:
       # cloudfront.defaultCacheBehavior.queryStrings.allowlistedNames -- A list of query parameter names to include in the cache key.
       # @section -- cloudfront
       allowlistedNames: []
+
+redis:
+  # redis.enabled -- Set to `true` to deploy a `RedisCluster` resource
+  # @section -- redis
+  enabled: false
+  # redis.nodeGroups -- (int) Set the number of node groups for the `RedisCluster`
+  # @section -- redis
+  nodeGroups: 1
+  # redis.replicasPerNodeGroup -- Set the number of replicas per node group for the `RedisCluster`
+  # @section -- redis
+  replicasPerNodeGroup: 0
+  # redis.size -- Options: micro, small, medium, large or xlarge
+  # @default -- `micro`
+  # @section -- redis
+  size: micro
+  # redis.version -- Options: 7.1, 7.0
+  # @default -- `7.1`
+  # @section -- redis
+  version: 7.1
+  # redis.multiAz -- (bool) Set to `true` to deploy the `RedisCluster` across multiple availability zones
+  # @default -- `false`
+  # @section -- redis
+  multiAz: false
