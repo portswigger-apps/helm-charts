@@ -9,7 +9,7 @@ spec:
   nodeGroups: {{ .Values.redis.nodeGroups }}
   replicasPerNodeGroup: {{ .Values.redis.replicasPerNodeGroup }}
   size: {{ .Values.redis.size }}
-  version: {{ .Values.redis.version }}
+  version: {{ .Values.redis.version | quote }}
   multiAZ: {{ .Values.redis.multiAz }}
   automaticFailoverEnabled: {{ gt (int .Values.redis.nodeGroups) 1 }}
   writeConnectionSecretToRef:

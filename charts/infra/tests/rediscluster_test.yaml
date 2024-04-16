@@ -41,6 +41,9 @@ tests:
       - equal:
           path: spec.writeConnectionSecretToRef.name
           value: RELEASE-NAME-redis-connection
+      - equal:
+          path: spec.version
+          value: "7.1"
 
   - it: should set parameter group name and automatic failover if multi node groups
     set:
