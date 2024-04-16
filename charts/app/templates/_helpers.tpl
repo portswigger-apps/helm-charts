@@ -162,11 +162,11 @@ Name of the secret that stores redis connection details
 Redis connection secret env variables
 */}}
 {{- define "app.redisConnectionSecretEnv" -}}
-- name: REDIS_PORT
-  value: "6379"
 {{- if .Values.infra.redis.enabled -}}
 - name: REDIS_USERNAME
   value: {{ include "app.name" . -}}-redis
+- name: REDIS_PORT
+  value: "6379"
 {{- if gt (int .Values.infra.redis.nodeGroups) 1}}
 - name: REDIS_CONFIGURATION_ENDPOINT
   valueFrom:
