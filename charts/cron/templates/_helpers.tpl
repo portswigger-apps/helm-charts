@@ -45,6 +45,18 @@ The name of the service account to use
 {{- end -}}
 
 {{/*
+The name of the service account to use
+*/}}
+{{- define "cron.serviceAccountAnnotations" -}}
+{{- range $k, $v := .Values.global.serviceAccount.annotations }}
+{{ $k }}: {{ $v }}
+{{- end }}
+{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled) }}
+eks.amazonaws.com/role-arn: arn:aws:iam::{{- .Values.global.aws.accountId }}:role/product-roles/{{ include "cron.serviceAccountName" . }}-irsarole
+{{- end }}
+{{- end -}}
+
+{{/*
 Name of the secret that stores postgres connection details
 */}}
 {{- define "cron.postgresConnectionSecretName" -}}
