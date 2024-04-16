@@ -200,7 +200,8 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchPattern: s3.*.amazonaws.com
+              - matchPattern: "*.s3.*.amazonaws.com"
+              - matchPattern: "sts.amazonaws.com"
             toPorts:
               - ports:
                   - port: "443"
