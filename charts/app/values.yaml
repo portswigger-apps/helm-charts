@@ -328,7 +328,7 @@ infra:
     # infra.redis.version -- Options: 7.1, 7.0
     # @default -- `7.1`
     # @section -- infra
-    version: 7.1
+    version: "7.1"
     # infra.redis.multiAz -- (bool) Set to `true` to deploy the `RedisCluster` across multiple availability zones
     # @default -- `false`
     # @section -- infra
