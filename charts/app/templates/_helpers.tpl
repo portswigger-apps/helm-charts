@@ -168,18 +168,18 @@ Redis connection secret env variables
 - name: REDIS_PORT
   value: "6379"
 {{- if gt (int .Values.infra.redis.nodeGroups) 1}}
-- name: REDIS_CONFIGURATION_ENDPOINT
+- name: REDIS_URL
   valueFrom:
     secretKeyRef:
       name: {{ include "app.redisConnectionSecretName" . }}
       key: configurationEndpointAddress
 {{- else }}
-- name: REDIS_PRIMARY_ENDPOINT
+- name: REDIS_URL
   valueFrom:
     secretKeyRef:
       name: {{ include "app.redisConnectionSecretName" . }}
       key: primaryEndpointAddress
-- name: REDIS_READER_ENDPOINT
+- name: REDIS_READER_URL
   valueFrom:
     secretKeyRef:
       name: {{ include "app.redisConnectionSecretName" . }}

@@ -351,7 +351,7 @@ tests:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: REDIS_PRIMARY_ENDPOINT
+            name: REDIS_URL
             valueFrom:
               secretKeyRef:
                 name: RELEASE-NAME-redis-connection
@@ -359,7 +359,7 @@ tests:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: REDIS_READER_ENDPOINT
+            name: REDIS_READER_URL
             valueFrom:
               secretKeyRef:
                 name: RELEASE-NAME-redis-connection
@@ -369,6 +369,11 @@ tests:
           content:
             name: REDIS_USERNAME
             value: RELEASE-NAME-redis
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_PORT
+            value: "6379"
 
   - it: should create Deployment with multi node group redis connection details
     set:
@@ -381,7 +386,7 @@ tests:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: REDIS_CONFIGURATION_ENDPOINT
+            name: REDIS_URL
             valueFrom:
               secretKeyRef:
                 name: RELEASE-NAME-redis-connection
