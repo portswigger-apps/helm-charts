@@ -153,3 +153,6 @@ redis:
   # @default -- `false`
   # @section -- redis
   multiAz: false
+  # redis.password -- The password for the `RedisCluster`. Store in a SOPS encrypted `secrets.yaml` file. See the password requirements [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Auth.html).
+  # @section -- redis
+  password: ""

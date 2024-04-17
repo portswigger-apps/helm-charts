@@ -1,7 +1,7 @@
 suite: RedisCluster
 
 templates:
-  - rediscluster.yaml
+  - redis/rediscluster.yaml
 
 tests:
   - it: should not create a CloudFrontSite by default
