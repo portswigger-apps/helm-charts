@@ -41,7 +41,7 @@ global:
     # @section -- global
     automountServiceAccountToken: false
 
-    # global.serviceAccount.annotations --Set annotations on the `ServiceAccount`
+    # global.serviceAccount.annotations -- Set annotations on the `ServiceAccount`
     # @section -- global
     annotations: {}
 
