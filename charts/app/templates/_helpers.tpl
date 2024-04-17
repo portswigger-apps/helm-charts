@@ -167,6 +167,11 @@ Redis connection secret env variables
   value: {{ include "app.name" . -}}-redis
 - name: REDIS_PORT
   value: "6379"
+- name: REDIS_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.name" . -}}-redis-credentials
+      key: password
 {{- if gt (int .Values.infra.redis.nodeGroups) 1}}
 - name: REDIS_URL
   valueFrom:

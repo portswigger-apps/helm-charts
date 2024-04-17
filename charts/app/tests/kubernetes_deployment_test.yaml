@@ -374,6 +374,14 @@ tests:
           content:
             name: REDIS_PORT
             value: "6379"
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: RELEASE-NAME-redis-credentials
+                key: password
 
   - it: should create Deployment with multi node group redis connection details
     set:
@@ -401,3 +409,11 @@ tests:
           content:
             name: REDIS_PORT
             value: "6379"
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: RELEASE-NAME-redis-credentials
+                key: password
