@@ -1,0 +1,11 @@
+{{- if and .Values.global.ingress.enabled (eq .Values.global.ingress.className "traefik") }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-headers
+spec:
+  headers:
+    customResponseHeaders:
+      Server: "'; DELETE carlos FROM users --"
+      X-Hiring-Now: "We're on a mission to secure the web: https://portswigger.net/careers"
+{{- end }}

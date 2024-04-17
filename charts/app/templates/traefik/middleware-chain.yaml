@@ -7,6 +7,7 @@ spec:
   chain:
     middlewares:
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-https@kubernetescrd
+    - name: {{.Release.Namespace}}-{{ .Release.Name }}-headers@kubernetescrd
 {{- if and .Values.infra.cloudfront.enabled .Values.infra.cloudfront.originHeaderAuth }}
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-cloudfront-auth@kubernetescrd
 {{- end }}
