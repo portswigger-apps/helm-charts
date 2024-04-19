@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.4.7](https://img.shields.io/badge/Version-0.4.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.7](https://img.shields.io/badge/AppVersion-0.4.7-informational?style=flat-square)
+![Version: 0.4.8](https://img.shields.io/badge/Version-0.4.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.8](https://img.shields.io/badge/AppVersion-0.4.8-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.1.3 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.1.4 |
 
 ## Values
 
@@ -86,6 +86,7 @@ helm install app helm-charts/app
 | infra.cloudfront.hostedZoneId | string | `""` | The Route53 hosted zone ID to create the certificates and domain names for the `CloudFrontSite` resource |
 | infra.cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | infra.cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
+| infra.cloudfront.restrictToOffice | bool | `false` | Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges |
 | infra.cloudfront.geoRestriction.restrictionType | string | `"allow"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
 | infra.cloudfront.geoRestriction.locations | list | `["GB"]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
 | infra.cloudfront.originHeaderAuth | bool | `true` | Set to 'true' to enable authentication between CloudFront and the origin |
