@@ -76,6 +76,11 @@ cloudfront:
   # @section -- cloudfront
   targetOriginDomainName: ""
 
+  # cloudfront.restrictToOffice -- Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges
+  # @default -- `false`
+  # @section -- cloudfront
+  restrictToOffice: false
+
   geoRestriction:
     # cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
     # @section -- cloudfront

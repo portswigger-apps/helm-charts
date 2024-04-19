@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.3](https://img.shields.io/badge/AppVersion-0.1.3-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.4](https://img.shields.io/badge/AppVersion-0.1.4-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -47,6 +47,7 @@ helm install infra helm-charts/infra
 | cloudfront.hostedZoneId | string | `""` | The Route53 hosted zone ID to create the certificates and domain names for the `CloudFrontSite` resource |
 | cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
+| cloudfront.restrictToOffice | bool | `false` | Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges |
 | cloudfront.geoRestriction.restrictionType | string | `"allow"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
 | cloudfront.geoRestriction.locations | list | `["GB"]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
 | cloudfront.defaultCacheBehavior.allowedMethods | list | `["GET","HEAD","OPTIONS"]` | The HTTP methods that the `CloudFrontSite` allows |

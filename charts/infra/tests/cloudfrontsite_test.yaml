@@ -16,6 +16,7 @@ tests:
           host: example.com
       cloudfront:
         enabled: true
+        restrictToOffice: true
         domainName: cloudfront.example.com
         hostedZoneId: ZABCDEFGHIJKL
         geoRestriction:
@@ -47,6 +48,9 @@ tests:
       - equal:
           path: spec.targetOriginDomainName
           value: example.com
+      - equal:
+          path: spec.restrictToOffice
+          value: "true"
       - equal:
           path: spec.domainName
           value: cloudfront.example.com

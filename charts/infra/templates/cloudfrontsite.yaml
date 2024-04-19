@@ -11,4 +11,5 @@ spec:
   domainName: {{ .Values.cloudfront.domainName }}
   hostedZoneId: {{ .Values.cloudfront.hostedZoneId }}
   defaultCacheBehavior: {{ .Values.cloudfront.defaultCacheBehavior | toYaml | nindent 4 }}
+  restrictToOffice: {{ .Values.cloudfront.restrictToOffice | quote}}
 {{- end -}}
