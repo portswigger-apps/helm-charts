@@ -1,4 +1,4 @@
-suite: Middleware
+suite: Middleware (cloudfront-auth)
 
 templates:
   - traefik/middleware-cloudfront-auth.yaml

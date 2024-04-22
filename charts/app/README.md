@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.4.8](https://img.shields.io/badge/Version-0.4.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.8](https://img.shields.io/badge/AppVersion-0.4.8-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -28,6 +28,9 @@ helm install app helm-charts/app
 | global.ingress.annotations | object | `{}` | Set annotations on the `Ingress` |
 | global.ingress.className | string | `"traefik"` | Override the `Ingress` class. In most cases this should be left as default |
 | global.ingress.paths | list | `["/"]` | Path prefixes that you want to make available externally with the `Ingress` |
+| global.ingress.customResponseHeaders | object | `{"X-Robots-Tag":"noindex"}` | Add custom response headers to an apps `Ingress` |
+| global.ingress.allowFromOffice | bool | `true` | Allow access to the Traefik `Ingress` from PortSwigger office IP ranges |
+| global.ingress.ipAllowListCIDRs | list | `[]` | Extra IP CIDR ranges to allow access from. |
 | global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created |
 | global.serviceAccount.name | string | `.Release.Name` | `ServiceAccount` name. Use with `global.serviceAccount.enabled: false` to use an existing `ServiceAccount` |
 | global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false` |
@@ -86,7 +89,7 @@ helm install app helm-charts/app
 | infra.cloudfront.hostedZoneId | string | `""` | The Route53 hosted zone ID to create the certificates and domain names for the `CloudFrontSite` resource |
 | infra.cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | infra.cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
-| infra.cloudfront.restrictToOffice | bool | `false` | Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges |
+| infra.cloudfront.restrictToOffice | bool | `true` | Set to `false` to allow access to the `CloudFrontSite` outside of the office IPs. (managed outside of app-chart) |
 | infra.cloudfront.geoRestriction.restrictionType | string | `"allow"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
 | infra.cloudfront.geoRestriction.locations | list | `["GB"]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
 | infra.cloudfront.originHeaderAuth | bool | `true` | Set to 'true' to enable authentication between CloudFront and the origin |

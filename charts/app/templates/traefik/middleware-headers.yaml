@@ -8,4 +8,5 @@ spec:
     customResponseHeaders:
       Server: "'; DELETE carlos FROM users --"
       X-Hiring-Now: "We're on a mission to secure the web: https://portswigger.net/careers"
+      {{- toYaml .Values.global.ingress.customResponseHeaders | nindent 6 }}
 {{- end }}

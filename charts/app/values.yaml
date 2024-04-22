@@ -8,127 +8,295 @@ global:
     # global.ingress.enabled -- Set to `true` to expose the application with a Kubernetes `Ingress`
     # @section -- global
     enabled: false
-
     # global.ingress.host -- Ingress host used to configure cloudfront target
     # @section -- global
     host: ""
-
     # global.ingress.annotations -- Set annotations on the `Ingress`
     # @section -- global
     annotations: {}
-
     # global.ingress.className --  Override the `Ingress` class. In most cases this should be left as default
     # @section -- global
     className: "traefik"
-
     # global.ingress.paths -- Path prefixes that you want to make available externally with the `Ingress`
     # @section -- global
     paths:
       - "/"
-
+    # global.ingress.customResponseHeaders -- Add custom response headers to an apps `Ingress`
+    # @section -- global
+    customResponseHeaders:
+      X-Robots-Tag: noindex
+    # global.ingress.allowFromOffice --Allow access to the Traefik `Ingress` from PortSwigger office IP ranges
+    # @section -- global
+    allowFromOffice: true
+    # global.ingress.allowFromOfficeCIDRs -- PortSwigger office IP ranges
+    # @section -- global
+    # @ignored
+    allowFromOfficeCIDRs:
+      - 164.39.15.192/29
+      - 217.138.234.184/29
+      - 52.211.196.189/32
+    # global.ingress.allowFromCloudFrontCIDRs -- Cloudfront IP ranges
+    # @section -- global
+    # @ignored
+    allowFromCloudFrontCIDRs:
+      - 108.138.0.0/15
+      - 108.156.0.0/14
+      - 111.13.171.128/26
+      - 111.13.171.192/26
+      - 111.13.185.32/27
+      - 111.13.185.64/27
+      - 116.129.226.0/25
+      - 116.129.226.128/26
+      - 118.193.97.128/25
+      - 118.193.97.64/26
+      - 119.147.182.0/25
+      - 119.147.182.128/26
+      - 120.232.236.0/25
+      - 120.232.236.128/26
+      - 120.253.240.192/26
+      - 120.253.241.160/27
+      - 120.253.245.128/26
+      - 120.253.245.192/27
+      - 120.52.12.64/26
+      - 120.52.153.192/26
+      - 120.52.22.96/27
+      - 120.52.39.128/27
+      - 13.113.196.64/26
+      - 13.113.203.0/24
+      - 13.124.199.0/24
+      - 13.210.67.128/26
+      - 13.224.0.0/14
+      - 13.228.69.0/24
+      - 13.233.177.192/26
+      - 13.249.0.0/16
+      - 13.32.0.0/15
+      - 13.35.0.0/16
+      - 13.54.63.128/26
+      - 13.59.250.0/26
+      - 130.176.0.0/17
+      - 130.176.128.0/18
+      - 130.176.192.0/19
+      - 130.176.224.0/20
+      - 143.204.0.0/16
+      - 144.220.0.0/16
+      - 15.158.0.0/16
+      - 15.188.184.0/24
+      - 15.207.13.128/25
+      - 15.207.213.128/25
+      - 18.154.0.0/15
+      - 18.160.0.0/15
+      - 18.164.0.0/15
+      - 18.172.0.0/15
+      - 18.175.65.0/24
+      - 18.175.66.0/24
+      - 18.175.67.0/24
+      - 18.192.142.0/23
+      - 18.199.68.0/22
+      - 18.199.72.0/22
+      - 18.199.76.0/22
+      - 18.200.212.0/23
+      - 18.216.170.128/25
+      - 18.229.220.192/26
+      - 18.230.229.0/24
+      - 18.230.230.0/25
+      - 18.238.0.0/15
+      - 18.244.0.0/15
+      - 18.64.0.0/14
+      - 18.68.0.0/16
+      - 180.163.57.0/25
+      - 180.163.57.128/26
+      - 204.246.164.0/22
+      - 204.246.168.0/22
+      - 204.246.172.0/24
+      - 204.246.173.0/24
+      - 204.246.174.0/23
+      - 204.246.176.0/20
+      - 205.251.200.0/24
+      - 205.251.201.0/24
+      - 205.251.202.0/23
+      - 205.251.204.0/23
+      - 205.251.206.0/23
+      - 205.251.208.0/20
+      - 205.251.249.0/24
+      - 205.251.250.0/23
+      - 205.251.252.0/23
+      - 205.251.254.0/24
+      - 216.137.32.0/19
+      - 3.10.17.128/25
+      - 3.101.158.0/23
+      - 3.107.43.128/25
+      - 3.107.44.0/25
+      - 3.107.44.128/25
+      - 3.11.53.0/24
+      - 3.128.93.0/24
+      - 3.134.215.0/24
+      - 3.146.232.0/22
+      - 3.147.164.0/22
+      - 3.147.244.0/22
+      - 3.160.0.0/14
+      - 3.164.0.0/18
+      - 3.164.128.0/17
+      - 3.164.64.0/18
+      - 3.165.0.0/16
+      - 3.166.0.0/15
+      - 3.168.0.0/14
+      - 3.172.0.0/18
+      - 3.231.2.0/25
+      - 3.234.232.224/27
+      - 3.236.169.192/26
+      - 3.236.48.0/23
+      - 3.29.40.128/26
+      - 3.29.40.192/26
+      - 3.29.40.64/26
+      - 3.29.57.0/26
+      - 3.35.130.128/25
+      - 34.195.252.0/24
+      - 34.216.51.0/25
+      - 34.223.12.224/27
+      - 34.223.80.192/26
+      - 34.226.14.0/24
+      - 35.158.136.0/24
+      - 35.162.63.192/26
+      - 35.167.191.128/26
+      - 35.93.168.0/23
+      - 35.93.170.0/23
+      - 35.93.172.0/23
+      - 36.103.232.0/25
+      - 36.103.232.128/26
+      - 43.218.56.128/26
+      - 43.218.56.192/26
+      - 43.218.56.64/26
+      - 43.218.71.0/26
+      - 44.220.194.0/23
+      - 44.220.196.0/23
+      - 44.220.198.0/23
+      - 44.220.200.0/23
+      - 44.220.202.0/23
+      - 44.222.66.0/24
+      - 44.227.178.0/24
+      - 44.234.108.128/25
+      - 44.234.90.252/30
+      - 52.124.128.0/17
+      - 52.15.127.128/26
+      - 52.199.127.192/26
+      - 52.212.248.0/26
+      - 52.220.191.0/26
+      - 52.222.128.0/17
+      - 52.46.0.0/18
+      - 52.47.139.0/24
+      - 52.52.191.128/26
+      - 52.56.127.0/25
+      - 52.57.254.0/24
+      - 52.66.194.128/26
+      - 52.78.247.128/26
+      - 52.82.128.0/19
+      - 52.84.0.0/15
+      - 54.182.0.0/16
+      - 54.192.0.0/16
+      - 54.230.0.0/17
+      - 54.230.128.0/18
+      - 54.230.200.0/21
+      - 54.230.208.0/20
+      - 54.230.224.0/19
+      - 54.233.255.128/26
+      - 54.239.128.0/18
+      - 54.239.192.0/19
+      - 54.240.128.0/18
+      - 58.254.138.0/25
+      - 58.254.138.128/26
+      - 64.252.128.0/18
+      - 64.252.64.0/18
+      - 65.8.0.0/16
+      - 65.9.0.0/17
+      - 65.9.128.0/18
+      - 70.132.0.0/18
+      - 71.152.0.0/17
+      - 99.79.169.0/24
+      - 99.84.0.0/16
+      - 99.86.0.0/16
+    # global.ingress.ipAllowListCIDRs -- Extra IP CIDR ranges to allow access from.
+    # @section -- global
+    ipAllowListCIDRs: []
   serviceAccount:
     # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
     # @section -- global
     enabled: true
-
     # global.serviceAccount.name -- `ServiceAccount` name. Use with `global.serviceAccount.enabled: false`
     # to use an existing `ServiceAccount`
     # @default -- `.Release.Name`
     # @section -- global
     name: ""
-
     # global.serviceAccount.automountServiceAccountToken -- Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false`
     # @section -- global
     automountServiceAccountToken: false
-
     # global.serviceAccount.annotations -- Set annotations on the `ServiceAccount`
     # @section -- global
     annotations: {}
-
 image:
   # image.name -- The container image of your application
   # @section -- application
   name: "public.ecr.aws/nginx/nginx"
-
   # image.tag -- The tag for the image that you want to deploy
   # @section -- application
   tag: "alpine"
-
 # args -- Arguments to be passed to your application container
 # @section -- application
 args: []
-
 # env -- **Non-secret** environment variables to configure your application. Formatted as `ENV_VAR_NAME: env-var-value`
 # @section -- application
 env: {}
-
 # envFrom -- Create environment variables from `Secret` or `ConfigMap` resources.
 # See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
 # @section -- application
 envFrom: []
-
 # secretEnv -- Secret values that are mounted as environment variables. Formatted as `ENV_VAR_NAME: env-var-value`
 # in a SOPS encrypted `secrets.yaml` file
 # @section -- application
 secretEnv: {}
-
 # secretVolume -- Secret values that will be available as files in `/secrets` inside the container.
 # Formatted as `file.name: <base64 encoded file>`
 # @section -- application
 secretVolume: {}
-
 deployment:
   # deployment.replicas -- The minimum number of replicas of the application
   # @section -- application
   replicas: 1
-
   # deployment.maxReplicas -- (int) The maximum number of replicas of the application
   # @default -- `.Values.deployment.replicas
   # @section -- application
   maxReplicas: null
-
 ports:
   app-port:
     # ports.app-port.port -- The port the application is listening on
     # @section -- application
     port: 8080
-
     # ports.app-port.protocol -- The protocol the application uses. This should alost always be TCP
     # @section -- application
     protocol: TCP
-
     # ports.app-port.expose -- Whether the port should be accessible to the cluster and outside world
     # @section -- application
     expose: true
-
 metricsEndpoint:
   # metricsEndpoint.path -- The path to a Prometheus compatible metrics endpoint
   # @section -- application
   path: /metrics
-
   # metricsEndpoint.port -- The name of the port that the metrics endpoint is listening on
   # @section -- application
   port: app-port
-
 healthcheckEndpoint:
   # healthcheckEndpoint.path -- The path of the applications HTTP healthcheck endpoint
   # @section -- application
-  path:
-    /health
-
-    # healthcheckEndpoint.port -- TThe name of the port that the healthcheck endpoint is listening on
-    # @section -- application
+  path: /health
+  # healthcheckEndpoint.port -- TThe name of the port that the healthcheck endpoint is listening on
+  # @section -- application
   port: app-port
-
 resources:
   # resources.cpu -- Requested CPU time for the pod
   # @section -- application
   cpu: "100m"
-
   # resources.memory -- Maximum memory usage for the pod
   # @section -- application
   memory: "64Mi"
-
 pod:
   # pod.additionalVolumes -- Configuration for additional volumes. See example in values.yaml
   additionalVolumes: []
@@ -143,40 +311,32 @@ pod:
 
   # pod.labels -- Additional labels to add to pods
   labels: {}
-
   # pod.annotations -- Additional annotations to add to pods
   annotations: {}
-
   # pod.nodeSelector -- Set a nodeSelector(s) on your pods
   nodeSelector: {}
-
 podLogs:
   # podLogs.pipelineStages -- Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/)
   pipelineStages: []
-
 # initContainers -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
 # @section == application
-initContainers:
-  []
-  # - name: init-myservice
-  #   image: nginx
-  #   command: ['sh', '-c', "echo 'output'"]
+initContainers: []
+# - name: init-myservice
+#   image: nginx
+#   command: ['sh', '-c', "echo 'output'"]
 
 service:
   # service.enabled -- Set to true to expose your application within the Kubernetes cluster
   # @section -- network
   enabled: true
-
   # service.annotations -- Add annotations to the Service resource
   # @section -- network
   annotations: {}
-
 ciliumNetworkPolicy:
   # ciliumNetworkPolicy.enabled -- Set to false to remove the CiliumNetworkPolicy. You should keep it and configure it
   # @section -- network
   # @ignored
   enabled: true
-
   # ciliumNetworkPolicy.ingress -- Cilium ingress rules. See examples in values.yaml
   # @section -- network
   ingress: []
@@ -223,54 +383,43 @@ ciliumNetworkPolicy:
   ingressControllerEndpointMatchLabels:
     k8s:io.kubernetes.pod.namespace: ingress
     app.kubernetes.io/name: traefik
-
   # @ignored
   observabilityAgentEndpointMatchLabels:
     k8s:io.kubernetes.pod.namespace: observability
     app.kubernetes.io/name: grafana-agent
-
 infra:
   postgres:
     # infra.postgres.enabled -- Set to `true` to deploy a `PostgresInstance` resource
     # @section -- infra
     enabled: false
-
     # infra.postgres.create -- Set to `false` to skip creation of the `PostgresInstance` if it has been created elsewhere
     # @section -- infra
     create: true
-
     # infra.postgres.nameOverride -- Override the `PostgresInstance` name or use with `create: false` to map the secrets of an instance created elsewhere
     # @section -- infra
     nameOverride: ""
-
     # infra.postgres.size -- Options: micro, small, medium, large or xlarge
     # @default -- `micro`
     # @section -- infra
     size: null
-
     # infra.postgres.version -- Options: 16.2, 15.6 or 14.11
     # @default -- `"16.2"`
     # @section -- infra
     version: null
-
     # infra.postgres.multiAz -- (bool) Set to `true` to deploy the `PostgresInstance` across multiple availability zones
     # @default -- `false`
     # @section -- infra
     multiAz: null
-
   s3Bucket:
     # infra.s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
     # @section -- infra
     enabled: false
-
     # infra.s3Bucket.create -- Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere
     # @section -- infra
     create: true
-
     # infra.s3Bucket.nameOverride -- Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere
     # @section -- infra
     nameOverride: ""
-
     # infra.s3Bucket.lifecycleRules -- (list) Configure the `s3Bucket` storage [lifecycle rules](https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule)
     # @default -- `[]`
     # @section -- infra
@@ -278,44 +427,34 @@ infra:
       - expiration:
           - days: 0
         status: Disabled
-
   cloudfront:
     # infra.cloudfront.enabled -- Set to `true` to deploy an `CloudFrontSite` resource
     # @section -- infra
     enabled: false
-
     # infra.cloudfront.hostedZoneId -- The Route53 hosted zone ID to create the certificates and domain names for the `CloudFrontSite` resource
     # @section -- infra
     hostedZoneId: ""
-
     # infra.cloudfront.domainName -- The presentation domain name for the `CloudFrontSite` resource
     # @section -- infra
     domainName: ""
-
     # infra.cloudfront.targetOriginDomainName -- The target origin domain name that the `CloudFrontSite` resource fronts
     # @default -- `.Values.global.ingress.host`
     # @section -- infra
     targetOriginDomainName: ""
-
-    # infra.cloudfront.restrictToOffice -- Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges
-    # @default -- `false`
+    # infra.cloudfront.restrictToOffice -- Set to `false` to allow access to the `CloudFrontSite` outside of the office IPs. (managed outside of app-chart)
     # @section -- infra
-    restrictToOffice: false
-
+    restrictToOffice: true
     geoRestriction:
       # infra.cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
       # @section -- infra
       restrictionType: allow
-
       # infra.cloudfront.geoRestriction.locations -- A list of ISO ALPHA-2 country codes to apply restrictions to
       # @section -- infra
       locations:
         - GB
-
     # infra.cloudfront.originHeaderAuth -- Set to 'true' to enable authentication between CloudFront and the origin
     # @section -- infra
     originHeaderAuth: true
-
   redis:
     # infra.redis.enabled -- Set to `true` to deploy a `RedisCluster` resource
     # @section -- infra
@@ -341,20 +480,16 @@ infra:
     # redis.password -- The password for the `RedisCluster`. Store in a SOPS encrypted `secrets.yaml` file. See the password requirements [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Auth.html).
     # @section -- redis
     password: ""
-
 # extraDeploy -- Extra Kubernetes configuration
 extraDeploy: []
-
 # preDeployCommand -- (string[]) Command to run before install and upgrade of your application. See examples in values.yaml
-preDeployCommand:
-  []
-  # - python
-  # - manage.py
-  # - migrate
+preDeployCommand: []
+# - python
+# - manage.py
+# - migrate
 
 # preRollbackCommand -- (string[]) Command to run before a rollback. See examples in values.yaml
-preRollbackCommand:
-  []
-  # - python
-  # - manage.py
-  # - rollback
+preRollbackCommand: []
+# - python
+# - manage.py
+# - rollback

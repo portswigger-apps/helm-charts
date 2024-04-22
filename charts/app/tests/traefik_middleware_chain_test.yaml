@@ -1,4 +1,4 @@
-suite: Middleware
+suite: Middleware (chain)
 
 templates:
   - traefik/middleware-chain.yaml
@@ -25,6 +25,7 @@ tests:
           value:
             chain:
               middlewares:
+                - name: NAMESPACE-RELEASE-NAME-ipallowlist@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
 
@@ -57,6 +58,30 @@ tests:
           value:
             chain:
               middlewares:
+                - name: NAMESPACE-RELEASE-NAME-ipallowlist@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-cloudfront-auth@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
-                - name: NAMESPACE-RELEASE-NAME-cloudfront-auth@kubernetescrd
+
+  - it: should create chain middleware with ipallowlist middleware
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListCIDRs:
+            - 1.1.1.1/32
+            - 1.2.3.4/27
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            chain:
+              middlewares:
+                - name: NAMESPACE-RELEASE-NAME-ipallowlist@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
