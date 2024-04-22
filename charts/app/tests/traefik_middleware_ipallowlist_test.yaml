@@ -1,0 +1,85 @@
+suite: Middleware (ipallowlist)
+
+templates:
+  - traefik/middleware-ipallowlist.yaml
+
+tests:
+  - it: should not create ipallowlist middleware by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create ipallowlist middleware if not using traefik
+    set:
+      global:
+        ingress:
+          host: app.example.io
+          className: tyk
+          ipAllowListCIDRs:
+            - 127.0.0.1/32
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create ipallowlist middleware with `ipAllowListCIDRs` set and ingress enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListCIDRs:
+            - 1.1.1.1/32
+            - 1.2.3.4/27
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            ipAllowList:
+              sourceRange:
+                - 1.1.1.1/32
+                - 1.2.3.4/27
+                - 164.39.15.192/29
+                - 217.138.234.184/29
+                - 52.211.196.189/32
+
+  - it: should create ipallowlist middleware with cloudfront IPs in when cloudfront and ingress enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - contains:
+          path: spec.ipAllowList.sourceRange
+          content: 52.199.127.192/26
+
+  - it: should create ipallowlist middleware with ONLY `ipAllowListCIDRs` set and ingress enabled if `ipAllowListCIDRs` contains 0.0.0.0/0
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListCIDRs:
+            - 0.0.0.0/0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            ipAllowList:
+              sourceRange:
+                - 0.0.0.0/0
