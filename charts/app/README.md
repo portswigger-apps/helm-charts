@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.1.4 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.2.0 |
 
 ## Values
 
@@ -99,6 +99,8 @@ helm install app helm-charts/app
 | infra.redis.size | string | `micro` | Options: micro, small, medium, large or xlarge |
 | infra.redis.version | string | `7.1` | Options: 7.1, 7.0 |
 | infra.redis.multiAz | bool | `false` | Set to `true` to deploy the `RedisCluster` across multiple availability zones |
+| infra.redis.password | string | `""` | The password for the `RedisCluster`. Store in a SOPS encrypted `secrets.yaml` file. See the password requirements [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Auth.html). |
+| infra.bedrock.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access. |
 
 ### Other Values
 
@@ -111,7 +113,6 @@ helm install app helm-charts/app
 | pod.nodeSelector | object | `{}` | Set a nodeSelector(s) on your pods |
 | podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/) |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
-| infra.redis.password | string | `""` |  |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. See examples in values.yaml |
 | preRollbackCommand | string[] | `[]` | Command to run before a rollback. See examples in values.yaml |
