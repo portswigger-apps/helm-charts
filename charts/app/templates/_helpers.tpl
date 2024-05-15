@@ -68,7 +68,7 @@ The name of the service account to use
 {{- range $k, $v := .Values.global.serviceAccount.annotations }}
 {{ $k }}: {{ $v }}
 {{- end }}
-{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled) }}
+{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled .Values.infra.bedrock.enabled) }}
 eks.amazonaws.com/role-arn: arn:aws:iam::{{- .Values.global.aws.accountId }}:role/product-roles/{{ include "app.serviceAccountName" . }}-irsarole
 {{- end }}
 {{- end -}}
