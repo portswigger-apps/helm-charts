@@ -32,9 +32,40 @@ tests:
           path: spec.serviceAccountName
           value: RELEASE-NAME
 
-  - it: should create default named IrsaRole with custom serviceAccountName when enabling s3Bucket serviceAccount name
+  - it: should create default named IrsaRole with custom serviceAccountName when enabling s3Bucket
     set:
       s3Bucket:
+        enabled: true
+      global:
+        serviceAccount:
+          name: my-cool-service-account
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: my-cool-service-account
+      - equal:
+          path: spec.serviceAccountName
+          value: my-cool-service-account
+
+  - it: should create default named IrsaRole when enabling bedrock
+    set:
+      bedrock:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME
+      - equal:
+          path: spec.serviceAccountName
+          value: RELEASE-NAME
+
+  - it: should create default named IrsaRole with custom serviceAccountName when enabling bedrock
+    set:
+      bedrock:
         enabled: true
       global:
         serviceAccount:
