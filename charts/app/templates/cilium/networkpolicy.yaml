@@ -72,6 +72,15 @@ spec:
         protocol: TCP
   {{- end }}
 
+{{- if .Values.infra.bedrock.enabled }}
+  - toFQDNs:
+    - matchName: "bedrock.us-east-1.amazonaws.com"
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  {{- end }}
+
   {{- if .Values.infra.redis.enabled }}
   - toFQDNs:
       - matchPattern: "*.*.*.*.cache.amazonaws.com"

@@ -260,3 +260,19 @@ tests:
               - matchLabels:
                   app.kubernetes.io/app: license-checker
                   k8s:io.kubernetes.pod.namespace: web
+
+  - it: should add egress rules for Bedrock when bedrock is enabled
+    set:
+      infra:
+        bedrock:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: "bedrock.us-east-1.amazonaws.com"
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
