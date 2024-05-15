@@ -1,0 +1,10 @@
+{{- if .Values.bedrock.enabled }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: BedrockPolicy
+metadata:
+  name: {{ default ( include "infra.name" . ) .Values.s3Bucket.nameOverride }}
+  labels:
+    {{- include "infra.labels" . | nindent 8 }}
+spec:
+  irsaRoleName: {{ default ( include "infra.name" . ) .Values.global.serviceAccount.name }}-irsarole
+{{- end }}
