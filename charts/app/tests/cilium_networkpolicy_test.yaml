@@ -271,7 +271,10 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchName: "bedrock.us-east-1.amazonaws.com"
+              - matchName: bedrock.us-east-1.amazonaws.com
+              - matchName: bedrock-runtime.us-east-1.amazonaws.com
+              - matchName: sts.us-east-1.amazonaws.com
+              - matchName: sts.amazonaws.com
             toPorts:
               - ports:
                   - port: "443"
