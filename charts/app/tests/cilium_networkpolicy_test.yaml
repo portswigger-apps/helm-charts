@@ -50,6 +50,7 @@ tests:
           - name: admin-ui
           - name: api-gateway
             namespace: ingress
+          - component: ai-service
     asserts:
       - contains:
           path: spec.ingress
@@ -65,6 +66,9 @@ tests:
               - matchLabels:
                   app.kubernetes.io/app: api-gateway
                   k8s:io.kubernetes.pod.namespace: ingress
+              - matchLabels:
+                  component: ai-service
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
             toPorts:
               - ports:
                   - port: "8080"
@@ -249,6 +253,7 @@ tests:
           - name: prompt-router
           - name: license-checker
             namespace: web
+          - component: ai-service
     asserts:
       - contains:
           path: spec.egress
@@ -260,6 +265,9 @@ tests:
               - matchLabels:
                   app.kubernetes.io/app: license-checker
                   k8s:io.kubernetes.pod.namespace: web
+              - matchLabels:
+                  component: ai-service
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
 
   - it: should add egress rules for Bedrock when bedrock is enabled
     set:

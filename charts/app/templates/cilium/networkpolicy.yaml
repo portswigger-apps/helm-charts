@@ -13,11 +13,22 @@ spec:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: {{ .Release.Namespace }}
         {{- include "app.labelselector" . | nindent 8 }}
+
+    {{- $defaultFromApp := dict "namespace" $.Release.Namespace }}
     {{- range .Values.ciliumNetworkPolicy.fromApps }}
+    {{- $fromApp := merge . $defaultFromApp }}
     - matchLabels:
-        k8s:io.kubernetes.pod.namespace: {{ default $.Release.Namespace .namespace }}
-        app.kubernetes.io/app: {{ .name }}
+      {{- range $key, $val := $fromApp }}
+        {{- if (eq $key "namespace") }}
+        k8s:io.kubernetes.pod.namespace: {{ $val }}
+        {{- else if (eq $key "name") }}
+        app.kubernetes.io/app: {{ $val }}
+        {{- else }}
+        {{ $key }}: {{ $val }}
+        {{- end }}
+      {{- end }}
     {{- end }}
+
     {{- if .Values.global.ingress.enabled }}
     - matchLabels: {{ toYaml .Values.ciliumNetworkPolicy.ingressControllerEndpointMatchLabels | nindent 8 }}
     {{- end }}
@@ -54,10 +65,19 @@ spec:
 
   {{- with .Values.ciliumNetworkPolicy.toApps }}
   - toEndpoints:
+    {{- $defaultToApp := dict "namespace" $.Release.Namespace }}
     {{- range . }}
+    {{- $toApp := merge . $defaultToApp }}
     - matchLabels:
-        k8s:io.kubernetes.pod.namespace: {{ default $.Release.Namespace .namespace }}
-        app.kubernetes.io/app: {{ .name }}
+      {{- range $key, $val := $toApp }}
+        {{- if (eq $key "namespace") }}
+        k8s:io.kubernetes.pod.namespace: {{ $val }}
+        {{- else if (eq $key "name") }}
+        app.kubernetes.io/app: {{ $val }}
+        {{- else }}
+        {{ $key }}: {{ $val }}
+        {{- end }}
+      {{- end }}
     {{- end }}
   {{- end }}
 
