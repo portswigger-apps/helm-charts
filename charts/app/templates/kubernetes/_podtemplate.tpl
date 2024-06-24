@@ -95,12 +95,8 @@ Outputs a pod spec for use in different resources.
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
-          - name: SYSMEMLIMIT
-            valueFrom:
-              resourceFieldRef:
-                resource: limits.memory
           - name: GOMEMLIMIT
-            value: ${$(( $SYSMEMLIMIT - $(($SYSMEMLIMIT * 0.05)) ))%.*}
+            value: {{ mulf (include "app.toBytes" .Values.resources.memory) 0.94 | int }}
           - name: IMAGE_TAG
             value: {{ .Values.image.tag | quote }}
           {{- include "app.s3BucketConnectionSecretEnv" . | nindent 10 }}
