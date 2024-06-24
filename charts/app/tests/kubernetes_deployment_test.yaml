@@ -343,9 +343,9 @@ tests:
   - it: should create Deployment with single node group redis connection details
     set:
       infra:
-       redis:
-         enabled: true
-         nodeGroups: 1
+        redis:
+          enabled: true
+          nodeGroups: 1
     template: kubernetes/deployment.yaml
     asserts:
       - contains:
@@ -417,3 +417,24 @@ tests:
               secretKeyRef:
                 name: RELEASE-NAME-redis-credentials
                 key: password
+
+  - it: should create Deployment with GOMEMLIMIT set
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: GOMEMLIMIT
+            value: "63082332"
+
+  - it: should create Deployment with GOMEMLIMIT set based on override of memory
+    set:
+      resources:
+        memory: 4Gi
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: GOMEMLIMIT
+            value: "4037269258"
