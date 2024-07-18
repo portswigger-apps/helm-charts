@@ -77,9 +77,9 @@ cloudfront:
   targetOriginDomainName: ""
 
   # cloudfront.restrictToOffice -- Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges
-  # @default -- `false`
+  # @default -- `true`
   # @section -- cloudfront
-  restrictToOffice: false
+  restrictToOffice: true
 
   geoRestriction:
     # cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
@@ -110,16 +110,16 @@ cloudfront:
     ttl: 3600
 
     cookies:
-      # cloudfront.defaultCacheBehavior.cookies.behavior -- Whether 'All', 'AllExcept', 'None' or 'Whitelist'ed cookies are included in the cache key.
+      # cloudfront.defaultCacheBehavior.cookies.behavior -- Whether `All`, `AllExcept`, `None` or `Allowlist`ed cookies are included in the cache key.
       # @section -- cloudfront
-      behavior: all
+      behavior: none
 
       # cloudfront.defaultCacheBehavior.cookies.allowlistedNames -- A list of cookie names to include in the cache key.
       # @section -- cloudfront
       allowlistedNames: []
 
     headers:
-      # cloudfront.defaultCacheBehavior.headers.behavior -- Whether 'None' or 'Whitelist'ed headers are included in the cache key.
+      # cloudfront.defaultCacheBehavior.headers.behavior -- Whether `None` or `Allowlist`ed headers are included in the cache key.
       # @section -- cloudfront
       behavior: none
 
@@ -128,7 +128,7 @@ cloudfront:
       allowlistedNames: []
 
     queryStrings:
-      # cloudfront.defaultCacheBehavior.queryStrings.behavior -- Whether 'All', 'AllExcept', 'None' or 'Whitelist'ed  query parameters are included in the cache key.
+      # cloudfront.defaultCacheBehavior.queryStrings.behavior -- Whether `All`, `AllExcept`, `None` or `Allowlist`ed  query parameters are included in the cache key.
       # @section -- cloudfront
       behavior: none
 
