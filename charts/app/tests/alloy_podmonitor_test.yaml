@@ -1,7 +1,7 @@
 suite: PodMonitor
 
 templates:
-  - grafana-agent-operator/podmonitor.yaml
+  - alloy/podmonitor.yaml
 
 tests:
   - it: should create a PodMonitor by default

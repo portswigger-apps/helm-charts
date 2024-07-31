@@ -1,7 +1,7 @@
 suite: PodLogs
 
 templates:
-  - grafana-agent-operator/podlogs.yaml
+  - alloy/podlogs.yaml
 
 tests:
   - it: should create a PodLogs resource by default
