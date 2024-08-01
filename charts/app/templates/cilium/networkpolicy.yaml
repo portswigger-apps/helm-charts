@@ -85,6 +85,7 @@ spec:
   - toFQDNs:
     - matchPattern: "*.s3.*.amazonaws.com"
     - matchPattern: "sts.amazonaws.com"
+    - matchPattern: "sts.*.amazonaws.com"
     - matchPattern: "*.s3.amazonaws.com"
     toPorts:
     - ports:
