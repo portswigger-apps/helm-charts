@@ -438,3 +438,38 @@ tests:
           content:
             name: GOMEMLIMIT
             value: "4037269258"
+
+  - it: should create Deployment with GOMEMLIMIT set based on override of GOMEMLIMT
+    set:
+      resources:
+        memory: 4Gi
+      env:
+        GOMEMLIMIT: "12345"
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: GOMEMLIMIT
+            value: "12345"
+
+  - it: should create Deployment with _JAVA_OPTIONS set
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: _JAVA_OPTIONS
+            value: "-XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=80.0"
+
+  - it: should create Deployment with _JAVA_OPTIONS set to user specified value
+    template: kubernetes/deployment.yaml
+    set:
+      env:
+        _JAVA_OPTIONS: -Xms=2048m -Xmx=2048m
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: _JAVA_OPTIONS
+            value: "-Xms=2048m -Xmx=2048m"
