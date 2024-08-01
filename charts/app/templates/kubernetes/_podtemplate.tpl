@@ -96,7 +96,9 @@ Outputs a pod spec for use in different resources.
               fieldRef:
                 fieldPath: status.podIP
           - name: GOMEMLIMIT
-            value: {{ mulf (include "app.toBytes" .Values.resources.memory) 0.94 | int | quote }}
+            value: {{ .Values.env.GOMEMLIMIT | default (mulf (include "app.toBytes" .Values.resources.memory) 0.94 | int) | quote }}
+          - name: _JAVA_OPTIONS
+            value: {{ .Values.env._JAVA_OPTIONS | default "-XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=80.0" | quote }}
           - name: IMAGE_TAG
             value: {{ .Values.image.tag | quote }}
           {{- include "app.s3BucketConnectionSecretEnv" . | nindent 10 }}
