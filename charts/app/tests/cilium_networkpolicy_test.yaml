@@ -74,6 +74,38 @@ tests:
                   - port: "8080"
                     protocol: TCP
 
+  - it: should allow ingress on all exposed ports
+    set:
+      ports:
+        app-port:
+          port: 8080
+        other-port:
+          port: 9090
+          expose: true
+          protocol: UDP
+      ciliumNetworkPolicy:
+        fromApps:
+          - name: admin-ui
+    asserts:
+      - contains:
+          path: spec.ingress
+          content:
+            fromEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/app: RELEASE-NAME
+                  app.kubernetes.io/instance: app-RELEASE-NAME
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  app.kubernetes.io/app: admin-ui
+                  k8s:io.kubernetes.pod.namespace: NAMESPACE
+            toPorts:
+              - ports:
+                  - port: "8080"
+                    protocol: TCP
+                  - port: "9090"
+                    protocol: UDP
+
+
   - it: should allow ingress from the observability agent by default
     asserts:
       - contains:

@@ -34,8 +34,12 @@ spec:
     {{- end }}
     toPorts:
     - ports:
-      - protocol: {{ (get .Values.ports "app-port").protocol }}
-        port: {{ (get .Values.ports "app-port").port | quote }}
+      {{- range $portName, $portSpec := .Values.ports }}
+      {{- if $portSpec.expose }}
+      - port: {{ $portSpec.port | quote }}
+        protocol: {{ $portSpec.protocol }}
+      {{- end }}
+      {{- end }}
 
   - fromEndpoints:
     - matchLabels: {{ toYaml .Values.ciliumNetworkPolicy.observabilityAgentEndpointMatchLabels | nindent 8 }}
