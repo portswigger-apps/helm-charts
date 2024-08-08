@@ -19,6 +19,7 @@ spec:
   - port: {{ $portSpec.port }}
     targetPort: {{ $portName }}
     protocol: {{ $portSpec.protocol }}
+    name: {{ $portName }}
   {{- end }}
   {{- end }}
 {{- end -}}
