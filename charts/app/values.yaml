@@ -141,6 +141,8 @@ global:
       - 3.166.0.0/15
       - 3.168.0.0/14
       - 3.172.0.0/18
+      - 3.172.64.0/18
+      - 3.173.0.0/17
       - 3.231.2.0/25
       - 3.234.232.224/27
       - 3.236.169.192/26
@@ -405,14 +407,18 @@ infra:
     # @default -- `micro`
     # @section -- infra
     size: null
-    # infra.postgres.version -- Options: 16.2, 15.6 or 14.11
-    # @default -- `"16.2"`
+    # infra.postgres.version -- Options: 16.2, 16.3 or 16.4
+    # @default -- `"16.4"`
     # @section -- infra
     version: null
     # infra.postgres.multiAz -- (bool) Set to `true` to deploy the `PostgresInstance` across multiple availability zones
     # @default -- `false`
     # @section -- infra
     multiAz: null
+    # infra.postgres.enablePerformanceInsights -- (bool) Set to `true` to enable Performance Insights on the `PostgresInstance`
+    # @default -- `false`
+    # @section -- infra
+    enablePerformanceInsights: null
   s3Bucket:
     # infra.s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
     # @section -- infra

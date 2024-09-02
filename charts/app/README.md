@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.8.4](https://img.shields.io/badge/Version-0.8.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.8.4](https://img.shields.io/badge/AppVersion-0.8.4-informational?style=flat-square)
+![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.9.0](https://img.shields.io/badge/AppVersion-0.9.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.2.0 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.3.0 |
 
 ## Values
 
@@ -79,8 +79,9 @@ helm install app helm-charts/app
 | infra.postgres.create | bool | `true` | Set to `false` to skip creation of the `PostgresInstance` if it has been created elsewhere |
 | infra.postgres.nameOverride | string | `""` | Override the `PostgresInstance` name or use with `create: false` to map the secrets of an instance created elsewhere |
 | infra.postgres.size | string | `micro` | Options: micro, small, medium, large or xlarge |
-| infra.postgres.version | string | `"16.2"` | Options: 16.2, 15.6 or 14.11 |
+| infra.postgres.version | string | `"16.4"` | Options: 16.2, 16.3 or 16.4 |
 | infra.postgres.multiAz | bool | `false` | Set to `true` to deploy the `PostgresInstance` across multiple availability zones |
+| infra.postgres.enablePerformanceInsights | bool | `false` | Set to `true` to enable Performance Insights on the `PostgresInstance` |
 | infra.s3Bucket.enabled | bool | `false` | Set to `true` to deploy an `s3Bucket` resource |
 | infra.s3Bucket.create | bool | `true` | Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere |
 | infra.s3Bucket.nameOverride | string | `""` | Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere |
