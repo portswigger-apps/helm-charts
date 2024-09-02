@@ -9,4 +9,5 @@ spec:
     multiAZ: {{ .Values.postgres.multiAz }}
     size: {{ .Values.postgres.size }}
     version: {{ quote .Values.postgres.version }}
+    enablePerformanceInsights: {{ .Values.postgres.enablePerformanceInsights }}
 {{- end }}

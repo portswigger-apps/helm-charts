@@ -37,6 +37,7 @@ tests:
         size: xlarge
         version: 16.2
         multiAz: true
+        enablePerformanceInsights: true
     asserts:
       - isKind:
           of: PostgresInstance
@@ -49,3 +50,4 @@ tests:
             size: xlarge
             version: "16.2"
             multiAZ: true
+            enablePerformanceInsights: true

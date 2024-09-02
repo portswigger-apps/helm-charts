@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.1](https://img.shields.io/badge/AppVersion-0.2.1-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.0](https://img.shields.io/badge/AppVersion-0.3.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -29,6 +29,7 @@ helm install infra helm-charts/infra
 | postgres.size | string | `micro` | Options: micro, small, medium, large or xlarge |
 | postgres.version | string | `"16.2"` | Options: 16.2, 15.6 or 14.11 |
 | postgres.multiAz | bool | `false` | Set to `true` to deploy the `PostgresInstance` across multiple availability zones |
+| postgres.enablePerformanceInsights | bool | `false` | Set to `true` to enable Performance Insights on the `PostgresInstance` |
 
 ### s3Bucket
 

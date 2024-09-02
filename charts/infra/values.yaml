@@ -37,6 +37,11 @@ postgres:
   # @section -- postgres
   multiAz: null
 
+  # postgres.enablePerformanceInsights -- (bool) Set to `true` to enable Performance Insights on the `PostgresInstance`
+  # @default -- `false`
+  # @section -- postgres
+  enablePerformanceInsights: null
+
 s3Bucket:
   # s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
   # @section -- s3Bucket
