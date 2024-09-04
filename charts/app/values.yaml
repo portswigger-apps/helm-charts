@@ -282,6 +282,10 @@ ports:
     # @section -- application
     expose: true
 metricsEndpoint:
+  # metricsEndpoint.enabled -- Set to `false` to remove `PodMonitor``
+  # @section -- application
+  # @ignored
+  enabled: true
   # metricsEndpoint.path -- The path to a Prometheus compatible metrics endpoint
   # @section -- application
   path: /metrics

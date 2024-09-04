@@ -41,3 +41,11 @@ tests:
             interval: 15s
             path: /health/metrics
             port: metrics-port
+
+  - it: should not create a PodMonitor when enabled is set to false
+    set:
+      metricsEndpoint:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
