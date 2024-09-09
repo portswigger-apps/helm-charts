@@ -338,6 +338,9 @@ service:
   # service.enabled -- Set to true to expose your application within the Kubernetes cluster
   # @section -- network
   enabled: true
+  # service.labels -- Add labels to the Service resource
+  # @section -- network
+  labels: {}
   # service.annotations -- Add annotations to the Service resource
   # @section -- network
   annotations: {}

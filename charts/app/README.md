@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.9.1](https://img.shields.io/badge/Version-0.9.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.9.1](https://img.shields.io/badge/AppVersion-0.9.1-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.10.0](https://img.shields.io/badge/AppVersion-0.10.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -64,6 +64,7 @@ helm install app helm-charts/app
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | service.enabled | bool | `true` | Set to true to expose your application within the Kubernetes cluster |
+| service.labels | object | `{}` | Add labels to the Service resource |
 | service.annotations | object | `{}` | Add annotations to the Service resource |
 | ciliumNetworkPolicy.ingress | list | `[]` | Cilium ingress rules. See examples in values.yaml |
 | ciliumNetworkPolicy.egress | list | `[]` | Cilium egress rules. See examples in values.yaml |

@@ -84,3 +84,22 @@ tests:
             selector:
               app.kubernetes.io/app: RELEASE-NAME
               app.kubernetes.io/instance: app-RELEASE-NAME
+
+  - it: should create a Service with labels
+    set:
+      service:
+        labels:
+          hello: world
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Service
+      - equal:
+          path: metadata.labels.hello
+          value: world
+      - equal:
+          path: spec.selector
+          value:
+            app.kubernetes.io/app: RELEASE-NAME
+            app.kubernetes.io/instance: app-RELEASE-NAME
