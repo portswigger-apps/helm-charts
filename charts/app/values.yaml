@@ -463,11 +463,10 @@ infra:
     geoRestriction:
       # infra.cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
       # @section -- infra
-      restrictionType: allow
+      restrictionType: none
       # infra.cloudfront.geoRestriction.locations -- A list of ISO ALPHA-2 country codes to apply restrictions to
       # @section -- infra
-      locations:
-        - GB
+      locations: []
     # infra.cloudfront.originHeaderAuth -- Set to 'true' to enable authentication between CloudFront and the origin
     # @section -- infra
     originHeaderAuth: true
