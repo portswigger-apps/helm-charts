@@ -96,18 +96,9 @@ cloudfront:
     locations: []
 
   defaultCacheBehavior:
-    # cloudfront.defaultCacheBehavior.allowedMethods -- The HTTP methods that the `CloudFrontSite` allows
+    # cloudfront.defaultCacheBehavior.allowedMethods -- Whether `read` or `all` HTTP methods are allowed by the `CloudFrontSite`
     # @section -- cloudfront
-    allowedMethods:
-      - GET
-      - HEAD
-      - OPTIONS
-
-    # cloudfront.defaultCacheBehavior.cachedMethods -- The HTTP methods that the `CloudFrontSite` caches
-    # @section -- cloudfront
-    cachedMethods:
-      - GET
-      - HEAD
+    allowedMethods: read
 
     # cloudfront.defaultCacheBehavior.ttl -- The time-to-live for the `CloudFrontSite` cache
     # @section -- cloudfront
