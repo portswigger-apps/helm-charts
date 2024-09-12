@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.10.1](https://img.shields.io/badge/Version-0.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.10.1](https://img.shields.io/badge/AppVersion-0.10.1-informational?style=flat-square)
+![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.11.0](https://img.shields.io/badge/AppVersion-0.11.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.3.1 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.4.0 |
 
 ## Values
 
@@ -92,8 +92,6 @@ helm install app helm-charts/app
 | infra.cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | infra.cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
 | infra.cloudfront.restrictToOffice | bool | `true` | Set to `false` to allow access to the `CloudFrontSite` outside of the office IPs. (managed outside of app-chart) |
-| infra.cloudfront.geoRestriction.restrictionType | string | `"none"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
-| infra.cloudfront.geoRestriction.locations | list | `[]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
 | infra.cloudfront.originHeaderAuth | bool | `true` | Set to 'true' to enable authentication between CloudFront and the origin |
 | infra.redis.enabled | bool | `false` | Set to `true` to deploy a `RedisCluster` resource |
 | infra.redis.nodeGroups | int | `1` | Set the number of node groups for the `RedisCluster` |

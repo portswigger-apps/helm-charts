@@ -460,13 +460,6 @@ infra:
     # infra.cloudfront.restrictToOffice -- Set to `false` to allow access to the `CloudFrontSite` outside of the office IPs. (managed outside of app-chart)
     # @section -- infra
     restrictToOffice: true
-    geoRestriction:
-      # infra.cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
-      # @section -- infra
-      restrictionType: none
-      # infra.cloudfront.geoRestriction.locations -- A list of ISO ALPHA-2 country codes to apply restrictions to
-      # @section -- infra
-      locations: []
     # infra.cloudfront.originHeaderAuth -- Set to 'true' to enable authentication between CloudFront and the origin
     # @section -- infra
     originHeaderAuth: true
