@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.0](https://img.shields.io/badge/AppVersion-0.3.0-informational?style=flat-square)
+![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.1](https://img.shields.io/badge/AppVersion-0.3.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -49,8 +49,8 @@ helm install infra helm-charts/infra
 | cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
 | cloudfront.restrictToOffice | bool | `true` | Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges |
-| cloudfront.geoRestriction.restrictionType | string | `"allow"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
-| cloudfront.geoRestriction.locations | list | `["GB"]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
+| cloudfront.geoRestriction.restrictionType | string | `"none"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
+| cloudfront.geoRestriction.locations | list | `[]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
 | cloudfront.defaultCacheBehavior.allowedMethods | list | `["GET","HEAD","OPTIONS"]` | The HTTP methods that the `CloudFrontSite` allows |
 | cloudfront.defaultCacheBehavior.cachedMethods | list | `["GET","HEAD"]` | The HTTP methods that the `CloudFrontSite` caches |
 | cloudfront.defaultCacheBehavior.ttl | int | `3600` | The time-to-live for the `CloudFrontSite` cache |

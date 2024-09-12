@@ -89,12 +89,11 @@ cloudfront:
   geoRestriction:
     # cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
     # @section -- cloudfront
-    restrictionType: allow
+    restrictionType: none
 
     # cloudfront.geoRestriction.locations -- A list of ISO ALPHA-2 country codes to apply restrictions to
     # @section -- cloudfront
-    locations:
-      - GB
+    locations: []
 
   defaultCacheBehavior:
     # cloudfront.defaultCacheBehavior.allowedMethods -- The HTTP methods that the `CloudFrontSite` allows
