@@ -93,6 +93,8 @@ helm install app helm-charts/app
 | infra.cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
 | infra.cloudfront.restrictToOffice | bool | `true` | Set to `false` to allow access to the `CloudFrontSite` outside of the office IPs. (managed outside of app-chart) |
 | infra.cloudfront.originHeaderAuth | bool | `true` | Set to 'true' to enable authentication between CloudFront and the origin |
+| infra.cloudfront.defaultCacheBehavior.allowedMethods | string | `"read"` | Whether `read` or `all` HTTP methods are allowed by the `CloudFrontSite` |
+| infra.cloudfront.defaultCacheBehavior.ttl | int | `3600` | The default time-to-live for the `CloudFrontSite` cache. Set to 0 to use cache-control headers |
 | infra.redis.enabled | bool | `false` | Set to `true` to deploy a `RedisCluster` resource |
 | infra.redis.nodeGroups | int | `1` | Set the number of node groups for the `RedisCluster` |
 | infra.redis.replicasPerNodeGroup | int | `0` | Set the number of replicas per node group for the `RedisCluster` |
