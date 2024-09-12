@@ -100,9 +100,17 @@ cloudfront:
     # @section -- cloudfront
     allowedMethods: read
 
-    # cloudfront.defaultCacheBehavior.ttl -- The time-to-live for the `CloudFrontSite` cache
+    # cloudfront.defaultCacheBehavior.minTtl -- The minimum time-to-live for the `CloudFrontSite` cache objects
     # @section -- cloudfront
-    ttl: 3600
+    minTtl: 0
+
+    # cloudfront.defaultCacheBehavior.maxTtl -- The maximum time-to-live for the `CloudFrontSite` cache objects
+    # @section -- cloudfront
+    maxTtl: 31536000
+
+    # cloudfront.defaultCacheBehavior.defaultTtl -- The default time-to-live for the `CloudFrontSite` cache objects, applies only when your origin does not add HTTP headers such as Cache-Control max-age, Cache-Control s-maxage, or Expires
+    # @section -- cloudfront
+    defaultTtl: 0
 
     cookies:
       # cloudfront.defaultCacheBehavior.cookies.behavior -- Whether `All`, `AllExcept`, `None` or `Allowlist`ed cookies are included in the cache key.

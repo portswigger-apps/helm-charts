@@ -468,9 +468,17 @@ infra:
       # infra.cloudfront.defaultCacheBehavior.allowedMethods -- Whether `read` or `all` HTTP methods are allowed by the `CloudFrontSite`
       # @section -- infra
       allowedMethods: read
-      # infra.cloudfront.defaultCacheBehavior.ttl -- The default time-to-live for the `CloudFrontSite` cache. Set to 0 to use cache-control headers
+      # infra.cloudfront.defaultCacheBehavior.minTtl -- The minimum time-to-live for the `CloudFrontSite` cache objects
       # @section -- infra
-      ttl: 3600
+      minTtl: 0
+
+      # infra.cloudfront.defaultCacheBehavior.maxTtl -- The maximum time-to-live for the `CloudFrontSite` cache objects
+      # @section -- infra
+      maxTtl: 31536000
+
+      # infra.cloudfront.defaultCacheBehavior.defaultTtl -- The default time-to-live for the `CloudFrontSite` cache objects, applies only when your origin does not add HTTP headers such as Cache-Control max-age, Cache-Control s-maxage, or Expires
+      # @section -- infra
+      defaultTtl: 0
   redis:
     # infra.redis.enabled -- Set to `true` to deploy a `RedisCluster` resource
     # @section -- infra

@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
+![Version: 0.4.1](https://img.shields.io/badge/Version-0.4.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.1](https://img.shields.io/badge/AppVersion-0.4.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -52,7 +52,9 @@ helm install infra helm-charts/infra
 | cloudfront.geoRestriction.restrictionType | string | `"none"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
 | cloudfront.geoRestriction.locations | list | `[]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
 | cloudfront.defaultCacheBehavior.allowedMethods | string | `"read"` | Whether `read` or `all` HTTP methods are allowed by the `CloudFrontSite` |
-| cloudfront.defaultCacheBehavior.ttl | int | `3600` | The time-to-live for the `CloudFrontSite` cache |
+| cloudfront.defaultCacheBehavior.minTtl | int | `0` | The minimum time-to-live for the `CloudFrontSite` cache objects |
+| cloudfront.defaultCacheBehavior.maxTtl | int | `31536000` | The maximum time-to-live for the `CloudFrontSite` cache objects |
+| cloudfront.defaultCacheBehavior.defaultTtl | int | `0` | The default time-to-live for the `CloudFrontSite` cache objects, applies only when your origin does not add HTTP headers such as Cache-Control max-age, Cache-Control s-maxage, or Expires |
 | cloudfront.defaultCacheBehavior.cookies.behavior | string | `"none"` | Whether `All`, `AllExcept`, `None` or `Allowlist`ed cookies are included in the cache key. |
 | cloudfront.defaultCacheBehavior.cookies.allowlistedNames | list | `[]` | A list of cookie names to include in the cache key. |
 | cloudfront.defaultCacheBehavior.headers.behavior | string | `"none"` | Whether `None` or `Allowlist`ed headers are included in the cache key. |

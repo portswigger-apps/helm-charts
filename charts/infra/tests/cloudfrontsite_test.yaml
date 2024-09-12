@@ -24,7 +24,7 @@ tests:
           locations: []
         defaultCacheBehavior:
           allowedMethods: all
-          ttl: 3601
+          defaultTtl: 3601
           cookies:
             behavior: allowlist
             allowlistedNames:
@@ -63,7 +63,9 @@ tests:
           path: spec.defaultCacheBehavior
           value:
             allowedMethods: all
-            ttl: 3601
+            defaultTtl: 3601
+            minTtl: 0
+            maxTtl: 31536000
             cookies:
               behavior: allowlist
               allowlistedNames:

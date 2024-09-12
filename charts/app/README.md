@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.11.0](https://img.shields.io/badge/AppVersion-0.11.0-informational?style=flat-square)
+![Version: 0.11.1](https://img.shields.io/badge/Version-0.11.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.11.1](https://img.shields.io/badge/AppVersion-0.11.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.4.0 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.4.1 |
 
 ## Values
 
@@ -94,7 +94,9 @@ helm install app helm-charts/app
 | infra.cloudfront.restrictToOffice | bool | `true` | Set to `false` to allow access to the `CloudFrontSite` outside of the office IPs. (managed outside of app-chart) |
 | infra.cloudfront.originHeaderAuth | bool | `true` | Set to 'true' to enable authentication between CloudFront and the origin |
 | infra.cloudfront.defaultCacheBehavior.allowedMethods | string | `"read"` | Whether `read` or `all` HTTP methods are allowed by the `CloudFrontSite` |
-| infra.cloudfront.defaultCacheBehavior.ttl | int | `3600` | The default time-to-live for the `CloudFrontSite` cache. Set to 0 to use cache-control headers |
+| infra.cloudfront.defaultCacheBehavior.minTtl | int | `0` | The minimum time-to-live for the `CloudFrontSite` cache objects |
+| infra.cloudfront.defaultCacheBehavior.maxTtl | int | `31536000` | The maximum time-to-live for the `CloudFrontSite` cache objects |
+| infra.cloudfront.defaultCacheBehavior.defaultTtl | int | `0` | The default time-to-live for the `CloudFrontSite` cache objects, applies only when your origin does not add HTTP headers such as Cache-Control max-age, Cache-Control s-maxage, or Expires |
 | infra.redis.enabled | bool | `false` | Set to `true` to deploy a `RedisCluster` resource |
 | infra.redis.nodeGroups | int | `1` | Set the number of node groups for the `RedisCluster` |
 | infra.redis.replicasPerNodeGroup | int | `0` | Set the number of replicas per node group for the `RedisCluster` |
