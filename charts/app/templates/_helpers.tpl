@@ -9,6 +9,17 @@ Name to use for everything. The release name. No overrides, no .Chart.Name nonse
 {{- end -}}
 
 {{/*
+Name to use for aws resources. MUST start with the namespace (product) name
+*/}}
+{{- define "app.aws.name" -}}
+{{- if hasPrefix .Release.Namespace .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Namespace .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "app.chart" -}}
@@ -78,7 +89,7 @@ eks.amazonaws.com/role-arn: arn:aws:iam::{{- .Values.global.aws.accountId }}:rol
 Name of the secret that stores postgres connection details
 */}}
 {{- define "app.postgresConnectionSecretName" -}}
-{{ default .Release.Name .Values.infra.postgres.nameOverride }}-postgres
+{{ default (include "app.aws.name" . ) .Values.infra.postgres.nameOverride }}-postgres
 {{- end -}}
 
 {{/*
@@ -119,7 +130,7 @@ Postgres connection secret env variables
 Name of the secret that stores s3Bucket connection details
 */}}
 {{- define "app.s3BucketConnectionSecretName" -}}
-{{ default .Release.Name .Values.infra.s3Bucket.nameOverride }}-s3bucket
+{{ default (include "app.aws.name" . ) .Values.infra.s3Bucket.nameOverride }}-s3bucket
 {{- end -}}
 
 {{/*
@@ -155,7 +166,7 @@ traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .R
 Name of the secret that stores redis connection details
 */}}
 {{- define "app.redisConnectionSecretName" -}}
-{{- include "app.name" . -}}-redis-connection
+{{- (include "app.aws.name" . ) -}}-redis-connection
 {{- end -}}
 
 {{/*

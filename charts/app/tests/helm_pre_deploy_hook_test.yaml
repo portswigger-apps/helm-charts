@@ -43,7 +43,7 @@ tests:
             valueFrom:
               secretKeyRef:
                 key: host
-                name: RELEASE-NAME-postgres
+                name: NAMESPACE-RELEASE-NAME-postgres
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
@@ -51,7 +51,7 @@ tests:
             valueFrom:
               secretKeyRef:
                 key: port
-                name: RELEASE-NAME-postgres
+                name: NAMESPACE-RELEASE-NAME-postgres
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
@@ -59,7 +59,7 @@ tests:
             valueFrom:
               secretKeyRef:
                 key: username
-                name: RELEASE-NAME-postgres
+                name: NAMESPACE-RELEASE-NAME-postgres
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
@@ -67,7 +67,7 @@ tests:
             valueFrom:
               secretKeyRef:
                 key: password
-                name: RELEASE-NAME-postgres
+                name: NAMESPACE-RELEASE-NAME-postgres
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
@@ -112,7 +112,7 @@ tests:
             name: S3_BUCKET_NAME
             valueFrom:
               secretKeyRef:
-                name: RELEASE-NAME-s3bucket
+                name: NAMESPACE-RELEASE-NAME-s3bucket
                 key: id
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env

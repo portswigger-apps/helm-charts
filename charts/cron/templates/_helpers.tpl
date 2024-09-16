@@ -9,6 +9,17 @@ Name to use for everything. The release name. No overrides, no .Chart.Name nonse
 {{- end -}}
 
 {{/*
+Name to use for aws resources. MUST start with the namespace (product) name
+*/}}
+{{- define "cron.aws.name" -}}
+{{- if hasPrefix .Release.Namespace .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Namespace .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "cron.chart" -}}
@@ -60,7 +71,7 @@ eks.amazonaws.com/role-arn: arn:aws:iam::{{- .Values.global.aws.accountId }}:rol
 Name of the secret that stores postgres connection details
 */}}
 {{- define "cron.postgresConnectionSecretName" -}}
-{{ default .Release.Name .Values.infra.postgres.nameOverride }}-postgres
+{{ default (include "cron.aws.name" . ) .Values.infra.postgres.nameOverride }}-postgres
 {{- end -}}
 
 {{/*
@@ -97,11 +108,12 @@ Postgres connection secret env variables
 {{- end -}}
 {{- end -}}
 
+
 {{/*
 Name of the secret that stores s3Bucket connection details
 */}}
 {{- define "cron.s3BucketConnectionSecretName" -}}
-{{ default .Release.Name .Values.infra.s3Bucket.nameOverride }}-s3bucket
+{{ default (include "cron.aws.name" . ) .Values.infra.s3Bucket.nameOverride }}-s3bucket
 {{- end -}}
 
 {{/*
