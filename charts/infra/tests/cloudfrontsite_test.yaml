@@ -40,8 +40,9 @@ tests:
     asserts:
       - isKind:
           of: CloudFrontSite
-      - isNotEmpty:
+      - equal:
           path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
       - equal:
           path: spec.targetOriginDomainName
           value: example.com

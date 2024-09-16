@@ -9,6 +9,17 @@ Name to use for everything. The release name. No overrides, no .Chart.Name nonse
 {{- end -}}
 
 {{/*
+Name to use for aws resources. MUST start with the namespace (product) name
+*/}}
+{{- define "infra.aws.name" -}}
+{{- if hasPrefix .Release.Namespace .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Namespace .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "infra.chart" -}}

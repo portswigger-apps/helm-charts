@@ -18,10 +18,10 @@ tests:
           count: 1
       - equal:
           path: metadata.name
-          value: RELEASE-NAME
+          value: NAMESPACE-RELEASE-NAME
       - equal:
           path: spec.irsaRoleName
-          value: RELEASE-NAME-irsarole
+          value: NAMESPACE-RELEASE-NAME-irsarole
 
   - it: should create an BedrockPolicy with configured values
     set:

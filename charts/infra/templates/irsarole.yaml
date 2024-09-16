@@ -2,7 +2,7 @@
 apiVersion: platform.portswigger.io/v1alpha1
 kind: IrsaRole
 metadata:
-  name: {{ default ( include "infra.name" . ) .Values.global.serviceAccount.name }}
+  name: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}
   labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:

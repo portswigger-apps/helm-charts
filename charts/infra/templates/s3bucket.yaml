@@ -2,10 +2,10 @@
 apiVersion: platform.portswigger.io/v1alpha1
 kind: S3Bucket
 metadata:
-  name: {{ default ( include "infra.name" . ) .Values.s3Bucket.nameOverride }}
+  name: {{ default ( include "infra.aws.name" . ) .Values.s3Bucket.nameOverride }}
   labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
-   irsaRoleName: {{ default ( include "infra.name" . ) .Values.global.serviceAccount.name }}-irsarole
+   irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
    lifecycleRules: {{ toYaml .Values.s3Bucket.lifecycleRules | nindent 4 }}
 {{- end }}

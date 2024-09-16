@@ -27,7 +27,7 @@ tests:
           count: 1
       - equal:
           path: metadata.name
-          value: RELEASE-NAME
+          value: NAMESPACE-RELEASE-NAME
       - equal:
           path: spec.serviceAccountName
           value: RELEASE-NAME
@@ -58,7 +58,7 @@ tests:
           count: 1
       - equal:
           path: metadata.name
-          value: RELEASE-NAME
+          value: NAMESPACE-RELEASE-NAME
       - equal:
           path: spec.serviceAccountName
           value: RELEASE-NAME

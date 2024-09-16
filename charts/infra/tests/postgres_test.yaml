@@ -27,7 +27,7 @@ tests:
           of: PostgresInstance
       - equal:
           path: metadata.name
-          value: RELEASE-NAME
+          value: NAMESPACE-RELEASE-NAME
 
   - it: should create a PostgresInstance with custom fields
     set:
