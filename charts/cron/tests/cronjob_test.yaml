@@ -92,7 +92,7 @@ tests:
           path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: S3_ENDPOINT_URL
-            value: https://s3.$(AWS_REGION).amazonaws.com/
+            value: https://s3.${AWS_REGION}.amazonaws.com/
 
   - it: should create a Pod with PostgresInstance connection details
     set:
