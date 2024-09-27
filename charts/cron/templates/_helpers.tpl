@@ -128,7 +128,5 @@ s3Bucket connection secret env variables
       key: id
 - name: S3_BUCKET_URL
   value: "s3://$(S3_BUCKET_NAME)/"
-- name: S3_ENDPOINT_URL
-  value: "https://s3.${AWS_REGION}.amazonaws.com/"
 {{- end -}}
 {{- end -}}
