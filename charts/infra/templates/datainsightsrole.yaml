@@ -1,8 +1,0 @@
-{{- if .Values.s3Bucket.datainsights.enabled }}
-apiVersion: platform.portswigger.io/v1alpha1
-kind: DataInsight
-metadata:
-  name: {{ default ( include "infra.aws.name" . ) .Values.s3Bucket.nameOverride }}
-  labels:
-    {{- include "infra.labels" . | nindent 8 }}
-{{- end }}
