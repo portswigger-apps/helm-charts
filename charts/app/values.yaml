@@ -444,11 +444,10 @@ infra:
       - expiration:
           - days: 0
         status: Disabled
-    # infra.s3Bucket.datainsights.enabled -- (list) Add IAM Role & IAM policy for data insight access to the `s3Bucket`
-    # @default -- `[]`
+    # infra.s3Bucket.enableDataInsights -- (list) Add IAM Role & IAM policy for data insight access to the `s3Bucket`
+    # @default -- `false`
     # @section -- infra
-    datainsights: 
-      enabled: false
+    enableDataInsights: false
   cloudfront:
     # infra.cloudfront.enabled -- Set to `true` to deploy an `CloudFrontSite` resource
     # @section -- infra

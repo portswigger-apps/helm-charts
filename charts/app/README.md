@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.12.3](https://img.shields.io/badge/Version-0.12.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.12.3](https://img.shields.io/badge/AppVersion-0.12.3-informational?style=flat-square)
+![Version: 0.12.4](https://img.shields.io/badge/Version-0.12.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.12.4](https://img.shields.io/badge/AppVersion-0.12.4-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.5.0 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.5.1 |
 
 ## Values
 
@@ -87,7 +87,7 @@ helm install app helm-charts/app
 | infra.s3Bucket.create | bool | `true` | Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere |
 | infra.s3Bucket.nameOverride | string | `""` | Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere |
 | infra.s3Bucket.lifecycleRules | list | `[]` | Configure the `s3Bucket` storage [lifecycle rules](https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule) |
-| infra.s3Bucket.datainsights.enabled | list | `[]` | Add IAM Role & IAM policy for data insight access to the `s3Bucket` |
+| infra.s3Bucket.enableDataInsights | list | `false` | Add IAM Role & IAM policy for data insight access to the `s3Bucket` |
 | infra.cloudfront.enabled | bool | `false` | Set to `true` to deploy an `CloudFrontSite` resource |
 | infra.cloudfront.hostedZoneId | string | `""` | The Route53 hosted zone ID to create the certificates and domain names for the `CloudFrontSite` resource |
 | infra.cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
