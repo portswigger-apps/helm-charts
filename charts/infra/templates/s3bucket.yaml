@@ -8,4 +8,5 @@ metadata:
 spec:
    irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
    lifecycleRules: {{ toYaml .Values.s3Bucket.lifecycleRules | nindent 4 }}
+   dataInsightsAccess: {{if .Values.s3Bucket.enableDataInsights}}Allow{{else}}Deny{{end}}
 {{- end }}

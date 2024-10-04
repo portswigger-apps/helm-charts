@@ -63,3 +63,23 @@ tests:
               filter:
                 prefix: prefix-
               status: Enabled
+
+  - it: should map data insights to correct true value
+    set:
+      s3Bucket:
+        enabled: true
+        enableDataInsights: true
+    asserts:
+      - equal:
+          path: spec.dataInsightsAccess
+          value: "Allow"
+
+  - it: should map data insights to correct false value
+    set:
+      s3Bucket:
+        enabled: true
+        enableDataInsights: false
+    asserts:
+      - equal:
+          path: spec.dataInsightsAccess
+          value: "Deny"
