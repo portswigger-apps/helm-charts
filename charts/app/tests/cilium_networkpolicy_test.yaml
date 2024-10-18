@@ -313,10 +313,11 @@ tests:
           content:
             toFQDNs:
               - matchName: bedrock.us-east-1.amazonaws.com
-              - matchName: bedrock-runtime.us-east-1.amazonaws.com
               - matchName: bedrock.us-west-2.amazonaws.com
+              - matchName: bedrock-runtime.us-east-1.amazonaws.com
               - matchName: bedrock-runtime.us-west-2.amazonaws.com
               - matchName: sts.us-east-1.amazonaws.com
+              - matchName: sts.us-west-2.amazonaws.com
               - matchName: sts.eu-west-1.amazonaws.com
               - matchName: sts.amazonaws.com
             toPorts:
