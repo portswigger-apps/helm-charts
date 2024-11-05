@@ -98,7 +98,7 @@ Outputs a pod spec for use in different resources.
           - name: GOMEMLIMIT
             value: {{ .Values.env.GOMEMLIMIT | default (mulf (include "app.toBytes" .Values.resources.memory) 0.94 | int) | quote }}
           - name: _JAVA_OPTIONS
-            value: {{ .Values.env._JAVA_OPTIONS | default "-XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=80.0" | quote }}
+            value: {{ .Values.env._JAVA_OPTIONS | default "-XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=80.0 -Djava.security.properties=/java-config/java.security" | quote }}
           - name: IMAGE_TAG
             value: {{ .Values.image.tag | quote }}
           {{- include "app.s3BucketConnectionSecretEnv" . | nindent 10 }}
@@ -121,6 +121,8 @@ Outputs a pod spec for use in different resources.
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
+        - mountPath: /java-config
+          name: java-config
         {{- if .Values.secretVolume }}
         - mountPath: /secrets
           name: {{ $.Release.Name }}-volume
@@ -152,6 +154,9 @@ Outputs a pod spec for use in different resources.
       volumes:
       - name: tmp-volume
         emptyDir: {}
+      - name: java-config
+        configMap:
+          name: {{ $.Release.Name }}-java-config
       {{- if .Values.secretVolume }}
       - name: {{ $.Release.Name }}-volume
         secret:

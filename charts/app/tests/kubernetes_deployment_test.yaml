@@ -34,7 +34,7 @@ tests:
             runAsNonRoot: true
             runAsUser: 1000
 
-  - it: should create Deployment with a /tmp volume by default
+  - it: should create Deployment with a /tmp and /java-config volumes by default
     template: kubernetes/deployment.yaml
     asserts:
       - equal:
@@ -42,11 +42,16 @@ tests:
           value:
             - mountPath: /tmp
               name: tmp-volume
+            - mountPath: /java-config
+              name: java-config
       - equal:
           path: spec.template.spec.volumes
           value:
             - emptyDir: {}
               name: tmp-volume
+            - configMap:
+                name: RELEASE-NAME-java-config
+              name: java-config
 
   - it: should create Deployment with startup, liveness and readiness probes by default
     template: kubernetes/deployment.yaml
@@ -455,7 +460,7 @@ tests:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: _JAVA_OPTIONS
-            value: "-XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=80.0"
+            value: "-XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=80.0 -Djava.security.properties=/java-config/java.security"
 
   - it: should create Deployment with _JAVA_OPTIONS set to user specified value
     template: kubernetes/deployment.yaml
