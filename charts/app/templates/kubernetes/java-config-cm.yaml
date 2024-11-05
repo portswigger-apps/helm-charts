@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-java-config
+data:
+  java.security: |
+    #
+    # This file is merged over the master security settings file at: $JAVA_HOME/conf/security/java.security
+    #
+    # Settings here are hard-coded in the app helm chart. It can be extended in the future if necessary.
+    #
+    #
+    # DNS cache TTL
+    # https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/jvm-ttl-dns.html
+    networkaddress.cache.ttl=5
+
+

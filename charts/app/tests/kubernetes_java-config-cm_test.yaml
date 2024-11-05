@@ -1,0 +1,14 @@
+suite: Java config
+
+templates:
+  - kubernetes/java-config-cm.yaml
+
+tests:
+  - it: should contain a java.security key
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ConfigMap
+      - exists:
+          path: data["java.security"]
