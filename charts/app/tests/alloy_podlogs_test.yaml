@@ -4,12 +4,13 @@ templates:
   - alloy/podlogs.yaml
 
 tests:
-  - it: should create a PodLogs resource by default
+  - it: should create a v1alpha1 PodLogs resource by default
     asserts:
       - hasDocuments:
           count: 1
-      - isKind:
-          of: PodLogs
+      - containsDocument:
+          kind: PodLogs
+          apiVersion: monitoring.grafana.com/v1alpha1
       - equal:
           path: spec
           value:
@@ -22,6 +23,48 @@ tests:
               matchLabels:
                 app.kubernetes.io/app: RELEASE-NAME
                 app.kubernetes.io/instance: app-RELEASE-NAME
+
+  - it: should create a v1alpha2 PodLogs resource when set
+    set:
+      podLogs:
+        version: v1alpha2
+    asserts:
+      - hasDocuments:
+          count: 1
+      - containsDocument:
+          kind: PodLogs
+          apiVersion: monitoring.grafana.com/v1alpha2
+      - equal:
+          path: spec
+          value:
+            namespaceSelector:
+              matchLabels:
+                name: NAMESPACE
+            selector:
+              matchLabels:
+                app.kubernetes.io/app: RELEASE-NAME
+                app.kubernetes.io/instance: app-RELEASE-NAME
+            relabelings:
+              - action: replace
+                sourceLabels:
+                - __meta_kubernetes_pod_container_name
+                targetLabel: container
+              - action: replace
+                sourceLabels:
+                - __meta_kubernetes_pod_name
+                targetLabel: pod
+              - action: replace
+                sourceLabels:
+                - __meta_kubernetes_namespace
+                targetLabel: namespace
+              - action: replace
+                sourceLabels:
+                - __meta_kubernetes_pod_container_id
+                targetLabel: tmp_container_id
+              - action: replace
+                sourceLabels:
+                - __meta_kubernetes_pod_uid
+                targetLabel: pod_uid
 
   - it: should create a PodLogs resource with configured pipelineStages
     set:

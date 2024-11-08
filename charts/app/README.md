@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.13.0](https://img.shields.io/badge/Version-0.13.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.13.0](https://img.shields.io/badge/AppVersion-0.13.0-informational?style=flat-square)
+![Version: 0.13.1](https://img.shields.io/badge/Version-0.13.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.13.1](https://img.shields.io/badge/AppVersion-0.13.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -116,7 +116,8 @@ helm install app helm-charts/app
 | pod.labels | object | `{}` | Additional labels to add to pods |
 | pod.annotations | object | `{}` | Additional annotations to add to pods |
 | pod.nodeSelector | object | `{}` | Set a nodeSelector(s) on your pods |
-| podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/) |
+| podLogs.version | string | `"v1alpha1"` | Version of podlogs resource to create. Temporary option during alloy migration. Options: v1alpha1, v1alpha2 |
+| podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/). Only available on v1alpha1 |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. See examples in values.yaml |
