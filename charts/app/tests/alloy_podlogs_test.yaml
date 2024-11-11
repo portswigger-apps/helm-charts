@@ -39,7 +39,7 @@ tests:
           value:
             namespaceSelector:
               matchLabels:
-                name: NAMESPACE
+                kubernetes.io/metadata.name: NAMESPACE
             selector:
               matchLabels:
                 app.kubernetes.io/app: RELEASE-NAME

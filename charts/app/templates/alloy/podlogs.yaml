@@ -24,7 +24,7 @@ metadata:
 spec:
   namespaceSelector:
     matchLabels:
-      name: {{ .Release.Namespace }}
+      kubernetes.io/metadata.name: {{ .Release.Namespace }}
   selector:
     matchLabels:
       {{- include "app.labelselector" . | nindent 6 }}
