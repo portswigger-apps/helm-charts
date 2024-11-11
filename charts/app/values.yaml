@@ -326,8 +326,6 @@ pod:
   # pod.nodeSelector -- Set a nodeSelector(s) on your pods
   nodeSelector: {}
 podLogs:
-  # podLogs.version -- Version of podlogs resource to create. Temporary option during alloy migration. Options: v1alpha1, v1alpha2
-  version: v1alpha1
   # podLogs.pipelineStages -- Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/). Only available on v1alpha1
   pipelineStages: []
 # initContainers -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.

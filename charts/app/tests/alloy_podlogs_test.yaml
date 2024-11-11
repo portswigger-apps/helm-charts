@@ -4,30 +4,7 @@ templates:
   - alloy/podlogs.yaml
 
 tests:
-  - it: should create a v1alpha1 PodLogs resource by default
-    asserts:
-      - hasDocuments:
-          count: 1
-      - containsDocument:
-          kind: PodLogs
-          apiVersion: monitoring.grafana.com/v1alpha1
-      - equal:
-          path: spec
-          value:
-            namespaceSelector:
-              matchNames:
-                - NAMESPACE
-            pipelineStages:
-              - cri: {}
-            selector:
-              matchLabels:
-                app.kubernetes.io/app: RELEASE-NAME
-                app.kubernetes.io/instance: app-RELEASE-NAME
-
-  - it: should create a v1alpha2 PodLogs resource when set
-    set:
-      podLogs:
-        version: v1alpha2
+  - it: should create a v1alpha2 PodLogs resource by default
     asserts:
       - hasDocuments:
           count: 1
@@ -65,18 +42,3 @@ tests:
                 sourceLabels:
                 - __meta_kubernetes_pod_uid
                 targetLabel: pod_uid
-
-  - it: should create a PodLogs resource with configured pipelineStages
-    set:
-      podLogs:
-        pipelineStages:
-          - multiline:
-              firstLine: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2} '
-              maxWaitTime: 2s
-    asserts:
-      - contains:
-          path: spec.pipelineStages
-          content:
-            multiline:
-              firstLine: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2} '
-              maxWaitTime: 2s
