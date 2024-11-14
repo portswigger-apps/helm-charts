@@ -223,6 +223,12 @@ global:
     # global.ingress.ipAllowListCIDRs -- Extra IP CIDR ranges to allow access from.
     # @section -- global
     ipAllowListCIDRs: []
+
+    authentication:
+      # global.ingress.authentication.enabled -- Set to `true` to require SSO authentication to access the application. Requires a CloudFront site.
+      # @section -- global
+      enabled: false
+
   serviceAccount:
     # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
     # @section -- global

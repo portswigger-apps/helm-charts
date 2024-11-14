@@ -1,0 +1,42 @@
+suite: Middleware (forward-auth)
+
+templates:
+  - traefik/middleware-forward-auth.yaml
+
+tests:
+  - it: should not create forward-auth middleware by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create forward-auth middleware if not using traefik
+    set:
+      global:
+        ingress:
+          host: app.example.io
+          className: alb
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create forward-auth middleware with ingress enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          authentication:
+            enabled: true
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.forwardAuth
+          value:
+            address: http://platform-oauth2-proxy.platform:4180/oauth2/auth
+            trustForwardHeader: true

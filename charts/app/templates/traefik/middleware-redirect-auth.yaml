@@ -1,0 +1,17 @@
+{{- if and .Values.global.ingress.enabled (eq .Values.global.ingress.className "traefik") }}
+{{- if and .Values.global.ingress.authentication.enabled .Values.infra.cloudfront.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{.Release.Namespace}}-{{ .Release.Name }}-redirect-auth
+spec:
+  errors:
+    status:
+      - "401-403"
+    service:
+      name: platform-oauth2-proxy-redirect
+      namespace: platform
+      port: 8080
+    query: "/"
+{{- end }}
+{{- end }}

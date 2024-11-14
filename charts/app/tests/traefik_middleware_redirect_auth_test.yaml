@@ -1,0 +1,47 @@
+suite: Middleware (redirect-auth)
+
+templates:
+  - traefik/middleware-redirect-auth.yaml
+
+tests:
+  - it: should not create redirect-auth and forward-auth middleware by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create redirect-auth and forward-auth middleware if not using traefik
+    set:
+      global:
+        ingress:
+          host: app.example.io
+          className: alb
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create redirect-auth middleware with ingress enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          authentication:
+            enabled: true
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.errors
+          value:
+            status:
+              - "401-403"
+            service:
+              name: platform-oauth2-proxy-redirect
+              namespace: platform
+              port: 8080
+            query: "/"

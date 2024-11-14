@@ -85,3 +85,31 @@ tests:
                 - name: NAMESPACE-RELEASE-NAME-ipallowlist@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
+
+  - it: should create chain middleware with sso auth middleware
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          authentication:
+            enabled: true
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            chain:
+              middlewares:
+                - name: NAMESPACE-RELEASE-NAME-ipallowlist@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-cloudfront-auth@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-redirect-auth@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-forward-auth@kubernetescrd
