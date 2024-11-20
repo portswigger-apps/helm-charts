@@ -62,3 +62,17 @@ Name of parameter group used in Redis Cluster
 "default.redis7"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Fetch given field from existing secret or generate a new random value
+*/}}
+{{- define "infra.fetchOrCreateSecretField" -}}
+{{- $context := index . 0 -}}
+{{- $secretName := index . 1 -}}
+{{- $secretFieldName := index . 2 -}}
+
+{{- $secretObj := (lookup "v1" "Secret" $context.Release.Namespace $secretName) | default dict }}
+{{- $secretData := (get $secretObj "data") | default dict }}
+{{- $secretFieldValue := (get $secretData $secretFieldName) | default (randAlphaNum 20 | b64enc) }}
+{{- $secretFieldValue -}}
+{{- end -}}

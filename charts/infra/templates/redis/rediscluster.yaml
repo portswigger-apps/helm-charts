@@ -12,7 +12,9 @@ spec:
   version: {{ .Values.redis.version | quote }}
   multiAZ: {{ .Values.redis.multiAz }}
   automaticFailoverEnabled: {{ gt (int .Values.redis.nodeGroups) 1 }}
-  writeConnectionSecretToRef:
-    name: {{ include "infra.name" . }}-redis-connection
+  passwordsSecretRef:
+    key: password
+    name: {{ include "infra.name" . }}-redis-credentials
+    namespace: {{ .Release.Namespace }}
   parameterGroupName: {{ include "infra.redisParameterGroupName" . }}
 {{- end -}}

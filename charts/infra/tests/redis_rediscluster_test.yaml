@@ -39,8 +39,8 @@ tests:
           path: spec.automaticFailoverEnabled
           value: false
       - equal:
-          path: spec.writeConnectionSecretToRef.name
-          value: RELEASE-NAME-redis-connection
+          path: spec.passwordsSecretRef.name
+          value: RELEASE-NAME-redis-credentials
       - equal:
           path: spec.version
           value: "7.1"
