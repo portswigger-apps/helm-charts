@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.14.2](https://img.shields.io/badge/Version-0.14.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.14.2](https://img.shields.io/badge/AppVersion-0.14.2-informational?style=flat-square)
+![Version: 0.15.0](https://img.shields.io/badge/Version-0.15.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.15.0](https://img.shields.io/badge/AppVersion-0.15.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.5.1 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.7.0 |
 
 ## Values
 
@@ -103,9 +103,8 @@ helm install app helm-charts/app
 | infra.redis.nodeGroups | int | `1` | Set the number of node groups for the `RedisCluster` |
 | infra.redis.replicasPerNodeGroup | int | `0` | Set the number of replicas per node group for the `RedisCluster` |
 | infra.redis.size | string | `micro` | Options: micro, small, medium, large or xlarge |
-| infra.redis.version | string | `7.1` | Options: 7.1, 7.0 |
+| infra.redis.version | string | `7.2` | Options: 7.2 |
 | infra.redis.multiAz | bool | `false` | Set to `true` to deploy the `RedisCluster` across multiple availability zones |
-| infra.redis.password | string | `""` | The password for the `RedisCluster`. Store in a SOPS encrypted `secrets.yaml` file. See the password requirements [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Auth.html). |
 | infra.bedrock.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access. |
 
 ### Other Values
