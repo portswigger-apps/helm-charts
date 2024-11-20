@@ -57,9 +57,9 @@ Name of parameter group used in Redis Cluster
 */}}
 {{- define "infra.redisParameterGroupName" -}}
 {{- if gt (int .Values.redis.nodeGroups) 1 -}}
-"default.redis7.cluster.on"
+"default.valkey7.cluster.on"
 {{- else -}}
-"default.redis7"
+"default.valkey7"
 {{- end -}}
 {{- end -}}
 

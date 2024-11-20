@@ -34,7 +34,7 @@ tests:
           value: true
       - equal:
           path: spec.parameterGroupName
-          value: default.redis7
+          value: default.valkey7
       - equal:
           path: spec.automaticFailoverEnabled
           value: false
@@ -43,7 +43,7 @@ tests:
           value: RELEASE-NAME-redis-credentials
       - equal:
           path: spec.version
-          value: "7.1"
+          value: "7.2"
 
   - it: should set parameter group name and automatic failover if multi node groups
     set:
@@ -58,7 +58,7 @@ tests:
           value: 5
       - equal:
           path: spec.parameterGroupName
-          value: default.redis7.cluster.on
+          value: default.valkey7.cluster.on
       - equal:
           path: spec.automaticFailoverEnabled
           value: true
