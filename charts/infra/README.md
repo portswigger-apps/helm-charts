@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.0](https://img.shields.io/badge/AppVersion-0.6.0-informational?style=flat-square)
+![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.1](https://img.shields.io/badge/AppVersion-0.6.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -72,7 +72,6 @@ helm install infra helm-charts/infra
 | redis.size | string | `micro` | Options: micro, small, medium, large or xlarge |
 | redis.version | string | `7.1` | Options: 7.1, 7.0 |
 | redis.multiAz | bool | `false` | Set to `true` to deploy the `RedisCluster` across multiple availability zones |
-| redis.password | string | `""` | The password for the `RedisCluster`. Store in a SOPS encrypted `secrets.yaml` file. See the password requirements [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Auth.html). |
 
 ### bedrock
 
