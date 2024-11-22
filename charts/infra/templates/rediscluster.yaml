@@ -1,0 +1,11 @@
+{{- if .Values.redis.enabled }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: RedisCluster
+metadata:
+  name: {{ include "infra.aws.name" . }}
+  labels:
+    {{- include "infra.labels" . | nindent 8 }}
+spec:
+  size: {{ .Values.redis.size }}
+  version: {{ .Values.redis.version | quote }}
+{{- end -}}

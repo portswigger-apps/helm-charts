@@ -51,18 +51,6 @@ Secret value used to authenticate CloudFront with the origin
 {{- .Values.global.ingress.host | sha256sum }}
 {{- end -}}
 
-
-{{/*
-Name of parameter group used in Redis Cluster
-*/}}
-{{- define "infra.redisParameterGroupName" -}}
-{{- if gt (int .Values.redis.nodeGroups) 1 -}}
-"default.valkey7.cluster.on"
-{{- else -}}
-"default.valkey7"
-{{- end -}}
-{{- end -}}
-
 {{/*
 Fetch given field from existing secret or generate a new random value
 */}}

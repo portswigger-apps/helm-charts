@@ -1,7 +1,7 @@
 suite: RedisCluster
 
 templates:
-  - redis/rediscluster.yaml
+  - rediscluster.yaml
 
 tests:
   - it: should not create a CloudFrontSite by default
@@ -13,52 +13,12 @@ tests:
     set:
       redis:
         enabled: true
-        nodeGroups: 1
-        replicasPerNodeGroup: 0
         size: xlarge
-        multiAz: true
     asserts:
       - isKind:
           of: RedisCluster
-      - equal:
-          path: spec.nodeGroups
-          value: 1
-      - equal:
-          path: spec.replicasPerNodeGroup
-          value: 0
       - equal:
           path: spec.size
           value: xlarge
-      - equal:
-          path: spec.multiAZ
-          value: true
-      - equal:
-          path: spec.parameterGroupName
-          value: default.valkey7
-      - equal:
-          path: spec.automaticFailoverEnabled
-          value: false
-      - equal:
-          path: spec.passwordsSecretRef.name
-          value: RELEASE-NAME-redis-credentials
-      - equal:
-          path: spec.version
-          value: "7.2"
 
-  - it: should set parameter group name and automatic failover if multi node groups
-    set:
-      redis:
-        enabled: true
-        nodeGroups: 5
-    asserts:
-      - isKind:
-          of: RedisCluster
-      - equal:
-          path: spec.nodeGroups
-          value: 5
-      - equal:
-          path: spec.parameterGroupName
-          value: default.valkey7.cluster.on
-      - equal:
-          path: spec.automaticFailoverEnabled
-          value: true
+
