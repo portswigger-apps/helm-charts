@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.15.0](https://img.shields.io/badge/Version-0.15.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.15.0](https://img.shields.io/badge/AppVersion-0.15.0-informational?style=flat-square)
+![Version: 0.16.0](https://img.shields.io/badge/Version-0.16.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.16.0](https://img.shields.io/badge/AppVersion-0.16.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.7.0 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.8.0 |
 
 ## Values
 
@@ -100,11 +100,8 @@ helm install app helm-charts/app
 | infra.cloudfront.defaultCacheBehavior.maxTtl | int | `31536000` | The maximum time-to-live for the `CloudFrontSite` cache objects |
 | infra.cloudfront.defaultCacheBehavior.defaultTtl | int | `0` | The default time-to-live for the `CloudFrontSite` cache objects, applies only when your origin does not add HTTP headers such as Cache-Control max-age, Cache-Control s-maxage, or Expires |
 | infra.redis.enabled | bool | `false` | Set to `true` to deploy a `RedisCluster` resource |
-| infra.redis.nodeGroups | int | `1` | Set the number of node groups for the `RedisCluster` |
-| infra.redis.replicasPerNodeGroup | int | `0` | Set the number of replicas per node group for the `RedisCluster` |
 | infra.redis.size | string | `micro` | Options: micro, small, medium, large or xlarge |
-| infra.redis.version | string | `7.2` | Options: 7.2 |
-| infra.redis.multiAz | bool | `false` | Set to `true` to deploy the `RedisCluster` across multiple availability zones |
+| infra.redis.version | string | `7` | Options: 7 |
 | infra.bedrock.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access. |
 
 ### Other Values
