@@ -154,6 +154,8 @@ redis:
   # @default -- `7`
   # @section -- redis
   version: "7"
+  # @ignored
+  dnsToken: notr34l
 
 bedrock:
   # bedrock.enabled -- Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access.
