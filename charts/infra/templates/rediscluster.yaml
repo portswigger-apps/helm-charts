@@ -11,21 +11,6 @@ data:
 
 ---
 
-{{- $redisAddress := printf "%s-redis-%s.serverless.euw1.cache.amazonaws.com" (include "infra.aws.name" .) .Values.redis.dnsToken -}}
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ printf "%s-redis-conn-tmp" (include "infra.name" .) }}
-  labels:
-    {{- include "infra.labels" . | nindent 8 }}
-data:
-  endpoint_0_address: {{ $redisAddress | b64enc }}
-  endpoint_0_port: {{ "6379" | b64enc }}
-  reader_endpoint_0_address: {{ $redisAddress | b64enc }}
-  reader_endpoint_0_port: {{ "6380" | b64enc }}
-
----
-
 apiVersion: platform.portswigger.io/v1alpha1
 kind: RedisCluster
 metadata:

@@ -10,6 +10,7 @@ tests:
           count: 0
 
   - it: should create a RedisCluster with configured fields
+    documentIndex: 1
     set:
       redis:
         enabled: true
