@@ -115,16 +115,18 @@ spec:
 
   {{- if .Values.infra.redis.enabled }}
   - toFQDNs:
-      - matchPattern: "*.*.*.*.cache.amazonaws.com"
+    - matchPattern: "*.serverless.euw1.cache.amazonaws.com"
     toPorts:
-      - ports:
-          - port: "6379"
-            protocol: TCP
+    - ports:
+      - port: "6379"
+        protocol: TCP
+      - port: "6380"
+        protocol: TCP
   {{- end }}
 
   {{- if .Values.infra.postgres.enabled }}
   - toFQDNs:
-    - matchPattern: {{ default .Release.Name .Values.infra.postgres.nameOverride }}.*.*.rds.amazonaws.com
+    - matchPattern: {{ default (include "app.aws.name" .) .Values.infra.postgres.nameOverride }}.*.*.rds.amazonaws.com
     toPorts:
     - ports:
       - port: "5432"

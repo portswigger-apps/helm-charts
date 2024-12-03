@@ -137,3 +137,66 @@ tests:
               secretKeyRef:
                 name: cool-bucket-s3bucket
                 key: id
+
+  - it: should create Deployment with redis connection details
+    set:
+      infra:
+        redis:
+          enabled: true
+      preDeployCommand: ["python3"]
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_USERNAME
+            value: "app"
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: NAMESPACE-RELEASE-NAME-redis-credentials
+                key: password
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                key: endpoint_0_address
+                name: NAMESPACE-RELEASE-NAME-redis-conn-tmp
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_PORT
+            valueFrom:
+              secretKeyRef:
+                key: endpoint_0_port
+                name: NAMESPACE-RELEASE-NAME-redis-conn-tmp
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_URL
+            value: rediss://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_READER_HOST
+            valueFrom:
+              secretKeyRef:
+                key: reader_endpoint_0_address
+                name: NAMESPACE-RELEASE-NAME-redis-conn-tmp
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_READER_PORT
+            valueFrom:
+              secretKeyRef:
+                key: reader_endpoint_0_port
+                name: NAMESPACE-RELEASE-NAME-redis-conn-tmp
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_READER_URL
+            value: rediss://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_READER_HOST):$(REDIS_READER_PORT)

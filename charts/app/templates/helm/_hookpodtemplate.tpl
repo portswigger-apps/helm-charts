@@ -48,6 +48,7 @@ Outputs a pod spec for use in helm hooks.
             value: {{ .Values.image.tag | quote }}
           {{- include "app.s3BucketConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.postgresConnectionSecretEnv" . | nindent 10 }}
+          {{- include "app.redisConnectionSecretEnv" . | nindent 10 }}
           {{- range $key, $value := .Values.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}

@@ -164,7 +164,14 @@ traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .R
 Name of the secret that stores redis connection details
 */}}
 {{- define "app.redisConnectionSecretName" -}}
-{{- (include "app.aws.name" . ) -}}-redis-connection
+{{- (include "app.aws.name" . ) -}}-redis-conn-tmp
+{{- end -}}
+
+{{/*
+Name of the secret that stores redis connection details
+*/}}
+{{- define "app.redisCredentialsSecretName" -}}
+{{- (include "app.aws.name" . ) -}}-redis-credentials
 {{- end -}}
 
 {{/*
@@ -173,32 +180,36 @@ Redis connection secret env variables
 {{- define "app.redisConnectionSecretEnv" -}}
 {{- if .Values.infra.redis.enabled -}}
 - name: REDIS_USERNAME
-  value: {{ include "app.name" . -}}-redis
-- name: REDIS_PORT
-  value: "6379"
+  value: "app"
 - name: REDIS_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ include "app.name" . -}}-redis-credentials
+      name: {{ include "app.redisCredentialsSecretName" . }}
       key: password
-{{- if gt (int .Values.infra.redis.nodeGroups) 1}}
-- name: REDIS_URL
+- name: REDIS_HOST
   valueFrom:
     secretKeyRef:
       name: {{ include "app.redisConnectionSecretName" . }}
-      key: configurationEndpointAddress
-{{- else }}
-- name: REDIS_URL
+      key: endpoint_0_address
+- name: REDIS_PORT
   valueFrom:
     secretKeyRef:
       name: {{ include "app.redisConnectionSecretName" . }}
-      key: primaryEndpointAddress
+      key: endpoint_0_port
+- name: REDIS_URL
+  value: "rediss://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)"
+- name: REDIS_READER_HOST
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.redisConnectionSecretName" . }}
+      key: reader_endpoint_0_address
+- name: REDIS_READER_PORT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.redisConnectionSecretName" . }}
+      key: reader_endpoint_0_port
 - name: REDIS_READER_URL
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "app.redisConnectionSecretName" . }}
-      key: readerEndpointAddress
-{{- end -}}
+  value: "rediss://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_READER_HOST):$(REDIS_READER_PORT)"
 {{- end -}}
 {{- end -}}
 

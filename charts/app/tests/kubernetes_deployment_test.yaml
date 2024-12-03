@@ -340,83 +340,68 @@ tests:
             name: S3_BUCKET_URL
             value: s3://$(S3_BUCKET_NAME)/
 
-  - it: should create Deployment with single node group redis connection details
+  - it: should create Deployment with redis connection details
     set:
       infra:
         redis:
           enabled: true
-          nodeGroups: 1
     template: kubernetes/deployment.yaml
     asserts:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: REDIS_URL
+            name: REDIS_USERNAME
+            value: "app"
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: NAMESPACE-RELEASE-NAME-redis-connection
-                key: primaryEndpointAddress
+                name: NAMESPACE-RELEASE-NAME-redis-credentials
+                key: password
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                key: endpoint_0_address
+                name: NAMESPACE-RELEASE-NAME-redis-conn-tmp
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_PORT
+            valueFrom:
+              secretKeyRef:
+                key: endpoint_0_port
+                name: NAMESPACE-RELEASE-NAME-redis-conn-tmp
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_URL
+            value: rediss://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_READER_HOST
+            valueFrom:
+              secretKeyRef:
+                key: reader_endpoint_0_address
+                name: NAMESPACE-RELEASE-NAME-redis-conn-tmp
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: REDIS_READER_PORT
+            valueFrom:
+              secretKeyRef:
+                key: reader_endpoint_0_port
+                name: NAMESPACE-RELEASE-NAME-redis-conn-tmp
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: REDIS_READER_URL
-            valueFrom:
-              secretKeyRef:
-                name: NAMESPACE-RELEASE-NAME-redis-connection
-                key: readerEndpointAddress
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: REDIS_USERNAME
-            value: RELEASE-NAME-redis
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: REDIS_PORT
-            value: "6379"
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: REDIS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: RELEASE-NAME-redis-credentials
-                key: password
-
-  - it: should create Deployment with multi node group redis connection details
-    set:
-      infra:
-        redis:
-          enabled: true
-          nodeGroups: 4
-    template: kubernetes/deployment.yaml
-    asserts:
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: REDIS_URL
-            valueFrom:
-              secretKeyRef:
-                name: NAMESPACE-RELEASE-NAME-redis-connection
-                key: configurationEndpointAddress
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: REDIS_USERNAME
-            value: RELEASE-NAME-redis
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: REDIS_PORT
-            value: "6379"
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: REDIS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: RELEASE-NAME-redis-credentials
-                key: password
+            value: rediss://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_READER_HOST):$(REDIS_READER_PORT)
 
   - it: should create Deployment with GOMEMLIMIT set
     template: kubernetes/deployment.yaml

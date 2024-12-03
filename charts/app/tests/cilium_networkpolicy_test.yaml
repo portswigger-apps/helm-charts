@@ -220,7 +220,7 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchPattern: RELEASE-NAME.*.*.rds.amazonaws.com
+              - matchPattern: NAMESPACE-RELEASE-NAME.*.*.rds.amazonaws.com
             toPorts:
               - ports:
                   - port: "5432"
@@ -255,12 +255,13 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchPattern: "*.*.*.*.cache.amazonaws.com"
+              - matchPattern: "*.serverless.euw1.cache.amazonaws.com"
             toPorts:
               - ports:
                   - port: "6379"
                     protocol: TCP
-
+                  - port: "6380"
+                    protocol: TCP
   - it: should add egress rules for externalHttpsServices
     set:
       ciliumNetworkPolicy:
