@@ -55,7 +55,7 @@ s3Bucket:
   # @section -- s3Bucket
   nameOverride: ""
 
-  # s3Bucket.create -- Set to `true` to allow data insights access to the `s3Bucket`
+  # s3Bucket.enableDataInsights -- Set to `true` to allow data insights access to the `s3Bucket`
   # @section -- s3Bucket
   enableDataInsights: false
 
@@ -147,7 +147,7 @@ redis:
   # redis.enabled -- Set to `true` to deploy a `RedisCluster` resource
   # @section -- redis
   enabled: false
-  # redis.nodeGroups -- (int) Set the number of node groups for the `RedisCluster`
+  # redis.size -- The size of the Redis instance
   # @section -- redis
   size: micro
   # redis.version -- Options: "7"
@@ -161,3 +161,45 @@ bedrock:
   # bedrock.enabled -- Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access.
   # @section -- bedrock
   enabled: false
+
+cloudfrontrouter:
+  # cloudfrontrouter.enabled -- Set to `true` to deploy an `CloudFrontRouter` resource
+  # @section -- cloudfront router
+  enabled: false
+  # cloudfrontrouter.domainName -- The presentation domain name for the `CloudFrontRouter` resource
+  # @section -- cloudfront router
+  domainName: ""
+  # cloudfrontrouter.acmCertificateARN -- The presentation domain name for the `CloudFrontRouter` resource
+  # @section -- cloudfront router
+  acmCertificateARN: ""
+  # cloudfrontrouter.origins -- A map of custom origins to be used by path configurations
+  # @section -- cloudfront router
+  origins: {}
+    # Custom origin MUST be available on 443 TLS 1.2+
+    # website: # this is id
+    #   domainName: site.portswigger.net # This is custom origin hostname
+    # website-static-cms:
+    #   domainName: website-cms-site.platform-dev.portswigger.io
+
+  # cloudfrontrouter.paths -- An ordered list of paths to direct to different origins
+  # @section -- cloudfront router
+  paths: []
+  #- /users/*:
+  #    targetOrigin: website
+  #    # cachePolicy: CachingDisabled
+  #- /landing-page/pro:
+  #    targetOrigin: website-static-cms
+  #    cachePolicy: CachingOptimized
+  #- /content/*:
+  #    targetOrigin: website-static-cms
+  #    cachePolicy: CachingOptimized
+  #- /content/new/*:
+  #    targetOrigin: website-static-cms
+
+  # cloudfrontrouter.default -- Values for the default origin config
+  # @section -- cloudfront router
+  default:
+    cachePolicy: CachingDisabled
+    cachePolicyId: ""
+    targetOrigin: default
+

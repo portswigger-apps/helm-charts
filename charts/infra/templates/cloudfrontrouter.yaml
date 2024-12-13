@@ -1,0 +1,39 @@
+{{- if .Values.cloudfrontrouter.enabled }}
+
+apiVersion: platform.portswigger.io/v1alpha1
+kind: CloudFrontRouter
+metadata:
+  name: {{ include "infra.aws.name" . }}
+  labels:
+    {{- include "infra.labels" . | nindent 8 }}
+spec:
+  domainName: {{ .Values.cloudfrontrouter.domainName | quote }}
+  acmCertificateARN: {{ .Values.cloudfrontrouter.acmCertificateARN | quote }}
+  origins: {{ .Values.cloudfrontrouter.origins | toYaml | nindent 4 }}
+  {{- with .Values.cloudfrontrouter.paths }}
+  paths:
+  {{- range $it := . }}
+  {{- range $k, $v := $it }}
+  {{- $cachePolicy :=  (default "CachingDisabled" (get $v "cachePolicy")) }}
+  {{- $cachePolicyId :=  (default (include "infra.cloudfrontRouter.cachePolicyId" $cachePolicy) (get $v "cachePolicyId")) }}
+  {{- $targetOrigin := (get $v "targetOrigin") }}
+  - {{ $k }}:
+      {{- if hasKey $.Values.cloudfrontrouter.origins $targetOrigin }}
+      targetOrigin: {{ $targetOrigin }}
+      {{- else }}
+      {{- fail (printf "Target origin \"%s\" does not exist" $targetOrigin) }}
+      {{- end }}
+      cachePolicy: {{ $cachePolicy }}
+      cachePolicyId: {{ $cachePolicyId }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  default:
+    cachePolicy: {{ .Values.cloudfrontrouter.default.cachePolicy }}
+    cachePolicyId: {{ default (include "infra.cloudfrontRouter.cachePolicyId" .Values.cloudfrontrouter.default.cachePolicy ) .Values.cloudfrontrouter.default.cachePolicyId }}
+    {{- if hasKey .Values.cloudfrontrouter.origins .Values.cloudfrontrouter.default.targetOrigin }}
+    targetOrigin: {{ .Values.cloudfrontrouter.default.targetOrigin }}
+    {{- else }}
+    {{- fail (printf "Default target origin \"%s\" does not exist" .Values.cloudfrontrouter.default.targetOrigin) }}
+    {{- end }}
+{{- end -}}
