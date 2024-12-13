@@ -64,3 +64,37 @@ Fetch given field from existing secret or generate a new random value
 {{- $secretFieldValue := (get $secretData $secretFieldName) | default (randAlphaNum 20 | b64enc) }}
 {{- $secretFieldValue -}}
 {{- end -}}
+
+
+{{/*
+Returns the managed cache policy id based on policy name
+*/}}
+{{- define "infra.cloudfrontRouter.cachePolicyId" -}}
+{{- $policyName := . -}}
+{{- $cachePolicies := dict "CachingDisabled" "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" -}}
+{{- $_ := set $cachePolicies "CachingOptimized" "658327ea-f89d-4fab-a63d-7e88639e58f6" -}}
+{{- $_ := set $cachePolicies "CachingOptimizedForUncompressedObjects" "b2884449-e4de-46a7-ac36-70bc7f1ddd6d" -}}
+{{- $_ := set $cachePolicies "UseOriginCacheControlHeaders" "83da9c7e-98b4-4e11-a168-04f0df8e2c65" -}}
+{{- $_ := set $cachePolicies "UseOriginCacheControlHeaders-QueryStrings" "4cc15a8a-d715-48a4-82b8-cc0b614638fe" -}}
+{{- if hasKey $cachePolicies $policyName -}}
+{{ get $cachePolicies $policyName }}
+{{- else -}}
+{{ fail (printf "%s is not a recognised cache policy name." $policyName)}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Returns the origins with default values
+*/}}
+{{- define "infra.cloudfrontRouter.origins" -}}
+{{- $routerOrigins := . -}}
+
+{{- end -}}
+
+{{/*
+Returns the origins with default values
+*/}}
+{{- define "infra.cloudfrontRouter.default" -}}
+{{- $routerDefault := . -}}
+
+{{- end -}}
