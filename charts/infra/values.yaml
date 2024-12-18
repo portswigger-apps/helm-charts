@@ -184,17 +184,17 @@ cloudfrontrouter:
   # cloudfrontrouter.paths -- An ordered list of paths to direct to different origins
   # @section -- cloudfront router
   paths: []
-  #- /users/*:
-  #    targetOrigin: website
-  #    # cachePolicy: CachingDisabled
-  #- /landing-page/pro:
-  #    targetOrigin: website-static-cms
-  #    cachePolicy: CachingOptimized
-  #- /content/*:
-  #    targetOrigin: website-static-cms
-  #    cachePolicy: CachingOptimized
-  #- /content/new/*:
-  #    targetOrigin: website-static-cms
+  #- pathPattern: /users/*
+  #  targetOrigin: website
+  #  # cachePolicy: CachingDisabled
+  #- pathPattern: /landing-page/pro
+  #  targetOrigin: website-static-cms
+  #  cachePolicy: CachingOptimized
+  #- pathPatttern: /content/*
+  #  targetOrigin: website-static-cms
+  #  cachePolicy: CachingOptimized
+  #- pathPattern: /content/new/*
+  #  targetOrigin: website-static-cms
 
   # cloudfrontrouter.default -- Values for the default origin config
   # @section -- cloudfront router

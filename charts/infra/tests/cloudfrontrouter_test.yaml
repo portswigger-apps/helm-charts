@@ -24,13 +24,12 @@ tests:
           website:
             targetDomain: www.example.com
         paths:
-          - /marketing/*:
-              cachePolicy: CachingOptimized
-              targetOrigin: website
-          - /users/invoices:
-              cachePolicy: UseOriginCacheControlHeaders
-              targetOrigin: website
-
+          - pathPattern: /marketing/*
+            cachePolicy: CachingOptimized
+            targetOrigin: website
+          - pathPattern: /users/invoices
+            cachePolicy: UseOriginCacheControlHeaders
+            targetOrigin: website
     asserts:
       - isKind:
           of: CloudFrontRouter
@@ -53,14 +52,14 @@ tests:
       - equal:
           path: spec.paths
           value:
-          - /marketing/*:
-              cachePolicy: CachingOptimized
-              cachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
-              targetOrigin: website
-          - /users/invoices:
-              cachePolicy: UseOriginCacheControlHeaders
-              cachePolicyId: 83da9c7e-98b4-4e11-a168-04f0df8e2c65
-              targetOrigin: website
+          - pathPattern: /marketing/*
+            cachePolicy: CachingOptimized
+            cachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+            targetOrigin: website
+          - pathPattern: /users/invoices
+            cachePolicy: UseOriginCacheControlHeaders
+            cachePolicyId: 83da9c7e-98b4-4e11-a168-04f0df8e2c65
+            targetOrigin: website
       - equal:
           path: spec.default
           value:
