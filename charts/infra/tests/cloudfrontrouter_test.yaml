@@ -19,9 +19,7 @@ tests:
         domainName: cloudfront.example.com
         acmCertificateARN: arn:acm:123456789:certificate/something
         origins:
-          default:
-            targetDomain: default.example.com
-          website:
+          - name: website
             targetDomain: www.example.com
         paths:
           - pathPattern: /marketing/*
@@ -30,6 +28,8 @@ tests:
           - pathPattern: /users/invoices
             cachePolicy: UseOriginCacheControlHeaders
             targetOrigin: website
+        default:
+          targetDomain: default.example.com
     asserts:
       - isKind:
           of: CloudFrontRouter
@@ -45,9 +45,7 @@ tests:
       - equal:
           path: spec.origins
           value:
-            default:
-              targetDomain: default.example.com
-            website:
+            - name: website
               targetDomain: www.example.com
       - equal:
           path: spec.paths
@@ -65,4 +63,4 @@ tests:
           value:
             cachePolicy: CachingDisabled
             cachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
-            targetOrigin: default
+            targetDomain: default.example.com

@@ -18,11 +18,7 @@ spec:
   {{- $cachePolicyId :=  (default (include "infra.cloudfrontRouter.cachePolicyId" $cachePolicy) $it.cachePolicyId) }}
   {{- $targetOrigin := $it.targetOrigin }}
   - pathPattern: {{ $pathPattern }}
-    {{- if hasKey $.Values.cloudfrontrouter.origins $targetOrigin }}
     targetOrigin: {{ $targetOrigin }}
-    {{- else }}
-    {{- fail (printf "Target origin \"%s\" does not exist" $targetOrigin) }}
-    {{- end }}
     cachePolicy: {{ $cachePolicy }}
     cachePolicyId: {{ $cachePolicyId }}
   {{- end }}
@@ -30,9 +26,5 @@ spec:
   default:
     cachePolicy: {{ .Values.cloudfrontrouter.default.cachePolicy }}
     cachePolicyId: {{ default (include "infra.cloudfrontRouter.cachePolicyId" .Values.cloudfrontrouter.default.cachePolicy ) .Values.cloudfrontrouter.default.cachePolicyId }}
-    {{- if hasKey .Values.cloudfrontrouter.origins .Values.cloudfrontrouter.default.targetOrigin }}
-    targetOrigin: {{ .Values.cloudfrontrouter.default.targetOrigin }}
-    {{- else }}
-    {{- fail (printf "Default target origin \"%s\" does not exist" .Values.cloudfrontrouter.default.targetOrigin) }}
-    {{- end }}
+    targetDomain: {{ .Values.cloudfrontrouter.default.targetDomain }}
 {{- end -}}

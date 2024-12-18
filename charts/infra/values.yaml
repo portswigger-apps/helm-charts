@@ -174,32 +174,32 @@ cloudfrontrouter:
   acmCertificateARN: ""
   # cloudfrontrouter.origins -- A map of custom origins to be used by path configurations
   # @section -- cloudfront router
-  origins: {}
+  origins: []
     # Custom origin MUST be available on 443 TLS 1.2+
-    # website: # this is id
-    #   domainName: site.portswigger.net # This is custom origin hostname
-    # website-static-cms:
-    #   domainName: website-cms-site.platform-dev.portswigger.io
+    # - name: website # this is id
+    #   targetDomain: site.portswigger.net # This is custom origin hostname
+    # - name: website-static-cms
+    #   targetDomain: website-cms-site.platform-dev.portswigger.io
 
   # cloudfrontrouter.paths -- An ordered list of paths to direct to different origins
   # @section -- cloudfront router
   paths: []
-  #- pathPattern: /users/*
-  #  targetOrigin: website
-  #  # cachePolicy: CachingDisabled
-  #- pathPattern: /landing-page/pro
-  #  targetOrigin: website-static-cms
-  #  cachePolicy: CachingOptimized
-  #- pathPatttern: /content/*
-  #  targetOrigin: website-static-cms
-  #  cachePolicy: CachingOptimized
-  #- pathPattern: /content/new/*
-  #  targetOrigin: website-static-cms
+    # - pathPattern: /users/*
+    #   targetOrigin: website
+    #   # cachePolicy: CachingDisabled
+    # - pathPattern: /landing-page/pro
+    #   targetOrigin: website-static-cms
+    #   cachePolicy: CachingOptimized
+    # - pathPatttern: /content/*
+    #   targetOrigin: website-static-cms
+    #   cachePolicy: CachingOptimized
+    # - pathPattern: /content/new/*
+    #   targetOrigin: website-static-cms
 
   # cloudfrontrouter.default -- Values for the default origin config
   # @section -- cloudfront router
   default:
     cachePolicy: CachingDisabled
     cachePolicyId: ""
-    targetOrigin: default
+    targetDomain: ""
 
