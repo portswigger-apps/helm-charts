@@ -1,5 +1,4 @@
 {{- if .Values.cloudfrontrouter.enabled }}
-
 apiVersion: platform.portswigger.io/v1alpha1
 kind: CloudFrontRouter
 metadata:
@@ -9,22 +8,74 @@ metadata:
 spec:
   domainName: {{ .Values.cloudfrontrouter.domainName | quote }}
   acmCertificateARN: {{ .Values.cloudfrontrouter.acmCertificateARN | quote }}
-  origins: {{ .Values.cloudfrontrouter.origins | toYaml | nindent 4 }}
-  {{- with .Values.cloudfrontrouter.paths }}
+  defaultCacheBehavior:
+      allowedMethods:
+        - DELETE
+        - GET
+        - HEAD
+        - OPTIONS
+        - PATCH
+        - POST
+        - PUT
+      cachedMethods:
+        - GET
+        - HEAD
+        - OPTIONS
+      cachePolicyId: {{ default (include "infra.cloudfrontRouter.cachePolicyId" .Values.cloudfrontrouter.default.cachePolicyName ) .Values.cloudfrontrouter.default.cachePolicyId }}
+      targetOriginId: defaultOrigin
+      originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+      viewerProtocolPolicy: redirect-to-https
+  origins:
+  - customOriginConfig:
+      httpPort: 80
+      httpsPort: 443
+      originKeepaliveTimeout: 5
+      originProtocolPolicy: https-only
+      originReadTimeout: 10
+      originSslProtocols:
+        - TLSv1.2
+    {{- $defaultDomainName := .Values.cloudfrontrouter.default.domainName }}
+    {{- if $defaultDomainName }}
+    domainName: {{ $defaultDomainName }}
+    {{- else }}
+    {{ fail "cloudfrontrouter.default.domainName can not be empty"}}
+    {{- end }}
+    originId: defaultOrigin
+  {{- range $origin := .Values.cloudfrontrouter.origins }}
+  - customOriginConfig:
+      httpPort: 80
+      httpsPort: 443
+      originKeepaliveTimeout: 5
+      originProtocolPolicy: https-only
+      originReadTimeout: 10
+      originSslProtocols:
+        - TLSv1.2
+    domainName: {{ $origin.domainName }}
+    originId: {{ $origin.originId }}
+  {{- end }}
   paths:
-  {{- range $it := . }}
+  {{- range $it := .Values.cloudfrontrouter.paths }}
   {{- $pathPattern := $it.pathPattern }}
-  {{- $cachePolicy :=  (default "CachingDisabled" $it.cachePolicy) }}
-  {{- $cachePolicyId :=  (default (include "infra.cloudfrontRouter.cachePolicyId" $cachePolicy) $it.cachePolicyId) }}
-  {{- $targetOrigin := $it.targetOrigin }}
-  - pathPattern: {{ $pathPattern }}
-    targetOrigin: {{ $targetOrigin }}
-    cachePolicy: {{ $cachePolicy }}
+  {{- $cachePolicyName :=  (default "CachingDisabled" $it.cachePolicyName) }}
+  {{- $cachePolicyId :=  (default (include "infra.cloudfrontRouter.cachePolicyId" $cachePolicyName) $it.cachePolicyId) }}
+  {{- $targetOriginId := $it.targetOriginId }}
+  - allowedMethods:
+      - GET
+      - HEAD
+      - OPTIONS
+      - PUT
+      - PATCH
+      - POST
+      - DELETE
+    cachedMethods:
+      - GET
+      - HEAD
+      - OPTIONS
+    compress: true
+    pathPattern: {{ $pathPattern }}
+    targetOriginId: {{ $targetOriginId }}
     cachePolicyId: {{ $cachePolicyId }}
+    originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac # Managed-AllViewerExceptHostHeader
+    viewerProtocolPolicy: redirect-to-https
   {{- end }}
-  {{- end }}
-  default:
-    cachePolicy: {{ .Values.cloudfrontrouter.default.cachePolicy }}
-    cachePolicyId: {{ default (include "infra.cloudfrontRouter.cachePolicyId" .Values.cloudfrontrouter.default.cachePolicy ) .Values.cloudfrontrouter.default.cachePolicyId }}
-    targetDomain: {{ .Values.cloudfrontrouter.default.targetDomain }}
 {{- end -}}

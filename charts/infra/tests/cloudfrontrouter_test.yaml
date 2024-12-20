@@ -9,18 +9,25 @@ tests:
       - hasDocuments:
           count: 0
 
+  - it: should fail create a CloudFrontRouter when default domain is not set
+    set:
+      global:
+      cloudfrontrouter:
+        enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: cloudfrontrouter.default.domainName can not be empty
+
   - it: should create a CloudFrontRouter with configured fields
     set:
       global:
-        ingress:
-          host: example.com
       cloudfrontrouter:
         enabled: true
         domainName: cloudfront.example.com
         acmCertificateARN: arn:acm:123456789:certificate/something
         origins:
-          - name: website
-            targetDomain: www.example.com
+          - originId: website
+            domainName: www.example.com
         paths:
           - pathPattern: /marketing/*
             cachePolicy: CachingOptimized
@@ -29,7 +36,7 @@ tests:
             cachePolicy: UseOriginCacheControlHeaders
             targetOrigin: website
         default:
-          targetDomain: default.example.com
+          domainName: default.example.com
     asserts:
       - isKind:
           of: CloudFrontRouter
@@ -45,22 +52,81 @@ tests:
       - equal:
           path: spec.origins
           value:
-            - name: website
-              targetDomain: www.example.com
+            - customOriginConfig:
+                httpPort: 80
+                httpsPort: 443
+                originKeepaliveTimeout: 5
+                originProtocolPolicy: https-only
+                originReadTimeout: 10
+                originSslProtocols:
+                  - TLSv1.2
+              domainName: default.example.com
+              originId: defaultOrigin
+            - customOriginConfig:
+                httpPort: 80
+                httpsPort: 443
+                originKeepaliveTimeout: 5
+                originProtocolPolicy: https-only
+                originReadTimeout: 10
+                originSslProtocols:
+                  - TLSv1.2
+              domainName: www.example.com
+              originId: website
       - equal:
           path: spec.paths
           value:
-          - pathPattern: /marketing/*
-            cachePolicy: CachingOptimized
-            cachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
-            targetOrigin: website
-          - pathPattern: /users/invoices
-            cachePolicy: UseOriginCacheControlHeaders
-            cachePolicyId: 83da9c7e-98b4-4e11-a168-04f0df8e2c65
-            targetOrigin: website
+            - allowedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+                - PUT
+                - PATCH
+                - POST
+                - DELETE
+              cachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+              cachedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+              compress: true
+              originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+              pathPattern: /marketing/*
+              targetOriginId: null
+              viewerProtocolPolicy: redirect-to-https
+            - allowedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+                - PUT
+                - PATCH
+                - POST
+                - DELETE
+              cachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+              cachedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+              compress: true
+              originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+              pathPattern: /users/invoices
+              targetOriginId: null
+              viewerProtocolPolicy: redirect-to-https
       - equal:
-          path: spec.default
+          path: spec.defaultCacheBehavior
           value:
-            cachePolicy: CachingDisabled
+            allowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - POST
+              - PUT
             cachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
-            targetDomain: default.example.com
+            cachedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+            originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+            targetOriginId: defaultOrigin
+            viewerProtocolPolicy: redirect-to-https
