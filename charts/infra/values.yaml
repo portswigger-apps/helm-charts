@@ -200,5 +200,6 @@ cloudfrontrouter:
   # @section -- cloudfront router
   default:
     cachePolicyName: CachingDisabled
+    cachePolicyId: ""
     domainName: ""
 
