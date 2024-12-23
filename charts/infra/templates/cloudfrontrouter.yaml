@@ -9,22 +9,22 @@ spec:
   domainName: {{ .Values.cloudfrontrouter.domainName | quote }}
   acmCertificateARN: {{ .Values.cloudfrontrouter.acmCertificateARN | quote }}
   defaultCacheBehavior:
-      allowedMethods:
-        - DELETE
-        - GET
-        - HEAD
-        - OPTIONS
-        - PATCH
-        - POST
-        - PUT
-      cachedMethods:
-        - GET
-        - HEAD
-        - OPTIONS
-      cachePolicyId: {{ default (include "infra.cloudfrontRouter.cachePolicyId" .Values.cloudfrontrouter.default.cachePolicyName ) .Values.cloudfrontrouter.default.cachePolicyId }}
-      targetOriginId: defaultOrigin
-      originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
-      viewerProtocolPolicy: redirect-to-https
+    allowedMethods:
+      - DELETE
+      - GET
+      - HEAD
+      - OPTIONS
+      - PATCH
+      - POST
+      - PUT
+    cachedMethods:
+      - GET
+      - HEAD
+      - OPTIONS
+    cachePolicyId: {{ default (printf "%s # Managed-%s" (include "infra.cloudfrontRouter.cachePolicyId" .Values.cloudfrontrouter.default.cachePolicyName) .Values.cloudfrontrouter.default.cachePolicyName) .Values.cloudfrontrouter.default.cachePolicyId }}
+    targetOriginId: defaultOrigin
+    originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac # Managed-AllViewerExceptHostHeader
+    viewerProtocolPolicy: redirect-to-https
   origins:
   - customOriginConfig:
       httpPort: 80
@@ -53,11 +53,12 @@ spec:
     domainName: {{ $origin.domainName }}
     originId: {{ $origin.originId }}
   {{- end }}
+  {{- with .Values.cloudfrontrouter.paths }}
   paths:
-  {{- range $it := .Values.cloudfrontrouter.paths }}
+  {{- range $it := . }}
   {{- $pathPattern := $it.pathPattern }}
   {{- $cachePolicyName :=  (default "CachingDisabled" $it.cachePolicyName) }}
-  {{- $cachePolicyId :=  (default (include "infra.cloudfrontRouter.cachePolicyId" $cachePolicyName) $it.cachePolicyId) }}
+  {{- $cachePolicyId :=  (default (printf "%s # Managed-%s"  (include "infra.cloudfrontRouter.cachePolicyId" $cachePolicyName) $cachePolicyName) $it.cachePolicyId) }}
   {{- $targetOriginId := $it.targetOriginId }}
   - allowedMethods:
       - GET
@@ -77,5 +78,6 @@ spec:
     cachePolicyId: {{ $cachePolicyId }}
     originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac # Managed-AllViewerExceptHostHeader
     viewerProtocolPolicy: redirect-to-https
+  {{- end }}
   {{- end }}
 {{- end -}}
