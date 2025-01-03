@@ -7,7 +7,6 @@ metadata:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
   domainName: {{ .Values.cloudfrontrouter.domainName | quote }}
-  acmCertificateARN: {{ .Values.cloudfrontrouter.acmCertificateARN | quote }}
   defaultCacheBehavior:
     allowedMethods:
       - DELETE
@@ -53,8 +52,8 @@ spec:
     domainName: {{ $origin.domainName }}
     originId: {{ $origin.originId }}
   {{- end }}
-  {{- with .Values.cloudfrontrouter.paths }}
-  paths:
+  {{- with .Values.cloudfrontrouter.orderedCacheBehavior }}
+  orderedCacheBehavior:
   {{- range $it := . }}
   {{- $pathPattern := $it.pathPattern }}
   {{- $cachePolicyName :=  (default "CachingDisabled" $it.cachePolicyName) }}

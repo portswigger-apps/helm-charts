@@ -24,11 +24,10 @@ tests:
       cloudfrontrouter:
         enabled: true
         domainName: cloudfront.example.com
-        acmCertificateARN: arn:acm:123456789:certificate/something
         origins:
           - originId: website
             domainName: www.example.com
-        paths:
+        orderedCacheBehavior:
           - pathPattern: /marketing/*
             cachePolicy: CachingOptimized
             targetOrigin: website
@@ -46,9 +45,6 @@ tests:
       - equal:
           path: spec.domainName
           value: cloudfront.example.com
-      - equal:
-          path: spec.acmCertificateARN
-          value: arn:acm:123456789:certificate/something
       - equal:
           path: spec.origins
           value:
@@ -73,7 +69,7 @@ tests:
               domainName: www.example.com
               originId: website
       - equal:
-          path: spec.paths
+          path: spec.orderedCacheBehavior
           value:
             - allowedMethods:
                 - GET

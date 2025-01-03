@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.12.2](https://img.shields.io/badge/Version-0.12.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.12.2](https://img.shields.io/badge/AppVersion-0.12.2-informational?style=flat-square)
+![Version: 0.13.0](https://img.shields.io/badge/Version-0.13.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.13.0](https://img.shields.io/badge/AppVersion-0.13.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -85,7 +85,7 @@ helm install infra helm-charts/infra
 | cloudfrontrouter.domainName | string | `""` | The presentation domain name for the `CloudFrontRouter` resource |
 | cloudfrontrouter.acmCertificateARN | string | `""` | The presentation domain name for the `CloudFrontRouter` resource |
 | cloudfrontrouter.origins | list | `[]` | A map of custom origins to be used by path configurations |
-| cloudfrontrouter.paths | list | `[]` | An ordered list of paths to direct to different origins |
+| cloudfrontrouter.orderedCacheBehavior | list | `[]` | An ordered list of paths to direct to different origins |
 | cloudfrontrouter.default | object | `{"cachePolicyId":"","cachePolicyName":"CachingDisabled","domainName":""}` | Values for the default origin config |
 
 ----------------------------------------------

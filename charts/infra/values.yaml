@@ -181,9 +181,9 @@ cloudfrontrouter:
     # - originId: website-static-cms
     #   domainName: website-cms-site.platform-dev.portswigger.io
 
-  # cloudfrontrouter.paths -- An ordered list of paths to direct to different origins
+  # cloudfrontrouter.orderedCacheBehavior -- An ordered list of paths to direct to different origins
   # @section -- cloudfront router
-  paths: []
+  orderedCacheBehavior: []
     # - pathPattern: /users/*
     #   targetOriginId: website
     #   # cachePolicyName: CachingDisabled
