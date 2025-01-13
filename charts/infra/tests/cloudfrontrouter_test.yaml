@@ -46,6 +46,9 @@ tests:
           path: spec.domainName
           value: cloudfront.example.com
       - equal:
+          path: spec.restrictToOffice
+          value: "true"
+      - equal:
           path: spec.origins
           value:
             - customOriginConfig:
