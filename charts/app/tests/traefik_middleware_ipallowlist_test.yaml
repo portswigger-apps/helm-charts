@@ -64,6 +64,22 @@ tests:
           path: spec.ipAllowList.sourceRange
           content: 52.199.127.192/26
 
+  - it: should create ipallowlist middleware with cloudfront IPs in when allowing cloudfront is true
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          allowFromCloudFront: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - contains:
+          path: spec.ipAllowList.sourceRange
+          content: 52.199.127.192/26
+
   - it: should create ipallowlist middleware with ONLY `ipAllowListCIDRs` set and ingress enabled if `ipAllowListCIDRs` contains 0.0.0.0/0
     set:
       global:

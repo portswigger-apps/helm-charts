@@ -13,7 +13,7 @@ spec:
 {{- if .Values.global.ingress.allowFromOffice }}
     {{- toYaml .Values.global.ingress.allowFromOfficeCIDRs | nindent 4 }}
 {{- end }}
-{{- if .Values.infra.cloudfront.enabled }}
+{{- if or (eq .Values.infra.cloudfront.enabled true) (eq .Values.global.ingress.allowFromCloudFront true) }}
     {{- toYaml .Values.global.ingress.allowFromCloudFrontCIDRs | nindent 4 }}
 {{- end }}
 {{- end }}

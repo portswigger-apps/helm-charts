@@ -35,6 +35,10 @@ global:
       - 164.39.15.192/29
       - 217.138.234.184/29
       - 52.211.196.189/32
+    # global.ingress.allowFromCloudFront -- Set to true to trust CloudFront IPs
+    # @section -- global
+    # @ignored
+    allowFromCloudFront: false
     # global.ingress.allowFromCloudFrontCIDRs -- Cloudfront IP ranges
     # @section -- global
     # @ignored
