@@ -11,6 +11,9 @@ global:
     # global.ingress.host -- Ingress host used to configure cloudfront target
     # @section -- global
     host: ""
+    # global.ingress.extraHosts -- Extra Ingress hosts used to configure extra host headers recognized by Traefik
+    # @section -- global
+    extraHosts: []
     # global.ingress.annotations -- Set annotations on the `Ingress`
     # @section -- global
     annotations: {}

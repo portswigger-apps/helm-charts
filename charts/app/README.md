@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.16.3](https://img.shields.io/badge/Version-0.16.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.16.3](https://img.shields.io/badge/AppVersion-0.16.3-informational?style=flat-square)
+![Version: 0.16.4](https://img.shields.io/badge/Version-0.16.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.16.4](https://img.shields.io/badge/AppVersion-0.16.4-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -25,6 +25,7 @@ helm install app helm-charts/app
 | global.aws.accountId | string | Taken from deployment pipeline environment | The AWS account that this application is being deployed into |
 | global.ingress.enabled | bool | `false` | Set to `true` to expose the application with a Kubernetes `Ingress` |
 | global.ingress.host | string | `""` | Ingress host used to configure cloudfront target |
+| global.ingress.extraHosts | list | `[]` | Extra Ingress hosts used to configure extra host headers recognized by Traefik |
 | global.ingress.annotations | object | `{}` | Set annotations on the `Ingress` |
 | global.ingress.className | string | `"traefik"` | Override the `Ingress` class. In most cases this should be left as default |
 | global.ingress.paths | list | `["/"]` | Path prefixes that you want to make available externally with the `Ingress` |

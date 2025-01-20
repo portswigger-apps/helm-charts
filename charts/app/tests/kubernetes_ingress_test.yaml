@@ -42,6 +42,62 @@ tests:
                       path: /my-path
                       pathType: Prefix
 
+  - it: should create an Ingress with extraHosts if configured
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: my-host.com
+          extraHosts:
+          - example.com
+          - example.org
+          paths:
+            - "/my-path"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Ingress
+      - equal:
+          path: metadata.annotations
+          value:
+            traefik.ingress.kubernetes.io/router.middlewares: NAMESPACE-RELEASE-NAME-chain@kubernetescrd
+      - equal:
+          path: spec
+          value:
+            ingressClassName: traefik
+            rules:
+              - host: my-host.com
+                http:
+                  paths:
+                    - backend:
+                        service:
+                          name: RELEASE-NAME
+                          port:
+                            number: 8080
+                      path: /my-path
+                      pathType: Prefix
+              - host: example.com
+                http:
+                  paths:
+                    - backend:
+                        service:
+                          name: RELEASE-NAME
+                          port:
+                            number: 8080
+                      path: /my-path
+                      pathType: Prefix
+              - host: example.org
+                http:
+                  paths:
+                    - backend:
+                        service:
+                          name: RELEASE-NAME
+                          port:
+                            number: 8080
+                      path: /my-path
+                      pathType: Prefix
+
   - it: should not create traefik middleware annotation if IngressClass is not traefik
     set:
       global:
