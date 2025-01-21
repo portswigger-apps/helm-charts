@@ -84,6 +84,21 @@ Returns the managed cache policy id based on policy name
 {{- end -}}
 
 {{/*
+Returns the managed origin policy id based on origin policy name
+*/}}
+{{- define "infra.cloudfrontRouter.originRequestPolicyId" -}}
+{{- $policyName := . -}}
+{{- $originRequestPolicies := dict "AllViewer" "216adef6-5c7f-47e4-b989-5492eafa07d3" -}}
+{{- $_ := set $originRequestPolicies "AllViewerAndCloudFrontHeaders-2022-06" "33f36d7e-f396-46d9-90e0-52428a34d9dc" -}}
+{{- $_ := set $originRequestPolicies "AllViewerExceptHostHeader" "b689b0a8-53d0-40ab-baf2-68738e2966ac" -}}
+{{- if hasKey $originRequestPolicies $policyName -}}
+{{ get $originRequestPolicies $policyName }}
+{{- else -}}
+{{ fail (printf "%s is not a recognised origin request policy name." $policyName)}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Returns the origins with default values
 */}}
 {{- define "infra.cloudfrontRouter.origins" -}}

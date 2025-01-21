@@ -4,9 +4,9 @@ description: A Helm "monochart" for deploying common infrastructure
 
 type: application
 
-version: 0.13.2
+version: 0.13.3
 
-appVersion: 0.13.2
+appVersion: 0.13.3
 
 keywords:
   - infra
