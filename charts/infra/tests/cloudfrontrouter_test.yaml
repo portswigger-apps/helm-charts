@@ -27,6 +27,7 @@ tests:
         origins:
           - originId: website
             domainName: www.example.com
+            originReadTimeout: 180
         orderedCacheBehavior:
           - pathPattern: /marketing/*
             cachePolicy: CachingOptimized
@@ -36,6 +37,7 @@ tests:
             targetOrigin: website
         default:
           domainName: default.example.com
+          originKeepaliveTimeout: 30
     asserts:
       - isKind:
           of: CloudFrontRouter
@@ -54,7 +56,7 @@ tests:
             - customOriginConfig:
                 httpPort: 80
                 httpsPort: 443
-                originKeepaliveTimeout: 5
+                originKeepaliveTimeout: 30
                 originProtocolPolicy: https-only
                 originReadTimeout: 10
                 originSslProtocols:
@@ -66,7 +68,7 @@ tests:
                 httpsPort: 443
                 originKeepaliveTimeout: 5
                 originProtocolPolicy: https-only
-                originReadTimeout: 10
+                originReadTimeout: 180
                 originSslProtocols:
                   - TLSv1.2
               domainName: www.example.com

@@ -29,9 +29,9 @@ spec:
   - customOriginConfig:
       httpPort: 80
       httpsPort: 443
-      originKeepaliveTimeout: 5
+      originKeepaliveTimeout: {{ default 5 .Values.cloudfrontrouter.default.originKeepaliveTimeout }}
       originProtocolPolicy: https-only
-      originReadTimeout: 10
+      originReadTimeout: {{ default 10 .Values.cloudfrontrouter.default.originReadTimeout }}
       originSslProtocols:
         - TLSv1.2
     {{- $defaultDomainName := .Values.cloudfrontrouter.default.domainName }}
@@ -45,9 +45,9 @@ spec:
   - customOriginConfig:
       httpPort: 80
       httpsPort: 443
-      originKeepaliveTimeout: 5
+      originKeepaliveTimeout: {{ default 5 $origin.originKeepaliveTimeout }}
       originProtocolPolicy: https-only
-      originReadTimeout: 10
+      originReadTimeout: {{ default 10 $origin.originReadTimeout }}
       originSslProtocols:
         - TLSv1.2
     domainName: {{ $origin.domainName }}

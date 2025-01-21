@@ -202,6 +202,8 @@ cloudfrontrouter:
     cachePolicyName: CachingDisabled
     cachePolicyId: ""
     domainName: ""
+    originReadTimeout: ""
+    originKeepaliveTimeout: ""
 
   # cloudfrontrouter.restrictToOffice -- Set to `true` to restrict access to the `CloudFrontRouter` to the office IP ranges
   # @default -- `true`
