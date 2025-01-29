@@ -24,6 +24,22 @@ tests:
       cloudfrontrouter:
         enabled: true
         domainName: cloudfront.example.com
+        customCachePolicies:
+          web-updates:
+            defaultTtl: 3600
+            maxTtl: 86400
+            parametersInCacheKeyAndForwardedToOrigin:
+              enableAcceptEncodingBrotli: true
+              enableAcceptEncodingGzip: true
+              cookiesConfig:
+                cookieBehavior: "none"
+              headersConfig:
+                headerBehavior: "none"
+              queryStringsConfig:
+                queryStringBehavior: "allExcept"
+                queryStrings:
+                  items:
+                  - license
         origins:
           - originId: website
             domainName: www.example.com
@@ -132,3 +148,22 @@ tests:
             originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
             targetOriginId: defaultOrigin
             viewerProtocolPolicy: redirect-to-https
+      - equal:
+          path: spec.customCachePolicies
+          value:
+            web-updates:
+              defaultTtl: 3600
+              maxTtl: 86400
+              minTtl: 0
+              parametersInCacheKeyAndForwardedToOrigin:
+                cookiesConfig:
+                  cookieBehavior: none
+                enableAcceptEncodingBrotli: true
+                enableAcceptEncodingGzip: true
+                headersConfig:
+                  headerBehavior: none
+                queryStringsConfig:
+                  queryStringBehavior: allExcept
+                  queryStrings:
+                    items:
+                      - license

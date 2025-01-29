@@ -207,6 +207,27 @@ cloudfrontrouter:
     originRequestPolicyName: AllViewerExceptHostHeader
     originRequestPolicyId: ""
 
+  # cloudfrontrouter.customCachePolicies -- Values for dynamic custom cache policies
+  # @section -- cloudfront router
+  customCachePolicies: {}
+    # See: https://marketplace.upbound.io/providers/upbound/provider-aws-cloudfront/latest/resources/cloudfront.aws.upbound.io/CachePolicy/v1beta2
+    # web-update=downloads:
+    #    defaultTtl: 3600
+    #    maxTtl: 86400
+    #    minTtl: 600
+    #    parametersInCacheKeyAndForwardedToOrigin:
+    #      enableAcceptEncodingBrotli: true
+    #      enableAcceptEncodingGzip: true
+    #      cookiesConfig:
+    #        cookieBehavior: "none"
+    #      headersConfig:
+    #        headerBehavior: "none"
+    #      queryStringsConfig:
+    #        queryStringBehavior: "allExcept"
+    #        queryStrings:
+    #          items:
+    #          - license
+
   # cloudfrontrouter.restrictToOffice -- Set to `true` to restrict access to the `CloudFrontRouter` to the office IP ranges
   # @default -- `true`
   # @section -- cloudfront router

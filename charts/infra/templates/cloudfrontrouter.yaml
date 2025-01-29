@@ -82,4 +82,22 @@ spec:
     viewerProtocolPolicy: redirect-to-https
   {{- end }}
   {{- end }}
+  {{- with .Values.cloudfrontrouter.customCachePolicies }}
+  customCachePolicies:
+  {{- range $policyName, $policyData := . }}
+    {{ $policyName }}:
+      defaultTtl: {{ $policyData.defaultTtl | default 0 }}
+      maxTtl: {{ $policyData.maxTtl | default 86400 }}
+      minTtl: {{ $policyData.minTtl | default 0 }}
+      parametersInCacheKeyAndForwardedToOrigin:
+        enableAcceptEncodingBrotli: {{ $policyData.parametersInCacheKeyAndForwardedToOrigin.enableAcceptEncodingBrotli | default true }}
+        enableAcceptEncodingGzip: {{ $policyData.parametersInCacheKeyAndForwardedToOrigin.enableAcceptEncodingGzip | default true }}
+        cookiesConfig:
+          {{ $policyData.parametersInCacheKeyAndForwardedToOrigin.cookiesConfig | default (dict) | toYaml | nindent 10 }}
+        headersConfig:
+          {{ $policyData.parametersInCacheKeyAndForwardedToOrigin.headersConfig | default (dict) | toYaml | nindent 10 }}
+        queryStringsConfig:
+          {{ $policyData.parametersInCacheKeyAndForwardedToOrigin.queryStringsConfig | default (dict) | toYaml | nindent 10 }}
+  {{- end }}
+  {{- end }}
 {{- end -}}
