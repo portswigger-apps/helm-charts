@@ -45,7 +45,7 @@ tests:
           path: spec.maxReplicas
           value: 10
 
-  - it: Should scale at 95% CPU utilization by default
+  - it: Should scale at 80% CPU utilization by default
     set:
       template: kubernetes/hpa.yaml
     asserts:
