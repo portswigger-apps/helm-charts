@@ -77,6 +77,9 @@ spec:
     compress: true
     pathPattern: {{ $pathPattern }}
     targetOriginId: {{ $targetOriginId }}
+    {{- with $it.customCachePolicyName }}
+    customCachePolicyName: {{ . }}
+    {{- end }}
     cachePolicyId: {{ $cachePolicyId }}
     originRequestPolicyId: {{ $originRequestPolicyId }}
     viewerProtocolPolicy: redirect-to-https
