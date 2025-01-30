@@ -51,6 +51,8 @@ helm install app helm-charts/app
 | secretVolume | object | `{}` | Secret values that will be available as files in `/secrets` inside the container. Formatted as `file.name: <base64 encoded file>` |
 | deployment.replicas | int | `1` | The minimum number of replicas of the application |
 | deployment.maxReplicas | int | `.Values.deployment.replicas | The maximum number of replicas of the application |
+| deployment.averageCpuUtilization | int | `95` | The target average CPU utilization percentage for the HorizontalPodAutoscaler |
+| deployment.averageMemoryUtilization | int | `75` | The target average Memory utilization percentage for the HorizontalPodAutoscaler |
 | ports.app-port.port | int | `8080` | The port the application is listening on |
 | ports.app-port.protocol | string | `"TCP"` | The protocol the application uses. This should alost always be TCP |
 | ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world |

@@ -284,10 +284,15 @@ deployment:
   # @default -- `.Values.deployment.replicas
   # @section -- application
   maxReplicas: null
-  # deployment.averageUtilization -- (int) The target average CPU utilization percentage for the HorizontalPodAutoscaler
+  # deployment.averageCpuUtilization -- (int) The target average CPU utilization percentage for the HorizontalPodAutoscaler
   # @default -- `95`
   # @section -- application
-  averageUtilization: 95
+  averageCpuUtilization: 95
+  # deployment.averageMemoryUtilization -- (int) The target average Memory utilization percentage for the HorizontalPodAutoscaler
+  # @default -- `75`
+  # @section -- application
+  averageMemoryUtilization: 75
+
 ports:
   app-port:
     # ports.app-port.port -- The port the application is listening on

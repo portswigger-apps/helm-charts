@@ -65,9 +65,36 @@ tests:
   - it: Should scale at configured CPU utilization
     set:
       deployment:
-        averageUtilization: 80
+        averageCpuUtilization: 80
     template: kubernetes/hpa.yaml
     asserts:
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
           value: 80
+
+  - it: Should scale at 75% Memory utilization by default
+    set:
+      template: kubernetes/hpa.yaml
+    asserts:
+      - equal:
+          path: spec.metrics[1].type
+          value: Resource
+      - equal:
+          path: spec.metrics[1].resource.name
+          value: memory
+      - equal:
+          path: spec.metrics[1].resource.target.type
+          value: Utilization
+      - equal:
+          path: spec.metrics[1].resource.target.averageUtilization
+          value: 75
+
+  - it: Should scale at configured Memory utilization
+    set:
+      deployment:
+        averageMemoryUtilization: 50
+    template: kubernetes/hpa.yaml
+    asserts:
+      - equal:
+          path: spec.metrics[1].resource.target.averageUtilization
+          value: 50
