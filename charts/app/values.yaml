@@ -285,9 +285,9 @@ deployment:
   # @section -- application
   maxReplicas: null
   # deployment.averageCpuUtilization -- (int) The target average CPU utilization percentage for the HorizontalPodAutoscaler
-  # @default -- `95`
+  # @default -- `80`
   # @section -- application
-  averageCpuUtilization: 95
+  averageCpuUtilization: 80
   # deployment.averageMemoryUtilization -- (int) The target average Memory utilization percentage for the HorizontalPodAutoscaler
   # @default -- `75`
   # @section -- application
