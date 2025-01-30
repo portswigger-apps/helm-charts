@@ -18,9 +18,11 @@ spec:
       target:
         type: Utilization
         averageUtilization: {{ .Values.deployment.averageCpuUtilization }}
+  {{- if .Values.deployment.averageMemoryUtilization }}
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
         averageUtilization: {{ .Values.deployment.averageMemoryUtilization }}
+  {{- end }}

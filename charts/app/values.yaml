@@ -289,9 +289,9 @@ deployment:
   # @section -- application
   averageCpuUtilization: 95
   # deployment.averageMemoryUtilization -- (int) The target average Memory utilization percentage for the HorizontalPodAutoscaler
-  # @default -- `75`
+  # @default -- `disabled`
   # @section -- application
-  averageMemoryUtilization: 75
+  averageMemoryUtilization: null
 
 ports:
   app-port:
