@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/norwoodj/helm-docs
-    rev: v1.11.0
+    rev: v1.14.2
     hooks:
       - id: helm-docs
         args:
@@ -9,7 +9,7 @@ repos:
           - --sort-values-order=file
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
