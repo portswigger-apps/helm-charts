@@ -61,3 +61,13 @@ tests:
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
           value: 95
+
+  - it: Should scale at configured CPU utilization
+    set:
+      deployment:
+        averageUtilization: 80
+    template: kubernetes/hpa.yaml
+    asserts:
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 80
