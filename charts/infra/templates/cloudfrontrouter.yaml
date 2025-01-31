@@ -56,7 +56,7 @@ spec:
   {{- $allowedHttpMethods := dict 
     "read" (list "GET" "HEAD")
     "readOptions" (list "GET" "HEAD" "OPTIONS")
-    "all" (list "DELETE" "GET" "HEAD" "OPTIONS" "PATCH" "POST" "PUT")
+    "all" (list "GET" "HEAD" "OPTIONS" "PUT" "PATCH" "POST" "DELETE")
   }}  
   {{- with .Values.cloudfrontrouter.orderedCacheBehavior }}
   orderedCacheBehavior:
