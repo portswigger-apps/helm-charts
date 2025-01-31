@@ -53,6 +53,14 @@ tests:
             customCachePolicyName: web-updates
             targetOrigin: website
             allowedHttpMethods: "read"
+          - pathPattern: /readOptions
+            customCachePolicyName: web-updates
+            targetOrigin: website
+            allowedHttpMethods: "readOptions"
+          - pathPattern: /all
+            customCachePolicyName: web-updates
+            targetOrigin: website
+            allowedHttpMethods: "all"
         default:
           domainName: default.example.com
           originKeepaliveTimeout: 30
@@ -126,6 +134,40 @@ tests:
               pathPattern: /users/invoices
               targetOriginId: null
               viewerProtocolPolicy: redirect-to-https
+            - allowedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+              cachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+              cachedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+              compress: true
+              customCachePolicyName: web-updates
+              originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+              pathPattern: /readOptions
+              targetOriginId: null
+              viewerProtocolPolicy: redirect-to-https
+            - allowedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+                - PUT
+                - PATCH
+                - POST
+                - DELETE
+              cachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+              cachedMethods:
+                - GET
+                - HEAD
+                - OPTIONS
+              compress: true
+              customCachePolicyName: web-updates
+              originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+              pathPattern: /all
+              targetOriginId: null
+              viewerProtocolPolicy: redirect-to-https          
       - equal:
           path: spec.defaultCacheBehavior
           value:
