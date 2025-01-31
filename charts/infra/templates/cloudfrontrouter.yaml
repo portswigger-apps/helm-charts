@@ -62,14 +62,12 @@ spec:
   {{- $originRequestPolicyName :=  (default "AllViewerExceptHostHeader" $it.originRequestPolicyName) }}
   {{- $originRequestPolicyId :=  (default (printf "%s # Managed-%s"  (include "infra.cloudfrontRouter.originRequestPolicyId" $originRequestPolicyName) $originRequestPolicyName) $it.originRequestPolicyId) }}
   {{- $targetOriginId := $it.targetOriginId }}
+  {{- $defaultAllowedMethods := list "GET" "HEAD" "OPTIONS" "PUT" "PATCH" "POST" "DELETE" }}
+  {{- $allowedMethods := default $defaultAllowedMethods $it.allowedMethods }}
   - allowedMethods:
-      - GET
-      - HEAD
-      - OPTIONS
-      - PUT
-      - PATCH
-      - POST
-      - DELETE
+    {{- range $allowedMethods }}
+      - {{ . }}
+    {{- end }}
     cachedMethods:
       - GET
       - HEAD
