@@ -69,7 +69,7 @@ spec:
   {{- $targetOriginId := $it.targetOriginId }}
   {{- $defaultAllowedHttpMethods := get $allowedHttpMethods "all" }}
   {{- $httpMethodKey := default "all" $it.allowedHttpMethods }}
-  {{- $resolvedHttpMethods := default $defaultAllowedHttpMethods (get $allowedHttpMethods $httpMethodKey) }}
+  {{- $resolvedHttpMethods := (get $allowedHttpMethods $httpMethodKey) | default $defaultAllowedHttpMethods }}
   - allowedMethods:
     {{- range $resolvedHttpMethods }}
       - {{ . }}
