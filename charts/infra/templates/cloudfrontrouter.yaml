@@ -74,10 +74,12 @@ spec:
     {{- range $resolvedHttpMethods }}
       - {{ . }}
     {{- end }}
+    {{- if ne $httpMethodKey "read" }}  # Remove cachedMethods if "read" is selected
     cachedMethods:
       - GET
       - HEAD
       - OPTIONS
+    {{- end }}
     compress: true
     pathPattern: {{ $pathPattern }}
     targetOriginId: {{ $targetOriginId }}
