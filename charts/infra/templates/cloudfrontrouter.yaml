@@ -53,6 +53,11 @@ spec:
     domainName: {{ $origin.domainName }}
     originId: {{ $origin.originId }}
   {{- end }}
+  {{- $allowedHttpMethods := dict 
+    "read" (list "GET" "HEAD")
+    "readOptions" (list "GET" "HEAD" "OPTIONS")
+    "all" (list "GET" "HEAD" "OPTIONS" "PUT" "PATCH" "POST" "DELETE")
+  }}  
   {{- with .Values.cloudfrontrouter.orderedCacheBehavior }}
   orderedCacheBehavior:
   {{- range $it := . }}
@@ -62,14 +67,13 @@ spec:
   {{- $originRequestPolicyName :=  (default "AllViewerExceptHostHeader" $it.originRequestPolicyName) }}
   {{- $originRequestPolicyId :=  (default (printf "%s # Managed-%s"  (include "infra.cloudfrontRouter.originRequestPolicyId" $originRequestPolicyName) $originRequestPolicyName) $it.originRequestPolicyId) }}
   {{- $targetOriginId := $it.targetOriginId }}
+  {{- $defaultAllowedHttpMethods := get $allowedHttpMethods "all" }}
+  {{- $httpMethodKey := default "all" $it.allowedHttpMethods }}
+  {{- $resolvedHttpMethods := (get $allowedHttpMethods $httpMethodKey) | default $defaultAllowedHttpMethods }}
   - allowedMethods:
-      - GET
-      - HEAD
-      - OPTIONS
-      - PUT
-      - PATCH
-      - POST
-      - DELETE
+    {{- range $resolvedHttpMethods }}
+      - {{ . }}
+    {{- end }}
     cachedMethods:
       - GET
       - HEAD
