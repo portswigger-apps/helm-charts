@@ -4,15 +4,9 @@ description: A Helm "monochart" for deploying common infrastructure
 
 type: application
 
-<<<<<<< HEAD
-version: 0.15.1
-
-appVersion: 0.15.1
-=======
 version: 0.16.0
 
 appVersion: 0.16.0
->>>>>>> 035fb8d (fix Redis secret names)
 
 keywords:
   - infra
