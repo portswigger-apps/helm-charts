@@ -1,5 +1,5 @@
 {{- if .Values.redis.enabled }}
-{{- $secretName := printf "%s-redis-credentials" (include "infra.name" .) -}}
+{{- $secretName := printf "%s-redis-credentials" (include "infra.aws.name" .) -}}
 apiVersion: v1
 kind: Secret
 metadata:

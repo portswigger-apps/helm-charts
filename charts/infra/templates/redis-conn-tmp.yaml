@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ printf "%s-redis-conn-tmp" (include "infra.name" .) }}
+  name: {{ printf "%s-redis-conn-tmp" (include "infra.aws.name" .) }}
   labels:
     {{- include "infra.labels" . | nindent 8 }}
 data:
