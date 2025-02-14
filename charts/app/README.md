@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.16.6](https://img.shields.io/badge/Version-0.16.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.16.6](https://img.shields.io/badge/AppVersion-0.16.6-informational?style=flat-square)
+![Version: 0.17.0](https://img.shields.io/badge/Version-0.17.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.17.0](https://img.shields.io/badge/AppVersion-0.17.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -50,9 +50,10 @@ helm install app helm-charts/app
 | secretEnv | object | `{}` | Secret values that are mounted as environment variables. Formatted as `ENV_VAR_NAME: env-var-value` in a SOPS encrypted `secrets.yaml` file |
 | secretVolume | object | `{}` | Secret values that will be available as files in `/secrets` inside the container. Formatted as `file.name: <base64 encoded file>` |
 | deployment.replicas | int | `1` | The minimum number of replicas of the application |
-| deployment.maxReplicas | int | `.Values.deployment.replicas | The maximum number of replicas of the application |
-| deployment.averageCpuUtilization | int | `80` | The target average CPU utilization percentage for the HorizontalPodAutoscaler |
+| deployment.maxReplicas | int | `.Values.deployment.replicas`` | The maximum number of replicas of the application |
+| deployment.averageCpuUtilization | int | `9` | The target average CPU utilization percentage for the HorizontalPodAutoscaler |
 | deployment.averageMemoryUtilization | int | `disabled` | The target average Memory utilization percentage for the HorizontalPodAutoscaler |
+| deployment.customAutoscalingMetrics | list | `disabled` | Advanced: A list of custom metrics scalers. |
 | ports.app-port.port | int | `8080` | The port the application is listening on |
 | ports.app-port.protocol | string | `"TCP"` | The protocol the application uses. This should alost always be TCP |
 | ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world |

@@ -281,17 +281,28 @@ deployment:
   # @section -- application
   replicas: 1
   # deployment.maxReplicas -- (int) The maximum number of replicas of the application
-  # @default -- `.Values.deployment.replicas
+  # @default -- `.Values.deployment.replicas``
   # @section -- application
   maxReplicas: null
   # deployment.averageCpuUtilization -- (int) The target average CPU utilization percentage for the HorizontalPodAutoscaler
-  # @default -- `80`
+  # @default -- `9`
   # @section -- application
   averageCpuUtilization: 95
   # deployment.averageMemoryUtilization -- (int) The target average Memory utilization percentage for the HorizontalPodAutoscaler
   # @default -- `disabled`
   # @section -- application
   averageMemoryUtilization: null
+  # deployment.customAutoscalingMetrics -- (list) Advanced: A list of custom metrics scalers.
+  # @default -- `disabled`
+  # @section -- application
+  customAutoscalingMetrics: []
+  # - type: Pods
+  #   pods:
+  #     metric:
+  #       name: jetty_connections_current_connections
+  #     target:
+  #       type: AverageValue
+  #       averageValue: 160
 
 ports:
   app-port:

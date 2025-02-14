@@ -100,3 +100,27 @@ tests:
               target:
                 type: Utilization
                 averageUtilization: 50
+
+  - it: Should scale at configured customAutoscalingMetrics utilization
+    set:
+      deployment:
+        customAutoscalingMetrics:
+        - type: Pods
+          pods:
+            metric:
+              name: jetty_connections_current_connections
+            target:
+              type: AverageValue
+              averageValue: 160
+    template: kubernetes/hpa.yaml
+    asserts:
+      - contains:
+          path: spec.metrics
+          content:
+            type: Pods
+            pods:
+              metric:
+                name: jetty_connections_current_connections
+              target:
+                averageValue: 160
+                type: AverageValue

@@ -26,3 +26,6 @@ spec:
         type: Utilization
         averageUtilization: {{ .Values.deployment.averageMemoryUtilization }}
   {{- end }}
+  {{- with .Values.deployment.customAutoscalingMetrics -}}
+  {{ toYaml . | nindent 2}}
+  {{- end }}
