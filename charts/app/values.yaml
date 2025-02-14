@@ -302,7 +302,7 @@ deployment:
   #       name: jetty_connections_current_connections
   #     target:
   #       type: AverageValue
-  #       averageValue: 160
+  #       averageValue: "160"
 
 ports:
   app-port:
