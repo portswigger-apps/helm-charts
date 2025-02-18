@@ -1,20 +1,23 @@
 {{- if and .Values.global.ingress.enabled (eq .Values.global.ingress.className "traefik") }}
+{{- if .Values.infra.cloudfront.enabled }}
 {{- if not (has "0.0.0.0/0" .Values.global.ingress.ipAllowListCIDRs) }}
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: {{ .Release.Name }}-ipallowlist
+  name: {{ .Release.Name }}-cloudfrontgate
 spec:
-  ipAllowList:
-    sourceRange:
+  plugin:
+    cloudfrontgate:
+      # Optional: configure IP ranges refresh interval (default: 24h)
+      refreshInterval: "24h"
+      # Allow internal traffic
+      allowedIPs:
 {{- range .Values.global.ingress.ipAllowListCIDRs }}
-    - {{ . }}
+      - {{ . }}
 {{- end }}
 {{- if .Values.global.ingress.allowFromOffice }}
-    {{- toYaml .Values.global.ingress.allowFromOfficeCIDRs | nindent 4 }}
+      {{- toYaml .Values.global.ingress.allowFromOfficeCIDRs | nindent 6 }}
 {{- end }}
-{{- if or (eq .Values.infra.cloudfront.enabled true) (eq .Values.global.ingress.allowFromCloudFront true) }}
-    {{- toYaml .Values.global.ingress.allowFromCloudFrontCIDRs | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}

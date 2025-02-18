@@ -58,7 +58,32 @@ tests:
           value:
             chain:
               middlewares:
-                - name: NAMESPACE-RELEASE-NAME-ipallowlist@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-cloudfrontgate@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-cloudfront-auth@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
+
+  - it: should create chain middleware without cloudfrontgate when all IPs allowed
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListCIDRs:
+            - 0.0.0.0/0
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            chain:
+              middlewares:
                 - name: NAMESPACE-RELEASE-NAME-cloudfront-auth@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
@@ -86,6 +111,28 @@ tests:
                 - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
 
+  - it: should create chain middleware without ipallowlist middleware when all IPs are allowed
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListCIDRs:
+            - 0.0.0.0/0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            chain:
+              middlewares:
+                - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
+
+
   - it: should create chain middleware with sso auth middleware
     set:
       global:
@@ -107,7 +154,7 @@ tests:
           value:
             chain:
               middlewares:
-                - name: NAMESPACE-RELEASE-NAME-ipallowlist@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-cloudfrontgate@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-cloudfront-auth@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-https@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd

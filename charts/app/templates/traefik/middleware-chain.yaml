@@ -6,7 +6,13 @@ metadata:
 spec:
   chain:
     middlewares:
+{{- if not (has "0.0.0.0/0" .Values.global.ingress.ipAllowListCIDRs) }}
+{{- if .Values.infra.cloudfront.enabled }}
+    - name: {{.Release.Namespace}}-{{ .Release.Name }}-cloudfrontgate@kubernetescrd
+{{- else }}
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-ipallowlist@kubernetescrd
+{{- end }}
+{{- end }}
 {{- if and .Values.infra.cloudfront.enabled .Values.infra.cloudfront.originHeaderAuth }}
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-cloudfront-auth@kubernetescrd
 {{- end }}

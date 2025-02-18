@@ -1,0 +1,81 @@
+suite: Middleware (cloudfrontgate)
+
+templates:
+  - traefik/middleware-cloudfrontgate.yaml
+
+tests:
+  - it: should not create cloudfrontgate middleware by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create cloudfrontgate middleware with office IPs in when cloudfront and ingress enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            plugin:
+              cloudfrontgate:
+                refreshInterval: 24h
+                allowedIPs:
+                  - 164.39.15.192/29
+                  - 217.138.234.184/29
+                  - 52.211.196.189/32
+
+  - it: should create cloudfrontgate middleware with configured allowedIPs in when cloudfront is enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListCIDRs:
+            - 1.1.1.1/32
+            - 1.2.3.4/27
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec
+          value:
+            plugin:
+              cloudfrontgate:
+                refreshInterval: 24h
+                allowedIPs:
+                  - 1.1.1.1/32
+                  - 1.2.3.4/27
+                  - 164.39.15.192/29
+                  - 217.138.234.184/29
+                  - 52.211.196.189/32
+
+
+  - it: should not create cloudfrontgate middleware when `ipAllowListCIDRs` contains 0.0.0.0/0
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListCIDRs:
+            - 0.0.0.0/0
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
