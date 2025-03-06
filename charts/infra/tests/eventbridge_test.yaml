@@ -1,17 +1,17 @@
-suite: BedrockPolicy
+suite: EventBridge
 
 templates:
-  - bedrock.yaml
+  - eventbridge.yaml
 
 tests:
-  - it: should not create an BedrockPolicy by default
+  - it: should not create an EventBridgePolicy by default
     asserts:
       - hasDocuments:
           count: 0
 
-  - it: should create an BedrockPolicy if enabled
+  - it: should create an EventBridgePolicy if enabled
     set:
-      bedrock:
+      eventbridge:
         enabled: true
     asserts:
       - hasDocuments:
@@ -23,12 +23,12 @@ tests:
           path: spec.irsaRoleName
           value: NAMESPACE-RELEASE-NAME-irsarole
 
-  - it: should create an BedrockPolicy with configured values
+  - it: should create an EventBridgePolicy with configured values
     set:
       global:
         serviceAccount:
           name: my-cool-service-account
-      bedrock:
+      eventbridge:
         enabled: true
     asserts:
       - equal:

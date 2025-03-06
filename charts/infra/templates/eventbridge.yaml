@@ -1,0 +1,10 @@
+{{- if .Values.eventbridge.enabled }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: EventBridgePolicy
+metadata:
+  name: {{ default ( include "infra.aws.name" . ) }}
+  labels:
+    {{- include "infra.labels" . | nindent 8 }}
+spec:
+  irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
+{{- end }}

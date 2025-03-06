@@ -79,3 +79,17 @@ tests:
       - equal:
           path: spec.serviceAccountName
           value: my-cool-service-account
+
+  - it: should create default named IrsaRole when enabling eventbridge
+    set:
+      eventbridge:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
+      - equal:
+          path: spec.serviceAccountName
+          value: RELEASE-NAME
