@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.18.1](https://img.shields.io/badge/Version-0.18.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.18.1](https://img.shields.io/badge/AppVersion-0.18.1-informational?style=flat-square)
+![Version: 0.19.0](https://img.shields.io/badge/Version-0.19.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.19.0](https://img.shields.io/badge/AppVersion-0.19.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.16.0 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.17.0 |
 
 ## Values
 
@@ -107,6 +107,8 @@ helm install app helm-charts/app
 | infra.redis.size | string | `micro` | Options: micro, small, medium, large or xlarge |
 | infra.redis.version | string | `7` | Options: 7 |
 | infra.bedrock.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access. |
+| infra.eventbridge.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable eventbridge access. |
+| infra.eventbridge.eventBusARN | string | `""` | Set to the ARN of the eventBus to set EVENTBUS_ARN in the application's environment. Should come from an SSM parameter. |
 
 ### Other Values
 

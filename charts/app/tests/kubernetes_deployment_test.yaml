@@ -458,3 +458,18 @@ tests:
           content:
             name: _JAVA_OPTIONS
             value: "-Xms=2048m -Xmx=2048m"
+
+
+  - it: should create Deployment with s3Bucket connection details
+    set:
+      infra:
+        eventbridge:
+          enabled: true
+          eventBusARN: "arn::something::112233:something/test"
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: EVENTBUS_ARN
+            value: "arn::something::112233:something/test"

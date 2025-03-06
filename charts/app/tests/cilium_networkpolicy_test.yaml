@@ -313,14 +313,28 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchName: bedrock.us-east-1.amazonaws.com
-              - matchName: bedrock.us-west-2.amazonaws.com
-              - matchName: bedrock-runtime.us-east-1.amazonaws.com
-              - matchName: bedrock-runtime.us-west-2.amazonaws.com
-              - matchName: sts.us-east-1.amazonaws.com
-              - matchName: sts.us-west-2.amazonaws.com
-              - matchName: sts.eu-west-1.amazonaws.com
-              - matchName: sts.amazonaws.com
+              - matchPattern: bedrock.*.amazonaws.com
+              - matchPattern: bedrock-runtime.*.amazonaws.com
+              - matchPattern: sts.amazonaws.com
+              - matchPattern: sts.*.amazonaws.com
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
+  - it: should add egress rules for EventBridge when eventbridge is enabled
+    set:
+      infra:
+        eventbridge:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: events.eu-west-1.amazonaws.com
+              - matchPattern: sts.amazonaws.com
+              - matchPattern: sts.*.amazonaws.com
             toPorts:
               - ports:
                   - port: "443"
