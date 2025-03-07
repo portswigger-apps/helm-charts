@@ -95,6 +95,8 @@ Outputs a pod spec for use in different resources.
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: DOTNET_GCHeapHardLimit
+            value: {{ .Values.env.DOTNET_GCHeapHardLimit | default (printf "%x" (mulf (include "app.toBytes" .Values.resources.memory) 0.94 | int) | trimPrefix "0x") | quote }}
           - name: GOMEMLIMIT
             value: {{ .Values.env.GOMEMLIMIT | default (mulf (include "app.toBytes" .Values.resources.memory) 0.94 | int) | quote }}
           - name: _JAVA_OPTIONS
