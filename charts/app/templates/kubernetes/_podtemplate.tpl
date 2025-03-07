@@ -110,7 +110,7 @@ Outputs a pod spec for use in different resources.
           {{- include "app.s3BucketConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.postgresConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.redisConnectionSecretEnv" . | nindent 10 }}
-          {{- range $key, $value := omit .Values.env "GOMEMLIMIT" "_JAVA_OPTIONS" }}
+          {{- range $key, $value := omit .Values.env "DOTNET_GCHeapHardLimit" "GOMEMLIMIT" "_JAVA_OPTIONS" }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
