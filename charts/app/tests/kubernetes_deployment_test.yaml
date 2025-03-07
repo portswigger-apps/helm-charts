@@ -466,7 +466,7 @@ tests:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: DOTNET_GCHeapHardLimit
-            value: "3c28f5c"
+            value: "0x3c28f5c"
 
   - it: should create Deployment with DOTNET_GCHeapHardLimit set
     template: kubernetes/deployment.yaml
@@ -478,19 +478,19 @@ tests:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: DOTNET_GCHeapHardLimit
-            value: "1e147ae1"
+            value: "0x1e147ae1"
 
   - it: should create Deployment with DOTNET_GCHeapHardLimit set to user specified value
     template: kubernetes/deployment.yaml
     set:
       env:
-        DOTNET_GCHeapHardLimit: "400000"
+        DOTNET_GCHeapHardLimit: "0x400000"
     asserts:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: DOTNET_GCHeapHardLimit
-            value: "400000"
+            value: "0x400000"
 
 
   - it: should create Deployment with s3Bucket connection details
