@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   app:
   - apiVersion: v2
+    appVersion: 0.19.4
+    created: "2025-03-10T09:12:01.691034252Z"
+    dependencies:
+    - name: infra
+      repository: https://portswigger-apps.github.io/helm-charts/
+      version: 0.17.0
+    description: A Helm "monochart" for deploying common application patterns
+    digest: d80f3fb4ba069971ff3d303e9eb0603d31f92f54b3726ab7fbc7f9157b84ac9c
+    keywords:
+    - app
+    - infra
+    name: app
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/app-0.19.4/app-0.19.4.tgz
+    version: 0.19.4
+  - apiVersion: v2
     appVersion: 0.19.3
     created: "2025-03-07T11:32:05.437212489Z"
     dependencies:
@@ -2905,4 +2922,4 @@ entries:
     urls:
     - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-1/infra-0.0.0-alpha-1.tgz
     version: 0.0.0-alpha-1
-generated: "2025-03-07T11:32:05.437652637Z"
+generated: "2025-03-10T09:12:01.691544044Z"
