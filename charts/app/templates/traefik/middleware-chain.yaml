@@ -18,7 +18,7 @@ spec:
 {{- end }}
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-https@kubernetescrd
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-headers@kubernetescrd
-{{- if and .Values.global.ingress.authentication.enabled .Values.infra.cloudfront.enabled}}
+{{- if and .Values.global.ingress.authentication.enabled}}
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-redirect-auth@kubernetescrd
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-forward-auth@kubernetescrd
 {{- end }}
