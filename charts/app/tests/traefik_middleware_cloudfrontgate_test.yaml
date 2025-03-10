@@ -33,6 +33,7 @@ tests:
                   - 164.39.15.192/29
                   - 217.138.234.184/29
                   - 52.211.196.189/32
+                  - 57.133.217.203/32
 
   - it: should create cloudfrontgate middleware with configured allowedIPs in when cloudfront is enabled
     set:
@@ -63,6 +64,7 @@ tests:
                   - 164.39.15.192/29
                   - 217.138.234.184/29
                   - 52.211.196.189/32
+                  - 57.133.217.203/32
 
 
   - it: should not create cloudfrontgate middleware when `ipAllowListCIDRs` contains 0.0.0.0/0
