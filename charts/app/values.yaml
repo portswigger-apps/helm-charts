@@ -43,7 +43,7 @@ global:
     # @section -- global
     ipAllowListCIDRs: []
     authentication:
-      # global.ingress.authentication.enabled -- Set to `true` to require SSO authentication to access the application. Requires a CloudFront site.
+      # global.ingress.authentication.enabled -- Set to `true` to require SSO authentication to access the application.
       # @section -- global
       enabled: false
   serviceAccount:

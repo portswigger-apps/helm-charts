@@ -213,6 +213,17 @@ Redis connection secret env variables
 {{- end -}}
 {{- end -}}
 
+{{- define "app.oauthProxyNamespace" -}}
+platform
+{{- end -}}
+
+{{- define "app.oauthProxyInstance" -}}
+{{- if .Values.infra.cloudfront.enabled -}}
+platform-oauth2-proxy
+{{- else -}}
+platform-oauth2-proxy-psio
+{{- end -}}
+{{- end -}}
 
 {{/*
 Return the number of bytes given a value

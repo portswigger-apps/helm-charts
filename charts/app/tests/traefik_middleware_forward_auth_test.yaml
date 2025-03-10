@@ -19,7 +19,29 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: should create forward-auth middleware with ingress enabled
+  - it: should create forward-auth middleware to platform-oauth2-proxy-psio with ingress enabled and cloudfront disabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          authentication:
+            enabled: true
+      infra:
+        cloudfront:
+          enabled: false
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.forwardAuth
+          value:
+            address: http://platform-oauth2-proxy-psio.platform:4180/oauth2/auth
+            trustForwardHeader: true
+
+  - it: should create forward-auth middleware to platform-oauth2-proxy with ingress enabled and cloudfront enabled
     set:
       global:
         ingress:
