@@ -107,10 +107,14 @@ Outputs a pod spec for use in different resources.
           - name: EVENTBUS_ARN
             value: {{ .Values.infra.eventbridge.eventBusARN }}
           {{- end }}
+          {{- if .Values.global.ingress.authentication.enabled }}
+          - name: OAUTH_PROXY_URL
+            value: "http://{{- include "app.oauthProxyInstance" . -}}.{{- include "app.oauthProxyNamespace" . -}}:4180/"
+          {{- end }}
           {{- include "app.s3BucketConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.postgresConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.redisConnectionSecretEnv" . | nindent 10 }}
-          {{- range $key, $value := omit .Values.env "DOTNET_GCHeapHardLimit" "GOMEMLIMIT" "_JAVA_OPTIONS" }}
+          {{- range $key, $value := omit .Values.env "DOTNET_GCHeapHardLimit" "GOMEMLIMIT" "_JAVA_OPTIONS" "OAUTH_PROXY_URL" }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}

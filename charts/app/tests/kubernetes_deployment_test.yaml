@@ -506,3 +506,56 @@ tests:
           content:
             name: EVENTBUS_ARN
             value: "arn::something::112233:something/test"
+
+  - it: should create Deployment with oauth-proxy url for applications without cloudfront
+    set:
+      global:
+        ingress:
+          authentication:
+            enabled: true
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "OAUTH_PROXY_URL"
+            value: "http://platform-oauth2-proxy-psio.platform:4180/"
+
+  - it: should not override oauth proxy url environment variable
+    set:
+      global:
+        ingress:
+          authentication:
+            enabled: true
+      env:
+        OAUTH_PROXY_URL: "hello world"
+
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "OAUTH_PROXY_URL"
+            value: "http://platform-oauth2-proxy-psio.platform:4180/"
+      - notContains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "OAUTH_PROXY_URL"
+            value: "hello world"
+
+  - it: should create Deployment with oauth-proxy url for applications with cloudfront
+    set:
+      global:
+        ingress:
+          authentication:
+            enabled: true
+      infra:
+        cloudfront:
+          enabled: true
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "OAUTH_PROXY_URL"
+            value: "http://platform-oauth2-proxy.platform:4180/"
