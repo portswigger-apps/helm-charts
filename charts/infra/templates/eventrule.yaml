@@ -1,0 +1,10 @@
+{{- if .Values.eventing.consumer.enabled }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: EventRule
+metadata:
+  name: {{ default ( include "infra.aws.name" . ) }}
+spec:
+  eventPattern: {{ required "An event pattern must be set if creating an event rule" .Values.eventing.consumer.eventPattern | quote}}
+  inputPath: {{ .Values.eventing.consumer.inputPath | quote}}
+  irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
+{{- end }}

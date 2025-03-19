@@ -1,4 +1,4 @@
-{{- if .Values.eventbridge.enabled }}
+{{- if .Values.eventing.producer.enabled }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: EventBridgePolicy
 metadata:

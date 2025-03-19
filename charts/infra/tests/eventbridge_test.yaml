@@ -11,8 +11,9 @@ tests:
 
   - it: should create an EventBridgePolicy if enabled
     set:
-      eventbridge:
-        enabled: true
+      eventing:
+        producer:
+          enabled: true
     asserts:
       - hasDocuments:
           count: 1
@@ -28,8 +29,9 @@ tests:
       global:
         serviceAccount:
           name: my-cool-service-account
-      eventbridge:
-        enabled: true
+      eventing:
+        producer:
+          enabled: true
     asserts:
       - equal:
           path: spec.irsaRoleName

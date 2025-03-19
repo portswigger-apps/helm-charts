@@ -82,8 +82,9 @@ tests:
 
   - it: should create default named IrsaRole when enabling eventbridge
     set:
-      eventbridge:
-        enabled: true
+      eventing:
+        producer:
+          enabled: true
     asserts:
       - hasDocuments:
           count: 1
@@ -93,3 +94,62 @@ tests:
       - equal:
           path: spec.serviceAccountName
           value: RELEASE-NAME
+
+  - it: should create default named IrsaRole with custom serviceAccountName when enabling eventbridge
+    set:
+      eventing:
+        producer:
+          enabled: true
+      global:
+        serviceAccount:
+          name: my-cool-service-account
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: my-cool-service-account
+      - equal:
+          path: spec.serviceAccountName
+          value: my-cool-service-account
+
+  - it: should create default named IrsaRole when creating an eventrule
+    set:
+      eventing:
+        consumer:
+          enabled: true
+          eventPattern: |
+            {
+              "source": ["com.platform.test"]
+            }
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
+      - equal:
+          path: spec.serviceAccountName
+          value: RELEASE-NAME
+
+  - it: should create default named IrsaRole with custom serviceAccountName when creating an eventrule
+    set:
+      eventing:
+        consumer:
+          enabled: true
+          eventPattern: |
+            {
+              "source": ["com.platform.test"]
+            }
+      global:
+        serviceAccount:
+          name: my-cool-service-account
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: my-cool-service-account
+      - equal:
+          path: spec.serviceAccountName
+          value: my-cool-service-account

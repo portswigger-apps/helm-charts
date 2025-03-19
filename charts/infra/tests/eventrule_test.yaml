@@ -1,0 +1,49 @@
+suite: EventRule
+
+templates:
+  - eventrule.yaml
+
+tests:
+  - it: should not create an EventRule by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create an EventRule with configured values
+    set:
+      global:
+        serviceAccount:
+          name: my-cool-service-account
+      eventing:
+        consumer:
+          enabled: true
+          eventPattern: |
+            {
+              "source": ["com.platform.test"]
+            }
+          inputPath: "$.detail"
+    asserts:
+      - equal:
+          path: spec.eventPattern
+          value: |
+            {
+              "source": ["com.platform.test"]
+            }
+      - equal:
+          path: spec.inputPath
+          value: "$.detail"
+      - equal:
+          path: spec.irsaRoleName
+          value: my-cool-service-account-irsarole
+
+  - it: should fail to create an EventRule if configured without an eventPattern
+    set:
+      global:
+        serviceAccount:
+          name: my-cool-service-account
+      eventing:
+        consumer:
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "An event pattern must be set if creating an event rule"
