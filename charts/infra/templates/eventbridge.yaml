@@ -2,7 +2,7 @@
 apiVersion: platform.portswigger.io/v1alpha1
 kind: EventBridgePolicy
 metadata:
-  name: {{ default ( include "infra.aws.name" . ) }}
+  name: {{ include "infra.aws.name" . }}
   labels:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
