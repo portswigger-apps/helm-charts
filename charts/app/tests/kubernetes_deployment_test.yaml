@@ -496,8 +496,25 @@ tests:
   - it: should create Deployment with s3Bucket connection details
     set:
       infra:
-        eventbridge:
-          enabled: true
+        eventing:
+          producer:
+            enabled: true
+          eventBusARN: "arn::something::112233:something/test"
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: EVENTBUS_ARN
+            value: "arn::something::112233:something/test"
+
+  - it: should create Deployment with s3Bucket connection details
+    set:
+      infra:
+        eventing:
+          consumer:
+            enabled: true
+            eventPattern: ""
           eventBusARN: "arn::something::112233:something/test"
     template: kubernetes/deployment.yaml
     asserts:

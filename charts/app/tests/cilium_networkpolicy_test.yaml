@@ -325,8 +325,9 @@ tests:
   - it: should add egress rules for EventBridge when eventbridge is enabled
     set:
       infra:
-        eventbridge:
-          enabled: true
+        eventing:
+          producer:
+            enabled: true
     asserts:
       - contains:
           path: spec.egress
