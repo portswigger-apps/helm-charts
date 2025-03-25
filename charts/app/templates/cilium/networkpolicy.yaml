@@ -120,6 +120,17 @@ spec:
         protocol: TCP
   {{- end }}
 
+{{- if .Values.infra.eventing.consumer.enabled }}
+  - toFQDNs:
+    - matchName: "sqs.eu-west-1.amazonaws.com"
+    - matchPattern: "sts.amazonaws.com"
+    - matchPattern: "sts.*.amazonaws.com"
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  {{- end }}
+
   {{- if .Values.infra.redis.enabled }}
   - toFQDNs:
     - matchPattern: "*.serverless.euw1.cache.amazonaws.com"

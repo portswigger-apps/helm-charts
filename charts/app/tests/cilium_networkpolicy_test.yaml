@@ -340,3 +340,22 @@ tests:
               - ports:
                   - port: "443"
                     protocol: TCP
+
+  - it: should add egress rules for SQS when eventrule is enabled
+    set:
+      infra:
+        eventing:
+          consumer:
+            enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: sqs.eu-west-1.amazonaws.com
+              - matchPattern: sts.amazonaws.com
+              - matchPattern: sts.*.amazonaws.com
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
