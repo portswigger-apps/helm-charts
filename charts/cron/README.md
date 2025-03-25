@@ -66,7 +66,6 @@ helm install cron helm-charts/cron
 | infra.s3Bucket.create | bool | `false` | Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere |
 | infra.s3Bucket.nameOverride | string | `""` | Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere |
 | infra.eventing.producer.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable eventbridge access. |
-| infra.eventing.producer.eventBusName | string | `"portswigger"` | The . |
 | infra.eventing.consumer.enabled | bool | `false` | Set to `true` to deploy an eventrule. |
 | infra.eventing.consumer.eventPattern | string | `""` | The pattern the rule should use to decide whether to send an event |
 | infra.eventing.consumer.inputPath | string | `""` | An optional method to extract specific data from events |

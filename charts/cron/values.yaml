@@ -152,8 +152,9 @@ infra:
       # @section -- infra
       enabled: false
 
-      # infra.eventing.producer.eventBusName -- The .
+      # infra.eventing.producer.eventBusName -- The EventBridge Bus name that applications should send to.
       # @section -- infra
+      # @ignored
       eventBusName: "portswigger"
 
     consumer:

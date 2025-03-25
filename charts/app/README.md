@@ -108,7 +108,6 @@ helm install app helm-charts/app
 | infra.redis.version | string | `7` | Options: 7 |
 | infra.bedrock.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access. |
 | infra.eventing.producer.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable eventbridge access. |
-| infra.eventing.producer.eventBusName | string | `"portswigger"` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable eventbridge access. |
 | infra.eventing.consumer.enabled | bool | `false` | Set to `true` to deploy an eventrule. |
 | infra.eventing.consumer.eventPattern | string | `""` | The pattern the rule should use to decide whether to send an event |
 | infra.eventing.consumer.inputPath | string | `""` | An optional method to extract specific data from events |
