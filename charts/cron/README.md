@@ -37,6 +37,7 @@ helm install cron helm-charts/cron
 | cron.command | list | `[]` | Command to run on the image. e.g [/bin/bash, my-script.sh] |
 | cron.args | list | `[]` | Arguments for the command |
 | env | object | `{}` | **Non-secret** environment variables to configure your application. Formatted as `ENV_VAR_NAME: env-var-value` |
+| envFrom | list | `[]` | Create environment variables from `Secret` or `ConfigMap` resources. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/ |
 | secretEnv | object | `{}` | Secret values that are mounted as environment variables. Formatted as `ENV_VAR_NAME: env-var-value` in a SOPS encrypted `secrets.yaml` file |
 | secretVolume | object | `{}` | Secret values that will be available as files in `/secrets` inside the container. Formatted as `file.name: <base64 encoded file>` |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |

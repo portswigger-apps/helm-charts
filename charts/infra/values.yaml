@@ -190,7 +190,7 @@ cloudfrontrouter:
     # - pathPattern: /landing-page/pro
     #   targetOriginId: website-static-cms
     #   cachePolicyName: CachingOptimized
-    # - pathPatttern: /content/*
+    # - pathPattern: /content/*
     #   targetOriginId: website-static-cms
     #   cachePolicyName: CachingOptimized
     # - pathPattern: /content/new/*

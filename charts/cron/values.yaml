@@ -74,6 +74,11 @@ cron:
 # @section -- application
 env: {}
 
+# envFrom -- Create environment variables from `Secret` or `ConfigMap` resources.
+# See https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+# @section -- application
+envFrom: []
+
 # secretEnv -- Secret values that are mounted as environment variables. Formatted as `ENV_VAR_NAME: env-var-value`
 # in a SOPS encrypted `secrets.yaml` file
 # @section -- application
@@ -165,3 +170,4 @@ infra:
       # infra.eventing.consumer.inputPath -- An optional method to extract specific data from events
       # @section -- infra
       inputPath: ""
+
