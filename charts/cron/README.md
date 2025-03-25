@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.2](https://img.shields.io/badge/AppVersion-0.2.2-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.0](https://img.shields.io/badge/AppVersion-0.3.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -14,7 +14,7 @@ helm install cron helm-charts/cron
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.5.0 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.18.1 |
 
 ## Values
 
@@ -64,6 +64,11 @@ helm install cron helm-charts/cron
 | infra.s3Bucket.enabled | bool | `false` | Set to `true` to deploy an `s3Bucket` resource |
 | infra.s3Bucket.create | bool | `false` | Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere |
 | infra.s3Bucket.nameOverride | string | `""` | Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere |
+| infra.eventing.producer.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable eventbridge access. |
+| infra.eventing.producer.eventBusName | string | `"portswigger"` | The . |
+| infra.eventing.consumer.enabled | bool | `false` | Set to `true` to deploy an eventrule. |
+| infra.eventing.consumer.eventPattern | string | `""` | The pattern the rule should use to decide whether to send an event |
+| infra.eventing.consumer.inputPath | string | `""` | An optional method to extract specific data from events |
 
 ### Other Values
 

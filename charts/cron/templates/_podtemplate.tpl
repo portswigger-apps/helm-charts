@@ -65,6 +65,14 @@ Outputs a pod spec for use in different resources.
                       fieldPath: status.podIP
                 - name: IMAGE_TAG
                   value: {{ .Values.image.tag | quote }}
+                {{- if .Values.infra.eventing.producer.enabled }}
+                - name: EVENTING_BUS_NAME
+                  value: {{ .Values.infra.eventing.producer.eventBusName }}
+                {{- end }}
+                {{- if .Values.infra.eventing.consumer.enabled }}
+                - name: EVENTING_QUEUE_NAME
+                  value: {{ include "cron.aws.name" . }}-events
+                {{- end }}
                 {{- include "cron.s3BucketConnectionSecretEnv" . | nindent 16 }}
                 {{- include "cron.postgresConnectionSecretEnv" . | nindent 16 }}
                 {{- range $key, $value := .Values.env}}

@@ -142,3 +142,29 @@ tests:
           content:
             name: JDBC_DATABASE_URL
             value: jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)
+
+  - it: should create Pod with EVENTING_BUS_NAME when configured as a producer
+    set:
+      infra:
+        eventing:
+          producer:
+            enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: EVENTING_BUS_NAME
+            value: portswigger
+
+  - it: should create Pod with s3Bucket connection details
+    set:
+      infra:
+        eventing:
+          consumer:
+            enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: EVENTING_QUEUE_NAME
+            value: NAMESPACE-RELEASE-NAME-events
