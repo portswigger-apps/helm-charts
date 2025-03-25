@@ -103,9 +103,13 @@ Outputs a pod spec for use in different resources.
             value: {{ .Values.env._JAVA_OPTIONS | default "-XX:InitialRAMPercentage=50.0 -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=80.0 -Djava.security.properties=/java-config/java.security" | quote }}
           - name: IMAGE_TAG
             value: {{ .Values.image.tag | quote }}
-          {{- if and .Values.infra.eventbridge.enabled .Values.infra.eventbridge.eventBusARN }}
-          - name: EVENTBUS_ARN
-            value: {{ .Values.infra.eventbridge.eventBusARN }}
+          {{- if .Values.infra.eventing.producer.enabled }}
+          - name: EVENTING_BUS_NAME
+            value: {{ .Values.infra.eventing.producer.eventBusName }}
+          {{- end }}
+          {{- if .Values.infra.eventing.consumer.enabled }}
+          - name: EVENTING_QUEUE_NAME
+            value: {{ include "app.aws.name" . }}-events
           {{- end }}
           {{- if .Values.global.ingress.authentication.enabled }}
           - name: OAUTH_PROXY_URL

@@ -493,20 +493,19 @@ tests:
             value: "0x400000"
 
 
-  - it: should create Deployment with s3Bucket connection details
+  - it: should create Deployment with EVENTING_BUS_NAME when configured as a producer
     set:
       infra:
         eventing:
           producer:
             enabled: true
-          eventBusARN: "arn::something::112233:something/test"
     template: kubernetes/deployment.yaml
     asserts:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: EVENTBUS_ARN
-            value: "arn::something::112233:something/test"
+            name: EVENTING_BUS_NAME
+            value: portswigger
 
   - it: should create Deployment with s3Bucket connection details
     set:
@@ -514,15 +513,13 @@ tests:
         eventing:
           consumer:
             enabled: true
-            eventPattern: ""
-          eventBusARN: "arn::something::112233:something/test"
     template: kubernetes/deployment.yaml
     asserts:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
-            name: EVENTBUS_ARN
-            value: "arn::something::112233:something/test"
+            name: EVENTING_QUEUE_NAME
+            value: NAMESPACE-RELEASE-NAME-events
 
   - it: should create Deployment with oauth-proxy url for applications without cloudfront
     set:

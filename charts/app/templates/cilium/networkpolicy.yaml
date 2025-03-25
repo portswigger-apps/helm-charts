@@ -109,7 +109,7 @@ spec:
         protocol: TCP
   {{- end }}
 
-{{- if .Values.infra.eventbridge.enabled }}
+{{- if .Values.infra.eventing.producer.enabled }}
   - toFQDNs:
     - matchName: "events.eu-west-1.amazonaws.com"
     - matchPattern: "sts.amazonaws.com"
