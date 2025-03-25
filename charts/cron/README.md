@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.0](https://img.shields.io/badge/AppVersion-0.3.0-informational?style=flat-square)
+![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.1](https://img.shields.io/badge/AppVersion-0.3.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -65,6 +65,7 @@ helm install cron helm-charts/cron
 | infra.s3Bucket.enabled | bool | `false` | Set to `true` to deploy an `s3Bucket` resource |
 | infra.s3Bucket.create | bool | `false` | Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere |
 | infra.s3Bucket.nameOverride | string | `""` | Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere |
+| infra.bedrock.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access. |
 | infra.eventing.producer.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable eventbridge access. |
 | infra.eventing.consumer.enabled | bool | `false` | Set to `true` to deploy an eventrule. |
 | infra.eventing.consumer.eventPattern | string | `""` | The pattern the rule should use to decide whether to send an event |
