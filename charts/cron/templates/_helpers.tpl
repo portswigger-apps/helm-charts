@@ -62,7 +62,7 @@ The name of the service account to use
 {{- range $k, $v := .Values.global.serviceAccount.annotations }}
 {{ $k }}: {{ $v }}
 {{- end }}
-{{- if or (and .Values.s3Bucket.enabled .Values.infra.s3Bucket.create) .Values.infra.bedrock.enabled .Values.infra.eventing.producer.enabled .Values.infra.eventing.consumer.enabled }}
+{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled .Values.infra.bedrock.enabled .Values.infra.eventing.producer.enabled .Values.infra.eventing.consumer.enabled) }}
 eks.amazonaws.com/role-arn: arn:aws:iam::{{- .Values.global.aws.accountId }}:role/product-roles/{{ include "cron.serviceAccountName" . }}-irsarole
 {{- end }}
 {{- end -}}
