@@ -1,0 +1,41 @@
+suite: Kinesis
+
+templates:
+  - kinesis.yaml
+
+tests:
+  - it: should not create an KinesisPolicy by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create an KinesisPolicy if enabled
+    set:
+      kinesis:
+        enabled: true
+        streamName: "my-stream-name"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
+      - equal:
+          path: spec.irsaRoleName
+          value: NAMESPACE-RELEASE-NAME-irsarole
+      - equal:
+          path: spec.kinesisStreamName
+          value: my-stream-name
+
+  - it: should create an KinesisPolicy with configured values
+    set:
+      global:
+        serviceAccount:
+          name: my-cool-service-account
+      kinesis:
+        enabled: true
+        streamName: "my-stream-name"
+    asserts:
+      - equal:
+          path: spec.irsaRoleName
+          value: my-cool-service-account-irsarole

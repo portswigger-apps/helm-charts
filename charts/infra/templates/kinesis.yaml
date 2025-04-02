@@ -1,0 +1,11 @@
+{{- if and .Values.kinesis.enabled .Values.kinesis.streamName }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: KinesisPolicy
+metadata:
+  name: {{ default ( include "infra.aws.name" . ) }}
+  labels:
+    {{- include "infra.labels" . | nindent 8 }}
+spec:
+   irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
+   kinesisStreamName: {{ .Values.kinesis.streamName }}
+{{- end }}

@@ -250,3 +250,10 @@ eventing:
     # eventing.consumer.inputPath -- An optional method to extract specific data from events
     # @section -- eventing
     inputPath: ""
+
+kinesis:
+  # kinesis.enabled -- Set to `true` to deploy an IAM policy and role attached to your application to allow assuming a Kinesis stream role
+  # @section -- kinesis
+  enabled: false
+  # kinesis.streamName -- Set to the name of the Kinesis stream. Required if `kinesis.enabled` is `true`
+  streamName: ""
