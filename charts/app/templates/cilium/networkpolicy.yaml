@@ -120,6 +120,18 @@ spec:
         protocol: TCP
   {{- end }}
 
+{{- if .Values.infra.kinesis.enabled }}
+  - toFQDNs:
+      - matchName: "kinesis.eu-west-1.amazonaws.com"
+      - matchName: "kinesis.eu-west-1.api.aws"
+      - matchPattern: "sts.amazonaws.com"
+      - matchPattern: "sts.*.amazonaws.com"
+    toPorts:
+      - ports:
+          - port: "443"
+            protocol: TCP
+  {{- end }}
+
 {{- if .Values.infra.eventing.consumer.enabled }}
   - toFQDNs:
     - matchName: "sqs.eu-west-1.amazonaws.com"

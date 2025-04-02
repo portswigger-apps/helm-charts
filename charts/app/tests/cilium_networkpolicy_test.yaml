@@ -359,3 +359,22 @@ tests:
               - ports:
                   - port: "443"
                     protocol: TCP
+
+  - it: should add egress rules for kinesis when kinesis is enabled
+    set:
+      infra:
+        kinesis:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: "kinesis.eu-west-1.amazonaws.com"
+              - matchName: "kinesis.eu-west-1.api.aws"
+              - matchPattern: sts.amazonaws.com
+              - matchPattern: sts.*.amazonaws.com
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
