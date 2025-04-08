@@ -64,6 +64,7 @@ tests:
         default:
           domainName: default.example.com
           originKeepaliveTimeout: 30
+          customCachePolicyName: web-updates
     asserts:
       - isKind:
           of: CloudFrontRouter
@@ -166,7 +167,7 @@ tests:
               originRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
               pathPattern: /all
               targetOriginId: null
-              viewerProtocolPolicy: redirect-to-https          
+              viewerProtocolPolicy: redirect-to-https
       - equal:
           path: spec.defaultCacheBehavior
           value:
@@ -179,6 +180,7 @@ tests:
               - POST
               - PUT
             cachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            customCachePolicyName: web-updates
             cachedMethods:
               - GET
               - HEAD

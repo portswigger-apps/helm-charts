@@ -200,6 +200,7 @@ cloudfrontrouter:
   # @section -- cloudfront router
   default:
     cachePolicyName: CachingDisabled
+    customCachePolicyName: ""
     cachePolicyId: ""
     domainName: ""
     originReadTimeout: ""

@@ -22,6 +22,9 @@ spec:
       - HEAD
       - OPTIONS
     cachePolicyId: {{ default (printf "%s # Managed-%s" (include "infra.cloudfrontRouter.cachePolicyId" .Values.cloudfrontrouter.default.cachePolicyName) .Values.cloudfrontrouter.default.cachePolicyName) .Values.cloudfrontrouter.default.cachePolicyId }}
+    {{- with .Values.cloudfrontrouter.default.customCachePolicyName }}
+    customCachePolicyName: {{ . }}
+    {{- end }}
     targetOriginId: defaultOrigin
     originRequestPolicyId: {{ default (printf "%s # Managed-%s" (include "infra.cloudfrontRouter.originRequestPolicyId" .Values.cloudfrontrouter.default.originRequestPolicyName) .Values.cloudfrontrouter.default.originRequestPolicyName) .Values.cloudfrontrouter.default.originRequestPolicyId }}
     viewerProtocolPolicy: redirect-to-https
@@ -53,11 +56,11 @@ spec:
     domainName: {{ $origin.domainName }}
     originId: {{ $origin.originId }}
   {{- end }}
-  {{- $allowedHttpMethods := dict 
+  {{- $allowedHttpMethods := dict
     "read" (list "GET" "HEAD")
     "readOptions" (list "GET" "HEAD" "OPTIONS")
     "all" (list "GET" "HEAD" "OPTIONS" "PUT" "PATCH" "POST" "DELETE")
-  }}  
+  }}
   {{- with .Values.cloudfrontrouter.orderedCacheBehavior }}
   orderedCacheBehavior:
   {{- range $it := . }}

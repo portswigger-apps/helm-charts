@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.19.0](https://img.shields.io/badge/Version-0.19.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.19.0](https://img.shields.io/badge/AppVersion-0.19.0-informational?style=flat-square)
+![Version: 0.19.1](https://img.shields.io/badge/Version-0.19.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.19.1](https://img.shields.io/badge/AppVersion-0.19.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -86,7 +86,7 @@ helm install infra helm-charts/infra
 | cloudfrontrouter.acmCertificateARN | string | `""` | The presentation domain name for the `CloudFrontRouter` resource |
 | cloudfrontrouter.origins | list | `[]` | A map of custom origins to be used by path configurations |
 | cloudfrontrouter.orderedCacheBehavior | list | `[]` | An ordered list of paths to direct to different origins |
-| cloudfrontrouter.default | object | `{"cachePolicyId":"","cachePolicyName":"CachingDisabled","domainName":"","originKeepaliveTimeout":"","originReadTimeout":"","originRequestPolicyId":"","originRequestPolicyName":"AllViewerExceptHostHeader"}` | Values for the default origin config |
+| cloudfrontrouter.default | object | `{"cachePolicyId":"","cachePolicyName":"CachingDisabled","customCachePolicyName":"","domainName":"","originKeepaliveTimeout":"","originReadTimeout":"","originRequestPolicyId":"","originRequestPolicyName":"AllViewerExceptHostHeader"}` | Values for the default origin config |
 | cloudfrontrouter.customCachePolicies | object | `{}` | Values for dynamic custom cache policies |
 | cloudfrontrouter.restrictToOffice | bool | `true` | Set to `true` to restrict access to the `CloudFrontRouter` to the office IP ranges |
 
