@@ -339,6 +339,11 @@ tests:
           content:
             name: S3_BUCKET_URL
             value: s3://$(S3_BUCKET_NAME)/
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: S3_ENDPOINT_URL
+            value: https://s3.$(AWS_REGION).amazonaws.com/
 
   - it: should create Deployment with redis connection details
     set:
