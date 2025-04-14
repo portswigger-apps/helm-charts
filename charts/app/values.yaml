@@ -291,6 +291,11 @@ infra:
     # @default -- `false`
     # @section -- infra
     enableDataInsights: false
+  cloudfrontrouter:
+    # infra.cloudfrontrouter.enabled -- Set to `true` to deploy an `CloudFrontRouter` resource. Advanced resource.
+    # @section -- infra
+    # @ignored
+    enabled: false
   cloudfront:
     # infra.cloudfront.enabled -- Set to `true` to deploy an `CloudFrontSite` resource
     # @section -- infra
