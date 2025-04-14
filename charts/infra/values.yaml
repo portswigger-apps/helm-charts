@@ -233,6 +233,9 @@ cloudfrontrouter:
   # @default -- `true`
   # @section -- cloudfront router
   restrictToOffice: true
+  # cloudfrontrouter.hostedZoneId -- The Route53 hosted zone ID to create the certificates and domain names for the `CloudFrontRouter` resource
+  # @section -- cloudfront router
+  hostedZoneId: ""
 
 eventing:
   producer:

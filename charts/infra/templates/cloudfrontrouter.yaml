@@ -8,6 +8,9 @@ metadata:
 spec:
   domainName: {{ .Values.cloudfrontrouter.domainName | quote }}
   restrictToOffice: {{ .Values.cloudfrontrouter.restrictToOffice | quote}}
+  {{- with .Values.cloudfrontrouter.hostedZoneId }}
+  hostedZoneId: {{ . }}
+  {{- end }}
   defaultCacheBehavior:
     allowedMethods:
       - DELETE
