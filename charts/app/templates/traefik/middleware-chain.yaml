@@ -7,7 +7,7 @@ spec:
   chain:
     middlewares:
 {{- if not (has "0.0.0.0/0" .Values.global.ingress.ipAllowListCIDRs) }}
-{{- if .Values.infra.cloudfront.enabled }}
+{{- if or .Values.infra.cloudfront.enabled .Values.infra.cloudfrontrouter.enabled }}
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-cloudfrontgate@kubernetescrd
 {{- else }}
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-ipallowlist@kubernetescrd
