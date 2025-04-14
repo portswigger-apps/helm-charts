@@ -46,6 +46,9 @@ global:
       # global.ingress.authentication.enabled -- Set to `true` to require SSO authentication to access the application.
       # @section -- global
       enabled: false
+    # global.ingress.allowFromCloudfront -- Allow access to the Traefik `Ingress` from Cloudfront IP ranges
+    # @section -- global
+    allowFromCloudfront: false
   serviceAccount:
     # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
     # @section -- global
