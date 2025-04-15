@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.22.4](https://img.shields.io/badge/Version-0.22.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.22.4](https://img.shields.io/badge/AppVersion-0.22.4-informational?style=flat-square)
+![Version: 0.23.0](https://img.shields.io/badge/Version-0.23.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.23.0](https://img.shields.io/badge/AppVersion-0.23.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -34,6 +34,7 @@ helm install app helm-charts/app
 | global.ingress.ipAllowListCIDRs | list | `[]` | Extra IP CIDR ranges to allow access from. |
 | global.ingress.authentication.enabled | bool | `false` | Set to `true` to require SSO authentication to access the application. |
 | global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges |
+| global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests. |
 | global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created |
 | global.serviceAccount.name | string | `.Release.Name` | `ServiceAccount` name. Use with `global.serviceAccount.enabled: false` to use an existing `ServiceAccount` |
 | global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false` |

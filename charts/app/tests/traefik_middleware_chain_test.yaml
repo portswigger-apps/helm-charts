@@ -141,6 +141,8 @@ tests:
           host: app.example.io
           authentication:
             enabled: true
+          stripPrefixes:
+          - /help
       infra:
         cloudfront:
           enabled: true
@@ -160,3 +162,4 @@ tests:
                 - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-redirect-auth@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-forward-auth@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-strip-prefixes@kubernetescrd

@@ -22,4 +22,7 @@ spec:
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-redirect-auth@kubernetescrd
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-forward-auth@kubernetescrd
 {{- end }}
+{{- if .Values.global.ingress.stripPrefixes }}
+    - name: {{.Release.Namespace}}-{{ .Release.Name }}-strip-prefixes@kubernetescrd
+{{- end -}}
 {{- end }}

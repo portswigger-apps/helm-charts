@@ -1,0 +1,42 @@
+suite: Middleware (strip-prefixes)
+
+templates:
+  - traefik/middleware-strip-prefixes.yaml
+
+tests:
+  - it: should not create strip-prefixes middleware by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create strip-prefixes if not using traefik
+    set:
+      global:
+        ingress:
+          host: app.example.io
+          className: alb
+          stripPrefixes:
+          - /help
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create strip-prefixes middleware with ingress enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          stripPrefixes:
+          - /help
+          - /me
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.stripPrefix.prefixes
+          value:
+          - /help
+          - /me

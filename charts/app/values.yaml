@@ -49,6 +49,9 @@ global:
     # global.ingress.allowFromCloudfront -- Allow access to the Traefik `Ingress` from Cloudfront IP ranges
     # @section -- global
     allowFromCloudfront: false
+    # global.ingress.stripPrefixes -- A list of prefixes to strip from requests.
+    # @section -- global
+    stripPrefixes: []
   serviceAccount:
     # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
     # @section -- global
