@@ -119,7 +119,7 @@ Postgres connection secret env variables
     secretKeyRef:
       name: {{ include "app.postgresConnectionSecretName" . }}
       key: password
-- name: DATABASE_URL
+- name: {{ default "DATABASE_URL" .Values.infra.postgres.databaseUrlEnvVar }}
   value: "postgres://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)"
 - name: JDBC_DATABASE_URL
   value: "jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)?user=$(DATABASE_USERNAME)&password=$(DATABASE_PASSWORD)"
