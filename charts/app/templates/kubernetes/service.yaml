@@ -19,6 +19,12 @@ spec:
   ports:
   {{- range $portName, $portSpec := .Values.ports }}
   {{- if $portSpec.expose }}
+  {{- if and (eq $portName "app-port") (not (eq $portName "http")) }}
+  - name: http
+    port: 80
+    targetPort: {{ $portName }}
+    protocol: {{ $portSpec.protocol }}
+  {{- end }}
   - port: {{ $portSpec.port }}
     targetPort: {{ $portName }}
     protocol: {{ $portSpec.protocol }}

@@ -15,6 +15,10 @@ tests:
           value:
             type: ClusterIP
             ports:
+              - name: http
+                port: 80
+                protocol: TCP
+                targetPort: app-port
               - name: app-port
                 port: 8080
                 protocol: TCP
@@ -52,6 +56,10 @@ tests:
                 protocol: TCP
                 targetPort: admin-port
                 name: admin-port
+              - name: http
+                port: 80
+                protocol: TCP
+                targetPort: app-port
               - port: 8080
                 protocol: TCP
                 targetPort: app-port
@@ -77,6 +85,10 @@ tests:
           value:
             type: ClusterIP
             ports:
+              - name: http
+                port: 80
+                protocol: TCP
+                targetPort: app-port
               - name: app-port
                 port: 8080
                 protocol: TCP
