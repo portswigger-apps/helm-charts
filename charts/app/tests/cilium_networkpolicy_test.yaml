@@ -51,6 +51,7 @@ tests:
           - name: api-gateway
             namespace: ingress
           - component: ai-service
+          - namespace: website
     asserts:
       - contains:
           path: spec.ingress
@@ -69,6 +70,8 @@ tests:
               - matchLabels:
                   component: ai-service
                   k8s:io.kubernetes.pod.namespace: NAMESPACE
+              - matchLabels:
+                  k8s:io.kubernetes.pod.namespace: website
             toPorts:
               - ports:
                   - port: "8080"
