@@ -142,6 +142,9 @@ metricsEndpoint:
   # metricsEndpoint.port -- The name of the port that the metrics endpoint is listening on
   # @section -- application
   port: app-port
+  # metricsEndpoint.honorLabels -- When `true`, honorLabels preserves the metric’s labels when they collide with the target’s labels.
+  # @section -- application
+  honorLabels: false
 healthcheckEndpoint:
   # healthcheckEndpoint.path -- The path of the applications HTTP healthcheck endpoint
   # @section -- application

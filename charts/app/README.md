@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.24.0](https://img.shields.io/badge/Version-0.24.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.24.0](https://img.shields.io/badge/AppVersion-0.24.0-informational?style=flat-square)
+![Version: 0.24.1](https://img.shields.io/badge/Version-0.24.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.24.1](https://img.shields.io/badge/AppVersion-0.24.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -61,6 +61,7 @@ helm install app helm-charts/app
 | ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world |
 | metricsEndpoint.path | string | `"/metrics"` | The path to a Prometheus compatible metrics endpoint |
 | metricsEndpoint.port | string | `"app-port"` | The name of the port that the metrics endpoint is listening on |
+| metricsEndpoint.honorLabels | bool | `false` | When `true`, honorLabels preserves the metric’s labels when they collide with the target’s labels. |
 | healthcheckEndpoint.path | string | `"/health"` | The path of the applications HTTP healthcheck endpoint |
 | healthcheckEndpoint.port | string | `"app-port"` | TThe name of the port that the healthcheck endpoint is listening on |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |

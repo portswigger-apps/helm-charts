@@ -12,6 +12,7 @@ spec:
   - interval: 15s
     path: {{ .Values.metricsEndpoint.path }}
     port: {{ .Values.metricsEndpoint.port }}
+    honorLabels: {{ .Values.metricsEndpoint.honorLabels }}
   podTargetLabels:
   - app.kubernetes.io/app
   - app.kubernetes.io/version
