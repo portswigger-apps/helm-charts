@@ -79,7 +79,7 @@ The name of the service account to use
 {{- range $k, $v := .Values.global.serviceAccount.annotations }}
 {{ $k }}: {{ $v }}
 {{- end }}
-{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled .Values.infra.bedrock.enabled .Values.infra.eventing.producer.enabled .Values.infra.eventing.consumer.enabled) }}
+{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled .Values.infra.bedrock.enabled .Values.infra.eventing.producer.enabled .Values.infra.eventing.consumer.enabled not (empty .Values.infra.dynamodb.tables)) }}
 eks.amazonaws.com/role-arn: arn:aws:iam::{{- .Values.global.aws.accountId }}:role/product-roles/{{ include "app.aws.name" . }}-irsarole
 {{- end }}
 {{- end -}}
