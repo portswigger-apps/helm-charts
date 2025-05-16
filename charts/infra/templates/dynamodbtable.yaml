@@ -16,6 +16,7 @@ metadata:
     {{- include "infra.labels" $ | nindent 8 }}
 spec:
   {{- $namedAttributes := dict }}
+  {{- $usedAttributes := dict }}
   {{- $types := dict
     "string" "S"
     "binary" "B"
@@ -34,12 +35,16 @@ spec:
     {{ fail "At least one attribute must be set for the partition key when creating a DynamoDB table" }}
   {{- end }}
   partitionKey: {{ required "A partition key must be set if creating a DynamoDB table" $table.partitionKey }}
-  {{- if not (hasKey $namedAttributes $table.partitionKey) }}
+  {{- if hasKey $namedAttributes $table.partitionKey }}
+    {{ $usedAttributes := set $usedAttributes $table.partitionKey "true" }}
+  {{- else }}
     {{ fail "Any indexed attributes must be defined as attributes" }}
   {{- end}}
   {{ with $table.sortKey }}
   sortKey: {{ . }}
-  {{- if not (hasKey $namedAttributes .) }}
+  {{- if hasKey $namedAttributes . }}
+    {{ $usedAttributes := set $usedAttributes . "true" }}
+  {{- else }}
     {{ fail "Any indexed attributes must be defined as attributes" }}
   {{- end }}
   {{- end }}
@@ -48,7 +53,9 @@ spec:
   {{ range $gsi := . }}
     - partitionKey: {{ required "A partition key must be set for every GSI" $gsi.partitionKey }}
       sortKey: {{ required "A sort key must be set for every GSI" $gsi.sortKey }}
-    {{- if or (not (hasKey $namedAttributes $gsi.partitionKey)) (not (hasKey $namedAttributes $gsi.sortKey)) }}
+    {{- if and (hasKey $namedAttributes $gsi.partitionKey) (hasKey $namedAttributes $gsi.sortKey) }}
+      {{ $usedAttributes := set (set $usedAttributes $gsi.partitionKey "true") $gsi.sortKey "true"}}
+    {{- else }}
       {{ fail "Any indexed attributes must be defined as attributes" }}
     {{- end }}
   {{- end }}
@@ -57,10 +64,15 @@ spec:
   {{ range $lsi := . }}
   lsis:
     - {{ required "A sort key must be set for every LSI" $lsi }}
-    {{- if not (hasKey $namedAttributes .) }}
+    {{- if hasKey $namedAttributes . }}
+      {{ $usedAttributes := set $usedAttributes . "true" }}
+    {{- else }}
       {{ fail "Any indexed attributes must be defined as attributes" }}
     {{- end }}
   {{- end }}
+  {{- end }}
+  {{ if ne (len (keys $usedAttributes | uniq)) (len (keys $namedAttributes | uniq)) }}
+    {{ fail "All attributes must be used" }}
   {{- end }}
 ---
 {{- end }}

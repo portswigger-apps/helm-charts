@@ -149,6 +149,21 @@ tests:
       - failedTemplate:
           errorMessage: "At least one attribute must be set for the partition key when creating a DynamoDB table"
 
+  - it: should fail to create a DynamoDB table if any attributes are unused
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: a1
+                type: string
+              - name: a2
+                type: string
+            partitionKey: a1
+    asserts:
+      - failedTemplate:
+          errorMessage: "All attributes must be used"
+
   - it: should fail to create a DynamoDB table if attributes are missing names
     set:
       dynamodb:
