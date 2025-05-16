@@ -120,6 +120,17 @@ spec:
         protocol: TCP
   {{- end }}
 
+{{- if not (empty (.Values.infra.dynamodb.tables )) }}
+  - toFQDNs:
+      - matchPattern: "sts.amazonaws.com"
+      - matchPattern: "sts.*.amazonaws.com"
+      - matchPattern: "dynamodb.eu-west-1.amazonaws.com"
+    toPorts:
+      - ports:
+          - port: "443"
+            protocol: TCP
+  {{- end }}
+
 {{- if .Values.infra.kinesis.enabled }}
   - toFQDNs:
       - matchName: "kinesis.eu-west-1.amazonaws.com"

@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.24.1](https://img.shields.io/badge/Version-0.24.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.24.1](https://img.shields.io/badge/AppVersion-0.24.1-informational?style=flat-square)
+![Version: 0.25.0](https://img.shields.io/badge/Version-0.25.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.25.0](https://img.shields.io/badge/AppVersion-0.25.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.20.0 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.21.0 |
 
 ## Values
 
@@ -116,6 +116,7 @@ helm install app helm-charts/app
 | infra.eventing.consumer.inputPath | string | `""` | An optional method to extract specific data from events |
 | infra.kinesis.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role attached to your application to allow assuming a Kinesis stream role |
 | infra.kinesis.streamName | string | `""` | Set to the name of the Kinesis stream. Required if `kinesis.enabled` is `true` |
+| infra.dynamodb.tables | list | `[]` | A list containing details about dynamodb tables |
 
 ### Other Values
 

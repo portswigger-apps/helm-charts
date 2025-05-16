@@ -248,6 +248,25 @@ tests:
                   - port: "443"
                     protocol: TCP
 
+  - it: should add egress rules for dyanmodb when dynamodb table is created
+    set:
+      infra:
+        dynamodb:
+          tables:
+            - name: test
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: "sts.amazonaws.com"
+              - matchPattern: "sts.*.amazonaws.com"
+              - matchPattern: "dynamodb.eu-west-1.amazonaws.com"
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
   - it: should add egress rules for ElastiCache when redis is enabled
     set:
       infra:
