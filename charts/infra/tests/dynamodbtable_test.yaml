@@ -1,0 +1,223 @@
+suite: DynamoDBTable
+
+templates:
+  - dynamodbtable.yaml
+
+tests:
+  - it: should not create a DynamoDB table by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create a DynamoDB table with configured values
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: a1
+                type: String
+              - name: a2
+                type: binary
+              - name: a3
+                type: number
+              - name: a4
+                type: string
+            partitionKey: a1
+            sortKey: a2
+            gsis:
+              - partitionKey: a3
+                sortKey: a4
+            lsis:
+              - a4
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: DynamoDBTable
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME-tableTest
+      - lengthEqual:
+          path: spec.attributes
+          count: 4
+      - equal:
+          path: spec.partitionKey
+          value: a1
+      - equal:
+          path: spec.sortKey
+          value: a2
+      - equal:
+          path: spec.attributes[0].type
+          value: S
+      - equal:
+          path: spec.attributes[1].type
+          value: B
+      - equal:
+          path: spec.gsis[0].partitionKey
+          value: a3
+      - equal:
+          path: spec.gsis[0].sortKey
+          value: a4
+      - equal:
+          path: spec.lsis[0]
+          value: a4
+
+  - it: should create two DynamoDB tables with configured values
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: a1
+                type: number
+            partitionKey: a1
+          - name: tableTest2
+            attributes:
+              - name: a2
+                type: binary
+            partitionKey: a2
+    asserts:
+      - hasDocuments:
+          count: 2
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME-tableTest
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME-tableTest2
+        documentIndex: 1
+      - equal:
+          path: spec.partitionKey
+          value: a1
+        documentIndex: 0
+      - equal:
+          path: spec.partitionKey
+          value: a2
+        documentIndex: 1
+
+  - it: should fail to create a DynamoDB table if the table name is missing
+    set:
+      dynamodb:
+        tables:
+          - attributes:
+            - name: test
+              type: string
+            partitionKey: test
+    asserts:
+      - failedTemplate:
+          errorMessage: "Table name is required"
+
+  - it: should fail to create any DynamoDB tables if the table names are duplicated
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: test
+                type: string
+            partitionKey: test
+          - name: tableTest
+            attributes:
+              - name: test
+                type: string
+            partitionKey: test
+    asserts:
+      - failedTemplate:
+          errorMessage: "Table names must be unique"
+
+  - it: should fail to create a DynamoDB table if configured without a partition key
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+            - name: test
+              type: string
+    asserts:
+      - failedTemplate:
+          errorMessage: "A partition key must be set if creating a DynamoDB table"
+
+  - it: should fail to create a DynamoDB table if configured without any attributes
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            partitionKey: test
+    asserts:
+      - failedTemplate:
+          errorMessage: "At least one attribute must be set for the partition key when creating a DynamoDB table"
+
+  - it: should fail to create a DynamoDB table if attributes are missing names
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - type: string
+            partitionKey: test
+    asserts:
+      - failedTemplate:
+          errorMessage: "A name is required for every DynamoDB attribute you create"
+
+  - it: should fail to create a DynamoDB table if attributes have invalid types
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: test
+                type: boolean
+            partitionKey: test
+    asserts:
+      - failedTemplate:
+          errorMessage: "Attribute type must be string, binary, or number"
+
+  - it: should fail to create a DynamoDB table if the partition key is not a defined attribute
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: attributeTest
+                type: string
+            partitionKey: pkTest
+    asserts:
+      - failedTemplate:
+          errorMessage: "Any indexed attributes must be defined as attributes"
+
+  - it: should fail to create a DynamoDB table if the sort key is not a defined attribute
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: attributeTest
+                type: string
+            partitionKey: attributeTest
+            sortKey: skTest
+    asserts:
+      - failedTemplate:
+          errorMessage: "Any indexed attributes must be defined as attributes"
+
+  - it: should fail to create a DynamoDB table if the gsi partition key is not a defined attribute
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: pkTest
+                type: string
+              - name: skTest
+                type: string
+              - name: gsiTest
+                type: string
+            partitionKey: pkTest
+            sortKey: skTest
+            gsis:
+              - partitionKey: gsiTest
+                sortKey: failTest
+    asserts:
+      - failedTemplate:
+          errorMessage: "Any indexed attributes must be defined as attributes"

@@ -1,0 +1,66 @@
+{{- $tableNames := dict }}
+{{- range $item := .Values.dynamodb.tables}}
+  {{- if hasKey $tableNames (required "Table name is required" $item.name) }}
+    {{ fail "Table names must be unique"}}
+  {{ else }}
+    {{- $tableNames := set $tableNames $item.name "true" }}
+  {{- end }}
+{{- end }}
+
+{{- range $table := .Values.dynamodb.tables }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: DynamoDBTable
+metadata:
+  name: {{ include "infra.aws.name" $ }}-{{ $table.name }}
+  labels:
+    {{- include "infra.labels" $ | nindent 8 }}
+spec:
+  {{- $namedAttributes := dict }}
+  {{- $types := dict
+    "string" "S"
+    "binary" "B"
+    "number" "N"
+  }}
+  attributes:
+  {{ range $attribute := $table.attributes }}
+    - name: {{ required "A name is required for every DynamoDB attribute you create" $attribute.name }}
+    {{ if hasKey $types (lower $attribute.type) }}
+      type: {{ get $types (lower $attribute.type) }}
+    {{ else }}
+      {{ fail "Attribute type must be string, binary, or number"}}
+    {{- end }}
+    {{- $namedAttributes := set $namedAttributes $attribute.name "true"}}
+  {{ else }}
+    {{ fail "At least one attribute must be set for the partition key when creating a DynamoDB table" }}
+  {{- end }}
+  partitionKey: {{ required "A partition key must be set if creating a DynamoDB table" $table.partitionKey }}
+  {{- if not (hasKey $namedAttributes $table.partitionKey) }}
+    {{ fail "Any indexed attributes must be defined as attributes" }}
+  {{- end}}
+  {{ with $table.sortKey }}
+  sortKey: {{ . }}
+  {{- if not (hasKey $namedAttributes .) }}
+    {{ fail "Any indexed attributes must be defined as attributes" }}
+  {{- end }}
+  {{- end }}
+  {{ with $table.gsis }}
+  gsis:
+  {{ range $gsi := . }}
+    - partitionKey: {{ required "A partition key must be set for every GSI" $gsi.partitionKey }}
+      sortKey: {{ required "A sort key must be set for every GSI" $gsi.sortKey }}
+    {{- if or (not (hasKey $namedAttributes $gsi.partitionKey)) (not (hasKey $namedAttributes $gsi.sortKey)) }}
+      {{ fail "Any indexed attributes must be defined as attributes" }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+  {{ with $table.lsis }}
+  {{ range $lsi := . }}
+  lsis:
+    - {{ required "A sort key must be set for every LSI" $lsi }}
+    {{- if not (hasKey $namedAttributes .) }}
+      {{ fail "Any indexed attributes must be defined as attributes" }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+---
+{{- end }}

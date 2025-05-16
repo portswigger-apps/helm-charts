@@ -1,0 +1,14 @@
+{{- if (not (empty .Values.dynamodb.tables)) }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: DynamoDBPolicy
+metadata:
+  name: {{ include "infra.aws.name" . }}
+  labels:
+    {{- include "infra.labels" . | nindent 8 }}
+spec:
+  irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
+  tables:
+  {{ range $table := .Values.dynamodb.tables }}
+    - {{ $table.name }}
+  {{- end }}
+{{- end }}

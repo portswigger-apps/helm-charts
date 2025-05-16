@@ -260,4 +260,27 @@ kinesis:
   # @section -- kinesis
   enabled: false
   # kinesis.streamName -- Set to the name of the Kinesis stream. Required if `kinesis.enabled` is `true`
+  # @section -- kinesis
   streamName: ""
+
+dynamodb:
+  # dynamodb.tables -- A list containing details about dynamodb tables
+  # @section -- dynamodb
+  tables: []
+#  - name: tableTest
+#    attributes:
+#      - name: a1
+#        type: String
+#      - name: a2
+#        type: binary
+#      - name: a3
+#        type: number
+#      - name: a4
+#        type: string
+#    partitionKey: a1
+#    sortKey: a2
+#    gsis:
+#      - partitionKey: a3
+#        sortKey: a4
+#    lsis:
+#      - a4
