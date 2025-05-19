@@ -29,7 +29,7 @@ tests:
           value: NAMESPACE-RELEASE-NAME-irsarole
       - equal:
           path: spec.tables[0]
-          value: test
+          value: NAMESPACE-RELEASE-NAME-test
 
   - it: should create a DynamoDBPolicy with configured values
     set:
@@ -71,7 +71,7 @@ tests:
           value: my-cool-service-account-irsarole
       - equal:
           path: spec.tables[0]
-          value: test
+          value: NAMESPACE-RELEASE-NAME-test
       - equal:
           path: spec.tables[1]
-          value: test2
+          value: NAMESPACE-RELEASE-NAME-test2

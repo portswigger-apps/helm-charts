@@ -9,6 +9,6 @@ spec:
   irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
   tables:
   {{ range $table := .Values.dynamodb.tables }}
-    - {{ $table.name }}
+    - {{ include "infra.aws.name" $ }}-{{ $table.name }}
   {{- end }}
 {{- end }}
