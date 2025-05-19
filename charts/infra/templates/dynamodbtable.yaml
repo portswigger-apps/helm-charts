@@ -24,9 +24,9 @@ spec:
   }}
   attributes:
   {{ range $attribute := $table.attributes }}
-    - name: {{ required "A name is required for every DynamoDB attribute you create" $attribute.name }}
+    - name: {{ required "A name is required for every DynamoDB attribute you create" $attribute.name | quote }}
     {{ if hasKey $types (lower $attribute.type) }}
-      type: {{ get $types (lower $attribute.type) }}
+      type: {{ get $types (lower $attribute.type) | quote }}
     {{ else }}
       {{ fail "Attribute type must be string, binary, or number"}}
     {{- end }}
@@ -34,14 +34,14 @@ spec:
   {{ else }}
     {{ fail "At least one attribute must be set for the partition key when creating a DynamoDB table" }}
   {{- end }}
-  partitionKey: {{ required "A partition key must be set if creating a DynamoDB table" $table.partitionKey }}
+  partitionKey: {{ required "A partition key must be set if creating a DynamoDB table" $table.partitionKey | quote }}
   {{- if hasKey $namedAttributes $table.partitionKey }}
     {{ $usedAttributes := set $usedAttributes $table.partitionKey "true" }}
   {{- else }}
     {{ fail "Any indexed attributes must be defined as attributes" }}
   {{- end}}
   {{ with $table.sortKey }}
-  sortKey: {{ . }}
+  sortKey: {{ . | quote }}
   {{- if hasKey $namedAttributes . }}
     {{ $usedAttributes := set $usedAttributes . "true" }}
   {{- else }}
@@ -51,8 +51,8 @@ spec:
   {{ with $table.gsis }}
   gsis:
   {{ range $gsi := . }}
-    - partitionKey: {{ required "A partition key must be set for every GSI" $gsi.partitionKey }}
-      sortKey: {{ required "A sort key must be set for every GSI" $gsi.sortKey }}
+    - partitionKey: {{ required "A partition key must be set for every GSI" $gsi.partitionKey | quote }}
+      sortKey: {{ required "A sort key must be set for every GSI" $gsi.sortKey | quote }}
     {{- if and (hasKey $namedAttributes $gsi.partitionKey) (hasKey $namedAttributes $gsi.sortKey) }}
       {{ $usedAttributes := set (set $usedAttributes $gsi.partitionKey "true") $gsi.sortKey "true"}}
     {{- else }}
@@ -63,7 +63,7 @@ spec:
   {{ with $table.lsis }}
   {{ range $lsi := . }}
   lsis:
-    - {{ required "A sort key must be set for every LSI" $lsi }}
+    - {{ required "A sort key must be set for every LSI" $lsi | quote }}
     {{- if hasKey $namedAttributes . }}
       {{ $usedAttributes := set $usedAttributes . "true" }}
     {{- else }}

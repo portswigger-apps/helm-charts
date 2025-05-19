@@ -54,6 +54,9 @@ tests:
           path: spec.attributes[1].type
           value: B
       - equal:
+          path: spec.attributes[2].type
+          value: N
+      - equal:
           path: spec.gsis[0].partitionKey
           value: a3
       - equal:
