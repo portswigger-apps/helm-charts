@@ -125,6 +125,7 @@ spec:
       - matchPattern: "sts.amazonaws.com"
       - matchPattern: "sts.*.amazonaws.com"
       - matchPattern: "dynamodb.eu-west-1.amazonaws.com"
+      - matchPattern: "*.ddb.eu-west-1.amazonaws.com"
     toPorts:
       - ports:
           - port: "443"
