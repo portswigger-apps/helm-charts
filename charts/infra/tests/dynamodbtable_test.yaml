@@ -256,3 +256,17 @@ tests:
     asserts:
       - failedTemplate:
           errorMessage: "Cannot have an LSI without a sortKey"
+
+  - it: should fail to create a DynamoDB table if the sort key is the same as the partition key
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: test
+                type: string
+            partitionKey: test
+            sortKey: test
+    asserts:
+      - failedTemplate:
+          errorMessage: "The sort key cannot be the same as the partition key"
