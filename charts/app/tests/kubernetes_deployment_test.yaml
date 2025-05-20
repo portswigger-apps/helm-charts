@@ -578,3 +578,59 @@ tests:
           content:
             name: "OAUTH_PROXY_URL"
             value: "http://platform-oauth2-proxy.platform:4180/"
+
+  - it: should create Deployment with environment variable for dynamodb table
+    set:
+      infra:
+        dynamodb:
+          tables:
+            - name: test
+              partitionKey: pk
+              attributes:
+                - name: pk
+                  type: string
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "TEST_TABLE_NAME"
+            value: NAMESPACE-RELEASE-NAME-test
+
+  - it: should create Deployment with environment variables for dynamodb tables
+    set:
+      infra:
+        dynamodb:
+          tables:
+            - name: DynamoRevealed
+              partitionKey: pk
+              attributes:
+                - name: pk
+                  type: string
+            - name: magician-impossible
+              partitionKey: pk
+              attributes:
+                - name: pk
+                  type: string
+            - name: Dynamo_A_Z
+              partitionKey: pk
+              attributes:
+                - name: pk
+                  type: string
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "DYNAMO_REVEALED_TABLE_NAME"
+            value: NAMESPACE-RELEASE-NAME-DynamoRevealed
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "MAGICIAN_IMPOSSIBLE_TABLE_NAME"
+            value: NAMESPACE-RELEASE-NAME-magician-impossible
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "DYNAMO_A_Z_TABLE_NAME"
+            value: NAMESPACE-RELEASE-NAME-Dynamo_A_Z

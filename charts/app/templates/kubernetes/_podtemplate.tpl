@@ -115,6 +115,7 @@ Outputs a pod spec for use in different resources.
           - name: OAUTH_PROXY_URL
             value: "http://{{- include "app.oauthProxyInstance" . -}}.{{- include "app.oauthProxyNamespace" . -}}:4180/"
           {{- end }}
+          {{- include "app.dynamodbTableEnvs" . | nindent 10 }}
           {{- include "app.s3BucketConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.postgresConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.redisConnectionSecretEnv" . | nindent 10 }}

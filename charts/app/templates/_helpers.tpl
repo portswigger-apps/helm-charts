@@ -268,3 +268,13 @@ Usage:
     {{- end -}}
     {{- $bytes | int64 -}}
 {{- end -}}
+
+{{/*
+dynamodb env variables
+*/}}
+{{- define "app.dynamodbTableEnvs" -}}
+{{- range $table := .Values.infra.dynamodb.tables }}
+- name: {{ printf "%s_TABLE_NAME" (upper (snakecase $table.name)) }}
+  value: {{ include "app.aws.name" $ }}-{{ $table.name }}
+{{- end }}
+{{- end -}}
