@@ -239,3 +239,20 @@ tests:
     asserts:
       - failedTemplate:
           errorMessage: "Any indexed attributes must be defined as attributes"
+
+  - it: should fail to create a DynamoDB table if there is an LSI but no sort key
+    set:
+      dynamodb:
+        tables:
+          - name: tableTest
+            attributes:
+              - name: pkTest
+                type: string
+              - name: lsiTest
+                type: string
+            partitionKey: pkTest
+            lsis:
+              - lsiTest
+    asserts:
+      - failedTemplate:
+          errorMessage: "Cannot have an LSI without a sortKey"

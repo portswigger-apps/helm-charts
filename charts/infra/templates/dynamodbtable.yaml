@@ -63,6 +63,9 @@ spec:
   {{ with $table.lsis }}
   {{ range $lsi := . }}
   lsis:
+    {{- if not $table.sortKey }}
+      {{- fail "Cannot have an LSI without a sortKey" }}
+    {{- end }}
     - {{ required "A sort key must be set for every LSI" $lsi | quote }}
     {{- if hasKey $namedAttributes . }}
       {{ $usedAttributes := set $usedAttributes . "true" }}
