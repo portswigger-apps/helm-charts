@@ -275,6 +275,6 @@ dynamodb env variables
 {{- define "app.dynamodbTableEnvs" -}}
 {{- range $table := .Values.infra.dynamodb.tables }}
 - name: {{ printf "%s_TABLE_NAME" (upper (snakecase $table.name)) }}
-  value: {{ include "app.aws.name" $ }}-{{ $table.name }}
+  value: {{ default (include "app.aws.name" $) $.Values.infra.dynamodb.prefixOverride }}-{{ $table.name }}
 {{- end }}
 {{- end -}}

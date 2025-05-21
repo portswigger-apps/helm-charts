@@ -384,6 +384,12 @@ infra:
     streamName: ""
 
   dynamodb:
+    # infra.dynamodb.create -- Set to `false` to skip creation of the dynamodb tables if they have been created elsewhere
+    # @section -- infra
+    create: true
+    # infra.dynamodb.nameOverride -- Use with `create: false` to grant a policy access to tables created elsewhere
+    # @section -- infra
+    prefixOverride: ""
     # infra.dynamodb.tables -- A list containing details about dynamodb tables
     # @section -- infra
     tables: []

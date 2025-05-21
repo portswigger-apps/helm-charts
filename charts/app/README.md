@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.25.7](https://img.shields.io/badge/Version-0.25.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.25.7](https://img.shields.io/badge/AppVersion-0.25.7-informational?style=flat-square)
+![Version: 0.25.8](https://img.shields.io/badge/Version-0.25.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.25.8](https://img.shields.io/badge/AppVersion-0.25.8-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.21.4 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.21.5 |
 
 ## Values
 
@@ -116,6 +116,7 @@ helm install app helm-charts/app
 | infra.eventing.consumer.inputPath | string | `""` | An optional method to extract specific data from events |
 | infra.kinesis.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role attached to your application to allow assuming a Kinesis stream role |
 | infra.kinesis.streamName | string | `""` | Set to the name of the Kinesis stream. Required if `kinesis.enabled` is `true` |
+| infra.dynamodb.create | bool | `true` | Set to `false` to skip creation of the dynamodb tables if they have been created elsewhere |
 | infra.dynamodb.tables | list | `[]` | A list containing details about dynamodb tables |
 
 ### Other Values
@@ -130,6 +131,7 @@ helm install app helm-charts/app
 | podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/). Only available on v1alpha1 |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
 | infra.cloudfrontrouter | object | `{}` |  |
+| infra.dynamodb.prefixOverride | string | `""` |  |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. See examples in values.yaml |
 | preRollbackCommand | string[] | `[]` | Command to run before a rollback. See examples in values.yaml |
