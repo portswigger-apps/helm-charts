@@ -156,7 +156,7 @@ tests:
             name: EVENTING_BUS_NAME
             value: portswigger
 
-  - it: should create Pod with s3Bucket connection details
+  - it: should create Pod with eventbridge connection details
     set:
       infra:
         eventing:
@@ -168,3 +168,43 @@ tests:
           content:
             name: EVENTING_QUEUE_NAME
             value: NAMESPACE-RELEASE-NAME-events
+
+  - it: should create a Pod with dynamodb details
+    set:
+      infra:
+        dynamodb:
+          prefixOverride: override
+          tables:
+            - name: test
+            - name: test2
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: TEST_TABLE_NAME
+            value: override-test
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: TEST2_TABLE_NAME
+            value: override-test2
+
+  - it: should create a Pod with dynamodb details
+    set:
+      infra:
+        dynamodb:
+          create: true
+          tables:
+            - name: test
+            - name: test2
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: TEST_TABLE_NAME
+            value: NAMESPACE-RELEASE-NAME-test
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: TEST2_TABLE_NAME
+            value: NAMESPACE-RELEASE-NAME-test2

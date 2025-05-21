@@ -130,3 +130,13 @@ s3Bucket connection secret env variables
   value: "s3://$(S3_BUCKET_NAME)/"
 {{- end -}}
 {{- end -}}
+
+{{/*
+dynamodb env variables
+*/}}
+{{- define "cron.dynamodbTableEnvs" -}}
+{{- range $table := .Values.infra.dynamodb.tables }}
+- name: {{ printf "%s_TABLE_NAME" (upper (snakecase $table.name)) }}
+  value: {{ default (include "cron.aws.name" $) $.Values.infra.dynamodb.prefixOverride }}-{{ $table.name }}
+{{- end }}
+{{- end -}}
