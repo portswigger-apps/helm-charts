@@ -24,6 +24,43 @@ tests:
       - hasDocuments:
           count: 0
 
+  - it: should create a DynamoDB table with pitr if enabled
+    set:
+      dynamodb:
+        tables:
+          - name: test
+            pointInTimeRecovery: true
+            attributes:
+              - name: test
+                type: string
+            partitionKey: test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: DynamoDBTable
+      - equal:
+          path: spec.pointInTimeRecovery
+          value: true
+
+  - it: should create a DynamoDB table with pitr disabled by default
+    set:
+      dynamodb:
+        tables:
+          - name: test
+            attributes:
+              - name: test
+                type: string
+            partitionKey: test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: DynamoDBTable
+      - equal:
+          path: spec.pointInTimeRecovery
+          value: false
+
   - it: should create a DynamoDB table with configured values
     set:
       dynamodb:

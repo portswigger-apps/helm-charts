@@ -23,6 +23,7 @@ spec:
     "binary" "B"
     "number" "N"
   }}
+  pointInTimeRecovery: {{ $table.pointInTimeRecovery | default false }}
   attributes:
   {{- range $attribute := $table.attributes }}
     - name: {{ required "A name is required for every DynamoDB attribute you create" $attribute.name | quote }}
