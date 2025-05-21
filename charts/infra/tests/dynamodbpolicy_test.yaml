@@ -9,6 +9,61 @@ tests:
       - hasDocuments:
           count: 0
 
+  - it: should create a DynamoDBPolicy if create is false
+    set:
+      dynamodb:
+        create: false
+        tables:
+          - name: test
+            attributes:
+              - name: a1
+                type: string
+            partitionKey: a1
+    asserts:
+      - hasDocuments:
+          count: 1
+
+  - it: should create a DynamoDBPolicy with overridden table names if create is false
+    set:
+      dynamodb:
+        create: false
+        prefixOverride: new-override
+        tables:
+          - name: test
+            attributes:
+              - name: a1
+                type: string
+            partitionKey: a1
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
+      - equal:
+          path: spec.tables[0]
+          value: new-override-test
+
+  - it: should create a DynamoDBPolicy with overridden table names if create is true
+    set:
+      dynamodb:
+        prefixOverride: new-override
+        tables:
+          - name: test
+            attributes:
+              - name: a1
+                type: string
+            partitionKey: a1
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
+      - equal:
+          path: spec.tables[0]
+          value: new-override-test
+
   - it: should create a DynamoDBPolicy if tables are configured
     set:
       dynamodb:

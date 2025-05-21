@@ -9,6 +9,21 @@ tests:
       - hasDocuments:
           count: 0
 
+  - it: should not create a DynamoDB table if create is false
+    set:
+      dynamodb:
+        create: false
+        prefixOverride: override
+        tables:
+          - name: test
+            attributes:
+              - name: test
+                type: string
+            partitionKey: test
+    asserts:
+      - hasDocuments:
+          count: 0
+
   - it: should create a DynamoDB table with configured values
     set:
       dynamodb:
@@ -99,6 +114,34 @@ tests:
           path: spec.partitionKey
           value: a2
         documentIndex: 1
+
+  - it: should create a DynamoDB table with the prefix override
+    set:
+      dynamodb:
+        prefixOverride: new-prefix
+        tables:
+          - name: test
+            attributes:
+            - name: test
+              type: string
+            partitionKey: test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: new-prefix-test
+
+  - it: should fail to create a DynamoDB table if create is false and there is no prefix override
+    set:
+      dynamodb:
+        create: false
+        tables:
+          - name: test
+          - name: test2
+    asserts:
+      - failedTemplate:
+          errorMessage: "prefixOverride is required if create is false"
 
   - it: should fail to create a DynamoDB table if the table name is missing
     set:

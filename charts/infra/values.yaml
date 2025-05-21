@@ -264,6 +264,12 @@ kinesis:
   streamName: ""
 
 dynamodb:
+  # infra.dynamodb.create -- Set to `false` to skip creation of the dynamodb tables if they have been created elsewhere
+  # @section -- dynamodb
+  create: true
+  # infra.dynamodb.nameOverride -- Use with `create: false` to grant a policy access to tables created elsewhere
+  # @section -- dynamodb
+  prefixOverride: ""
   # dynamodb.tables -- A list containing details about dynamodb tables
   # @section -- dynamodb
   tables: []

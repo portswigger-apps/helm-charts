@@ -1,0 +1,92 @@
+suite: DynamoDB
+
+templates:
+  - dynamodbpolicy.yaml
+  - dynamodbtable.yaml
+
+tests:
+  - it: should not create a DynamoDB table or policy by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create a DynamoDBPolicy with the override but no table if create is false
+    set:
+      dynamodb:
+        create: false
+        prefixOverride: override
+        tables:
+          - name: test
+          - name: test2
+    template: dynamodbpolicy.yaml
+    documentSelector:
+      path: metadata.name
+      value: NAMESPACE-RELEASE-NAME
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: DynamoDBPolicy
+      - equal:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
+      - equal:
+          path: spec.tables[0]
+          value: override-test
+      - equal:
+          path: spec.tables[1]
+          value: override-test2
+
+  - it: should fail to create DynamoDBPolicy and a DynamoDBTable with the prefix overriden if create is true
+    template: dynamodbpolicy.yaml
+    documentSelector:
+      path: metadata.name
+      value: NAMESPACE-RELEASE-NAME
+    set:
+      dynamodb:
+        create: true
+        prefixOverride: override
+        tables:
+          - name: test
+            attributes:
+              - name: test
+                type: string
+            partitionKey: test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: DynamoDBPolicy
+        documentSelector:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
+      - equal:
+          path: spec.tables[0]
+          value: override-test
+        documentSelector:
+          path: metadata.name
+          value: NAMESPACE-RELEASE-NAME
+
+  - it: should fail to create DynamoDBPolicy and a DynamoDBTable with the prefix overriden if create is true
+    template: dynamodbtable.yaml
+    documentSelector:
+      path: metadata.name
+      value: override-test
+    set:
+      dynamodb:
+        create: true
+        prefixOverride: override
+        tables:
+          - name: test
+            attributes:
+              - name: test
+                type: string
+            partitionKey: test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: DynamoDBTable
+        documentSelector:
+          path: metadata.name
+          value: override-test

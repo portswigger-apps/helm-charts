@@ -1,3 +1,4 @@
+{{- if .Values.dynamodb.create }}
 {{- $tableNames := dict }}
 {{- range $item := .Values.dynamodb.tables}}
   {{- if hasKey $tableNames (required "Table name is required" $item.name) }}
@@ -11,7 +12,7 @@
 apiVersion: platform.portswigger.io/v1alpha1
 kind: DynamoDBTable
 metadata:
-  name: {{ include "infra.aws.name" $ }}-{{ $table.name }}
+  name: {{ default (include "infra.aws.name" $) $.Values.dynamodb.prefixOverride }}-{{ $table.name }}
   labels:
     {{- include "infra.labels" $ | nindent 8 }}
 spec:
@@ -81,4 +82,9 @@ spec:
     {{ fail "All attributes must be used" }}
   {{- end }}
 ---
+{{- end }}
+{{- else }}
+{{- if not .Values.dynamodb.prefixOverride }}
+  {{- fail "prefixOverride is required if create is false" }}
+{{- end }}
 {{- end }}
