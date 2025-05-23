@@ -653,3 +653,24 @@ tests:
           content:
             name: "TEST_TABLE_NAME"
             value: override-test
+
+  - it: should create Deployment using DDB and set endpoint url
+    set:
+      global:
+        aws:
+          accountId: "1234567810"
+      infra:
+        dynamodb:
+          tables:
+            - name: test
+              partitionKey: pk
+              attributes:
+                - name: pk
+                  type: string
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: "DDB_ENDPOINT_URL"
+            value: 1234567810.ddb.$(AWS_REGION).amazonaws.com

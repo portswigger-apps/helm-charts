@@ -277,4 +277,8 @@ dynamodb env variables
 - name: {{ printf "%s_TABLE_NAME" (upper (snakecase $table.name)) }}
   value: {{ default (include "app.aws.name" $) $.Values.infra.dynamodb.prefixOverride }}-{{ $table.name }}
 {{- end }}
+{{- if and (.Values.global.aws.accountId) (not (empty .Values.infra.dynamodb.tables)) }}
+- name: DDB_ENDPOINT_URL
+  value: {{ .Values.global.aws.accountId}}.ddb.$(AWS_REGION).amazonaws.com
+{{- end -}}
 {{- end -}}
