@@ -111,7 +111,7 @@ spec:
 
 {{- if .Values.infra.eventing.producer.enabled }}
   - toFQDNs:
-    - matchName: "events.eu-west-1.amazonaws.com"
+    - matchName: "events.{{- .Values.global.aws.region -}}.amazonaws.com"
     - matchPattern: "sts.amazonaws.com"
     - matchPattern: "sts.*.amazonaws.com"
     toPorts:
@@ -124,8 +124,8 @@ spec:
   - toFQDNs:
       - matchPattern: "sts.amazonaws.com"
       - matchPattern: "sts.*.amazonaws.com"
-      - matchPattern: "dynamodb.eu-west-1.amazonaws.com"
-      - matchPattern: "*.ddb.eu-west-1.amazonaws.com"
+      - matchPattern: "dynamodb.{{- .Values.global.aws.region -}}.amazonaws.com"
+      - matchPattern: "*.ddb.{{- .Values.global.aws.region -}}.amazonaws.com"
     toPorts:
       - ports:
           - port: "443"
@@ -134,8 +134,8 @@ spec:
 
 {{- if .Values.infra.kinesis.enabled }}
   - toFQDNs:
-      - matchName: "kinesis.eu-west-1.amazonaws.com"
-      - matchName: "kinesis.eu-west-1.api.aws"
+      - matchName: "kinesis.{{- .Values.global.aws.region -}}.amazonaws.com"
+      - matchName: "kinesis.{{- .Values.global.aws.region -}}.api.aws"
       - matchPattern: "sts.amazonaws.com"
       - matchPattern: "sts.*.amazonaws.com"
     toPorts:
@@ -146,7 +146,7 @@ spec:
 
 {{- if .Values.infra.eventing.consumer.enabled }}
   - toFQDNs:
-    - matchName: "sqs.eu-west-1.amazonaws.com"
+    - matchName: "sqs.{{- .Values.global.aws.region -}}.amazonaws.com"
     - matchPattern: "sts.amazonaws.com"
     - matchPattern: "sts.*.amazonaws.com"
     toPorts:

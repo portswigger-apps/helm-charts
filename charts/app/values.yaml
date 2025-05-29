@@ -4,6 +4,10 @@ global:
     # @default -- Taken from deployment pipeline environment
     # @section -- global
     accountId: ""
+    # global.aws.region -- The AWS region that this application is being deployed into.
+    # @section -- global
+    # @ignored
+    region: "eu-west-1"
   ingress:
     # global.ingress.enabled -- Set to `true` to expose the application with a Kubernetes `Ingress`
     # @section -- global

@@ -268,6 +268,29 @@ tests:
                   - port: "443"
                     protocol: TCP
 
+  - it: should add egress rules for different region ddb
+    set:
+      global:
+        aws:
+          region: us-east-1
+      infra:
+        dynamodb:
+          tables:
+            - name: test
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: "sts.amazonaws.com"
+              - matchPattern: "sts.*.amazonaws.com"
+              - matchPattern: "dynamodb.us-east-1.amazonaws.com"
+              - matchPattern: "*.ddb.us-east-1.amazonaws.com"
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
   - it: should add egress rules for ElastiCache when redis is enabled
     set:
       infra:
