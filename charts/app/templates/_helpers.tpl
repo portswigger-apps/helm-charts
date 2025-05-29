@@ -146,7 +146,7 @@ s3Bucket connection secret env variables
 - name: S3_BUCKET_URL
   value: "s3://$(S3_BUCKET_NAME)/"
 - name: S3_ENDPOINT_URL
-  value: "https://s3.$(AWS_REGION).amazonaws.com/"
+  value: "https://s3.eu-west-1.amazonaws.com/"
 {{- end -}}
 {{- end -}}
 
@@ -279,6 +279,6 @@ dynamodb env variables
 {{- end }}
 {{- if and (.Values.global.aws.accountId) (not (empty .Values.infra.dynamodb.tables)) }}
 - name: DDB_ENDPOINT_URL
-  value: {{ .Values.global.aws.accountId}}.ddb.$(AWS_REGION).amazonaws.com
+  value: {{ .Values.global.aws.accountId}}.ddb.eu-west-1.amazonaws.com
 {{- end -}}
 {{- end -}}
