@@ -673,4 +673,4 @@ tests:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: "DDB_ENDPOINT_URL"
-            value: 1234567810.ddb.eu-west-1.amazonaws.com
+            value: https://1234567810.ddb.eu-west-1.amazonaws.com

@@ -279,6 +279,6 @@ dynamodb env variables
 {{- end }}
 {{- if and (.Values.global.aws.accountId) (not (empty .Values.infra.dynamodb.tables)) }}
 - name: DDB_ENDPOINT_URL
-  value: {{ .Values.global.aws.accountId}}.ddb.{{ .Values.global.aws.region }}.amazonaws.com
+  value: https://{{ .Values.global.aws.accountId}}.ddb.{{ .Values.global.aws.region }}.amazonaws.com
 {{- end -}}
 {{- end -}}
