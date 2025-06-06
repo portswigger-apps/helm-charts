@@ -1,0 +1,24 @@
+{{- if .Values.opensearch.enabled }}
+apiVersion: platform.portswigger.io/v1alpha1
+kind: OpenSearchCollection
+metadata:
+  name: {{ include "infra.aws.name" . }}
+spec:
+  type: {{ upper .Values.opensearch.type }}
+  lifecycleRules:
+  {{- range $rule := .Values.opensearch.lifecycleRules }}
+    - resource: {{ required "A resource is required for a lifecycle rule" $rule.resource | quote}}
+      {{- if or (empty $rule.retainIndefinitely) (not $rule.retainIndefinitely) }}
+      retentionPeriod: {{ required "retentionPeriod is required if retainIndefinitely is false" $rule.retentionPeriod | quote}}
+      {{- if not (hasSuffix "d" $rule.retentionPeriod)}}
+      {{- fail "retentionPeriod must be the number of days followed by the letter d"}}
+      {{- end }}
+      {{- end }}
+      {{- with $rule.retainIndefinitely }}
+      retainIndefinitely: {{ $rule.retainIndefinitely }}
+      {{- end }}
+  {{- end }}
+  writeConnectionSecretToRef:
+    name: "{{ include "infra.aws.name" . }}-opensearch"
+  irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
+{{- end }}

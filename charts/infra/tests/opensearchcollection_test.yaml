@@ -1,0 +1,87 @@
+suite: OpenSearchCollection
+
+templates:
+  - opensearchcollection.yaml
+
+tests:
+  - it: should not create an OpenSearch Collection by default
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should create an OpenSearch Collection with default values
+    set:
+      opensearch:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.type
+          value: "TIMESERIES"
+      - isNullOrEmpty:
+          path: spec.lifecycleRules
+
+  - it: should create an OpenSearch Collection with configured values
+    set:
+      opensearch:
+        enabled: true
+        type: "vectorsearch"
+        lifecycleRules:
+          - resource: "orders/*"
+            retentionPeriod: "15d"
+          - resource: "sales/*"
+            retentionPeriod: "15d"
+            retainIndefinitely: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.type
+          value: "VECTORSEARCH"
+      - equal:
+          path: spec.lifecycleRules[0].resource
+          value: "orders/*"
+      - equal:
+          path: spec.lifecycleRules[0].retentionPeriod
+          value: "15d"
+      - notExists:
+          path: spec.lifecycleRules[0].retainIndefinitely
+      - equal:
+          path: spec.lifecycleRules[1].resource
+          value: "sales/*"
+      - equal:
+          path: spec.lifecycleRules[1].retainIndefinitely
+          value: true
+      - notExists:
+          path: spec.lifecycleRules[1].retentionPeriod
+
+  - it: should fail to create an OpenSearch collection if a lifecycle rule is missing a resource
+    set:
+      opensearch:
+        enabled: true
+        lifecycleRules:
+          - retentionPeriod: "15d"
+    asserts:
+      - failedTemplate:
+          errorMessage: "A resource is required for a lifecycle rule"
+
+  - it: should fail to create an OpenSearch collection if a lifecycle rule is configured with retainIndefinitely false but no retentionPeriod
+    set:
+      opensearch:
+        enabled: true
+        lifecycleRules:
+          - resource: "sales/*"
+    asserts:
+      - failedTemplate:
+          errorMessage: "retentionPeriod is required if retainIndefinitely is false"
+
+  - it: should fail to create an OpenSearch collection if configured without a retentionPeriod in the wrong format
+    set:
+      opensearch:
+        enabled: true
+        lifecycleRules:
+          - resource: "sales/*"
+            retentionPeriod: "48s"
+    asserts:
+      - failedTemplate:
+          errorMessage: "retentionPeriod must be the number of days followed by the letter d"
