@@ -294,7 +294,7 @@ Name of the secret that stores opensearch connection details
 opensearch env variables
 */}}
 {{- define "app.openSearchCollectionEnvs" -}}
-{{- if .Values.infra.redis.enabled -}}
+{{- if .Values.infra.opensearch.enabled -}}
 - name: OPENSEARCH_COLLECTION_ARN
   valueFrom:
     secretKeyRef:
