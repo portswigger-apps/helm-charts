@@ -248,7 +248,7 @@ tests:
                   - port: "443"
                     protocol: TCP
 
-  - it: should add egress rules for dyanmodb when dynamodb table is created
+  - it: should add egress rules for dynamodb when dynamodb table is created
     set:
       infra:
         dynamodb:
@@ -286,6 +286,24 @@ tests:
               - matchPattern: "sts.*.amazonaws.com"
               - matchPattern: "dynamodb.us-east-1.amazonaws.com"
               - matchPattern: "*.ddb.us-east-1.amazonaws.com"
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
+  - it: should add egress rules for opensearch when it is enabled
+    set:
+      infra:
+        opensearch:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: "sts.amazonaws.com"
+              - matchPattern: "sts.*.amazonaws.com"
+              - matchPattern: "*.eu-west-1.aoss.amazonaws.com"
             toPorts:
               - ports:
                   - port: "443"

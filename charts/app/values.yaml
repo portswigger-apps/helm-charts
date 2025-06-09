@@ -415,6 +415,20 @@ infra:
 #     lsis:
 #       - a4
 
+  opensearch:
+    # infra.opensearch.enabled -- Set to `true` to deploy an opensearch collection
+    # @section -- infra
+    enabled: false
+    # infra.opensearch.type -- The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH
+    # @section -- infra
+    type: "TIMESERIES"
+    # infra.opensearch.lifecycleRules -- A list of rules configuring the retention period of indexes
+    # @section -- infra
+    lifecycleRules: []
+  #    - resource: "examples/*"
+  #      retainIndefinitely: false
+  #      retentionPeriod: "15d"
+
 # extraDeploy -- Extra Kubernetes configuration
 extraDeploy: []
 # preDeployCommand -- (string[]) Command to run before install and upgrade of your application. See examples in values.yaml

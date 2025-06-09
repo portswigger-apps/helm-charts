@@ -175,6 +175,17 @@ spec:
         protocol: TCP
   {{- end }}
 
+  {{- if .Values.infra.opensearch.enabled }}
+  - toFQDNs:
+      - matchPattern: "sts.amazonaws.com"
+      - matchPattern: "sts.*.amazonaws.com"
+      - matchPattern: "*.{{- .Values.global.aws.region -}}.aoss.amazonaws.com"
+    toPorts:
+      - ports:
+          - port: "443"
+            protocol: TCP
+  {{- end }}
+
   {{- with .Values.ciliumNetworkPolicy.externalHttpsServices }}
   - toFQDNs:
     {{- range . }}

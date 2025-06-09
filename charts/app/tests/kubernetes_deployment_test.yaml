@@ -674,3 +674,35 @@ tests:
           content:
             name: "DDB_ENDPOINT_URL"
             value: https://1234567810.ddb.eu-west-1.amazonaws.com
+
+  - it: should create Deployment with environment variables for opensearch collection
+    set:
+      infra:
+        opensearch:
+          enabled: true
+    template: kubernetes/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ARN
+            valueFrom:
+              secretKeyRef:
+                name: NAMESPACE-RELEASE-NAME-opensearch
+                key: arn
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: NAMESPACE-RELEASE-NAME-opensearch
+                key: collectionEndpoint
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ID
+            valueFrom:
+              secretKeyRef:
+                name: NAMESPACE-RELEASE-NAME-opensearch
+                key: id

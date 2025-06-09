@@ -79,7 +79,7 @@ The name of the service account to use
 {{- range $k, $v := .Values.global.serviceAccount.annotations }}
 {{ $k }}: {{ $v }}
 {{- end }}
-{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled .Values.infra.bedrock.enabled .Values.infra.eventing.producer.enabled .Values.infra.eventing.consumer.enabled (not (empty .Values.infra.dynamodb.tables))) }}
+{{- if and .Values.global.aws.accountId (or .Values.infra.s3Bucket.enabled .Values.infra.bedrock.enabled .Values.infra.eventing.producer.enabled .Values.infra.eventing.consumer.enabled (not (empty .Values.infra.dynamodb.tables)) .Values.infra.opensearch.enabled) }}
 eks.amazonaws.com/role-arn: arn:aws:iam::{{- .Values.global.aws.accountId }}:role/product-roles/{{ include "app.aws.name" . }}-irsarole
 {{- end }}
 {{- end -}}
@@ -280,5 +280,35 @@ dynamodb env variables
 {{- if and (.Values.global.aws.accountId) (not (empty .Values.infra.dynamodb.tables)) }}
 - name: DDB_ENDPOINT_URL
   value: https://{{ .Values.global.aws.accountId}}.ddb.{{ .Values.global.aws.region }}.amazonaws.com
+{{- end -}}
+{{- end -}}
+
+{{/*
+Name of the secret that stores opensearch connection details
+*/}}
+{{- define "app.opensearchConnectionDetails" -}}
+{{- (include "app.aws.name" . ) -}}-opensearch
+{{- end -}}
+
+{{/*
+opensearch env variables
+*/}}
+{{- define "app.openSearchCollectionEnvs" -}}
+{{- if .Values.infra.redis.enabled -}}
+- name: OPENSEARCH_COLLECTION_ARN
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.opensearchConnectionDetails" . }}
+      key: arn
+- name: OPENSEARCH_COLLECTION_ENDPOINT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.opensearchConnectionDetails" . }}
+      key: collectionEndpoint
+- name: OPENSEARCH_COLLECTION_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "app.opensearchConnectionDetails" . }}
+      key: id
 {{- end -}}
 {{- end -}}
