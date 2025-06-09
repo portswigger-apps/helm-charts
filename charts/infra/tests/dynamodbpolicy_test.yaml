@@ -9,6 +9,15 @@ tests:
       - hasDocuments:
           count: 0
 
+  - it: should not create a DynamoDBPolicy if no tables
+    set:
+      dynamodb:
+        create: false
+        prefixOverride: "abcde"
+    asserts:
+      - hasDocuments:
+          count: 0
+
   - it: should create a DynamoDBPolicy if create is false
     set:
       dynamodb:

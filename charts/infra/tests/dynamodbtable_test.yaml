@@ -180,6 +180,14 @@ tests:
       - failedTemplate:
           errorMessage: "prefixOverride is required if create is false"
 
+  - it: should not fail to create a DynamoDB table if create is false and there is no prefix override but no tables
+    set:
+      dynamodb:
+        create: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
   - it: should fail to create a DynamoDB table if the table name is missing
     set:
       dynamodb:

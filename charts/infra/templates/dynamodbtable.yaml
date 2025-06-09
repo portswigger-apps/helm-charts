@@ -85,7 +85,7 @@ spec:
 ---
 {{- end }}
 {{- else }}
-{{- if not .Values.dynamodb.prefixOverride }}
+{{- if and (not .Values.dynamodb.prefixOverride) (not (empty .Values.dynamodb.tables)) }}
   {{- fail "prefixOverride is required if create is false" }}
 {{- end }}
 {{- end }}
