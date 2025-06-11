@@ -1,4 +1,4 @@
-{{- if or (and .Values.s3Bucket.enabled .Values.s3Bucket.create) .Values.bedrock.enabled .Values.eventing.producer.enabled .Values.eventing.consumer.enabled .Values.kinesis.enabled (not (empty .Values.dynamodb.tables)) .Values.opensearch.enabled }}
+{{- if or (and .Values.s3Bucket.enabled .Values.s3Bucket.create) .Values.bedrock.enabled .Values.eventing.producer.enabled .Values.eventing.consumer.enabled .Values.kinesis.enabled (not (empty .Values.dynamodb.tables)) (and .Values.opensearch.enabled .Values.opensearch.create) }}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: IrsaRole
 metadata:

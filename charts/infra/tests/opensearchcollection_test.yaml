@@ -8,6 +8,7 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
   - it: should create an OpenSearch Collection with default values
     set:
       opensearch:
@@ -20,6 +21,15 @@ tests:
           value: "TIMESERIES"
       - isNullOrEmpty:
           path: spec.lifecycleRules
+
+  - it: should not create an OpenSearch Collection if creat is false
+    set:
+      opensearch:
+        enabled: true
+        create: false
+    asserts:
+      - hasDocuments:
+          count: 0
 
   - it: should create an OpenSearch Collection with configured values
     set:

@@ -1,8 +1,8 @@
-{{- if .Values.opensearch.enabled }}
+{{- if and .Values.opensearch.enabled .Values.opensearch.create}}
 apiVersion: platform.portswigger.io/v1alpha1
 kind: OpenSearchCollection
 metadata:
-  name: {{ include "infra.aws.name" . }}
+  name: {{ default ( include "infra.aws.name" . ) .Values.opensearch.nameOverride }}
 spec:
   type: {{ upper .Values.opensearch.type }}
   lifecycleRules:

@@ -292,13 +292,19 @@ dynamodb:
 #      - a4
 
 opensearch:
-  # infra.opensearch.enabled -- Set to `true` to deploy an opensearch collection
+  # opensearch.create -- Set to `false` to skip creation of the opensearch collection if it has been created elsewhere
+  # @section -- opensearch
+  create: true
+  # opensearch.nameOverride -- Use with `create: false` to map the secrets of an instance created elsewhere
+  # @section -- opensearch
+  nameOverride: ""
+  # opensearch.enabled -- Set to `true` to deploy an opensearch collection
   # @section -- opensearch
   enabled: false
-  # infra.opensearch.type -- The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH
+  # opensearch.type -- The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH
   # @section -- opensearch
   type: "TIMESERIES"
-  # infra.opensearch.lifecycleRules -- A list of rules configuring the retention period of indexes
+  # opensearch.lifecycleRules -- A list of rules configuring the retention period of indexes
   # @section -- opensearch
   lifecycleRules: []
 #    - resource: "examples/*"
