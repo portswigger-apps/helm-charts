@@ -416,6 +416,12 @@ infra:
 #       - a4
 
   opensearch:
+    # infra.opensearch.create -- Set to `false` to skip creation of the opensearch collection if it has been created elsewhere
+    # @section -- infra
+    create: true
+    # infra.opensearch.nameOverride -- Use with `create: false` to map the secrets of an instance created elsewhere
+    # @section -- infra
+    nameOverride: ""
     # infra.opensearch.enabled -- Set to `true` to deploy an opensearch collection
     # @section -- infra
     enabled: false

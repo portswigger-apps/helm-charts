@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.4.2](https://img.shields.io/badge/Version-0.4.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.2](https://img.shields.io/badge/AppVersion-0.4.2-informational?style=flat-square)
+![Version: 0.4.3](https://img.shields.io/badge/Version-0.4.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.3](https://img.shields.io/badge/AppVersion-0.4.3-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -14,7 +14,7 @@ helm install cron helm-charts/cron
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.22.1 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.22.2 |
 
 ## Values
 
@@ -72,6 +72,11 @@ helm install cron helm-charts/cron
 | infra.eventing.consumer.inputPath | string | `""` | An optional method to extract specific data from events |
 | infra.dynamodb.create | bool | `false` | Set to `false` to skip creation of the dynamodb tables if they have been created elsewhere |
 | infra.dynamodb.tables | list | `[]` | A list containing details about dynamodb tables |
+| infra.opensearch.create | bool | `false` | Set to `false` to skip creation of the opensearch collection if it has been created elsewhere |
+| infra.opensearch.nameOverride | string | `""` | Use with `create: false` to map the secrets of an instance created elsewhere |
+| infra.opensearch.enabled | bool | `false` | Set to `true` to deploy an opensearch collection |
+| infra.opensearch.type | string | `"TIMESERIES"` | The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH |
+| infra.opensearch.lifecycleRules | list | `[]` | A list of rules configuring the retention period of indexes |
 
 ### Other Values
 

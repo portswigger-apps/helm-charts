@@ -76,6 +76,7 @@ Outputs a pod spec for use in different resources.
                 {{- include "cron.s3BucketConnectionSecretEnv" . | nindent 16 }}
                 {{- include "cron.postgresConnectionSecretEnv" . | nindent 16 }}
                 {{- include "cron.dynamodbTableEnvs" . | nindent 16 }}
+                {{- include "cron.openSearchCollectionEnvs" . | nindent 16 }}
                 {{- range $key, $value := .Values.env}}
                 - name: {{ $key }}
                   value: {{ $value | quote }}

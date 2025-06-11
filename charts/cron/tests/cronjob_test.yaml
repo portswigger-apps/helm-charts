@@ -208,3 +208,66 @@ tests:
           content:
             name: TEST2_TABLE_NAME
             value: NAMESPACE-RELEASE-NAME-test2
+
+  - it: should create a Deployment with environment variables for opensearch collection
+    set:
+      infra:
+        opensearch:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ARN
+            valueFrom:
+              secretKeyRef:
+                name: NAMESPACE-RELEASE-NAME-opensearch
+                key: arn
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: NAMESPACE-RELEASE-NAME-opensearch
+                key: collectionEndpoint
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ID
+            valueFrom:
+              secretKeyRef:
+                name: NAMESPACE-RELEASE-NAME-opensearch
+                key: id
+
+  - it: should create a Deployment with environment variables for opensearch collection including nameOverride
+    set:
+      infra:
+        opensearch:
+          enabled: true
+          nameOverride: override
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ARN
+            valueFrom:
+              secretKeyRef:
+                name: override-opensearch
+                key: arn
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: override-opensearch
+                key: collectionEndpoint
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: OPENSEARCH_COLLECTION_ID
+            valueFrom:
+              secretKeyRef:
+                name: override-opensearch
+                key: id

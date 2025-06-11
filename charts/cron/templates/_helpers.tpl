@@ -140,3 +140,33 @@ dynamodb env variables
   value: {{ default (include "cron.aws.name" $) $.Values.infra.dynamodb.prefixOverride }}-{{ $table.name }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Name of the secret that stores opensearch connection details
+*/}}
+{{- define "cron.opensearchConnectionDetails" -}}
+{{- (default (include "cron.aws.name" . ) .Values.infra.opensearch.nameOverride) -}}-opensearch
+{{- end -}}
+
+{{/*
+opensearch env variables
+*/}}
+{{- define "cron.openSearchCollectionEnvs" -}}
+{{- if .Values.infra.opensearch.enabled -}}
+- name: OPENSEARCH_COLLECTION_ARN
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cron.opensearchConnectionDetails" . }}
+      key: arn
+- name: OPENSEARCH_COLLECTION_ENDPOINT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cron.opensearchConnectionDetails" . }}
+      key: collectionEndpoint
+- name: OPENSEARCH_COLLECTION_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "cron.opensearchConnectionDetails" . }}
+      key: id
+{{- end -}}
+{{- end -}}

@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.26.0](https://img.shields.io/badge/Version-0.26.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.26.0](https://img.shields.io/badge/AppVersion-0.26.0-informational?style=flat-square)
+![Version: 0.26.1](https://img.shields.io/badge/Version-0.26.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.26.1](https://img.shields.io/badge/AppVersion-0.26.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.22.1 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.22.2 |
 
 ## Values
 
@@ -118,6 +118,8 @@ helm install app helm-charts/app
 | infra.kinesis.streamName | string | `""` | Set to the name of the Kinesis stream. Required if `kinesis.enabled` is `true` |
 | infra.dynamodb.create | bool | `true` | Set to `false` to skip creation of the dynamodb tables if they have been created elsewhere |
 | infra.dynamodb.tables | list | `[]` | A list containing details about dynamodb tables |
+| infra.opensearch.create | bool | `true` | Set to `false` to skip creation of the opensearch collection if it has been created elsewhere |
+| infra.opensearch.nameOverride | string | `""` | Use with `create: false` to map the secrets of an instance created elsewhere |
 | infra.opensearch.enabled | bool | `false` | Set to `true` to deploy an opensearch collection |
 | infra.opensearch.type | string | `"TIMESERIES"` | The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH |
 | infra.opensearch.lifecycleRules | list | `[]` | A list of rules configuring the retention period of indexes |

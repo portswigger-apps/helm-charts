@@ -287,7 +287,7 @@ dynamodb env variables
 Name of the secret that stores opensearch connection details
 */}}
 {{- define "app.opensearchConnectionDetails" -}}
-{{- (include "app.aws.name" . ) -}}-opensearch
+{{- (default (include "app.aws.name" . ) .Values.infra.opensearch.nameOverride) -}}-opensearch
 {{- end -}}
 
 {{/*
