@@ -8,13 +8,13 @@ metadata:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
   irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
-  dataInsightsAccess: {{if .Values.s3Bucket.enableDataInsights}}Allow{{else}}Deny{{end}}
+  dataInsightsAccess: {{ .Values.s3Bucket.enableDataInsights | ternary "Allow" "Deny" }}
   {{- with .Values.s3Bucket.lifecycleRules }}
   lifecycleRules:
   {{- range $i, $rule := . }}
   - {{- toYaml $rule | nindent 4}}
     {{- if not (hasKey $rule "id")}}
-    id: rule-{{- $i }}
+    id: rule-{{ $i }}
     {{- end }}
   {{- end }}
 {{- end }}
