@@ -12,8 +12,8 @@ spec:
   {{- with .Values.s3Bucket.lifecycleRules }}
   lifecycleRules:
   {{- range $i, $rule := . }}
-  - {{ toYaml $rule | nindent 4}}
-    {{ if not (hasKey $rule "id")}}
+  - {{- toYaml $rule | nindent 4}}
+    {{- if not (hasKey $rule "id")}}
     id: rule-{{- $i }}
     {{- end }}
   {{- end }}
