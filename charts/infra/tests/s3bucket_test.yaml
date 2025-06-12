@@ -37,6 +37,7 @@ tests:
             - expiration:
                 - days: 0
               status: Disabled
+              id: rule-0
 
   - it: should create an s3Bucket with configured values
     set:
@@ -63,6 +64,73 @@ tests:
               filter:
                 prefix: prefix-
               status: Enabled
+              id: rule-0
+
+  - it: should create an S3Bucket with configured lifecycle rule id
+    set:
+      s3Bucket:
+        enabled: true
+        lifecycleRules:
+          - expiration:
+              - days: 50
+            filter:
+              prefix: prefix-
+            status: Enabled
+            id: "expire-after-50-days"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.lifecycleRules
+          value:
+            - expiration:
+                - days: 50
+              status: Enabled
+              filter:
+                prefix: prefix-
+              id: "expire-after-50-days"
+
+  - it: should create an S3Bucket with many configured lifecycle rules
+    set:
+      s3Bucket:
+        enabled: true
+        lifecycleRules:
+          - expiration:
+              - days: 50
+            filter:
+              prefix: prefix-
+            status: Enabled
+          - expiration:
+              - days: 10
+            filter:
+              prefix: preefix-
+            status: Enabled
+          - expiration:
+              - days: 1
+            id: "test"
+            status: Disabled
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.lifecycleRules
+          value:
+            - expiration:
+                - days: 50
+              status: Enabled
+              filter:
+                prefix: prefix-
+              id: "rule-0"
+            - expiration:
+                - days: 10
+              status: Enabled
+              filter:
+                prefix: preefix-
+              id: "rule-1"
+            - expiration:
+                - days: 1
+              id: "test"
+              status: Disabled
 
   - it: should map data insights to correct true value
     set:
