@@ -5,6 +5,7 @@ metadata:
   name: {{ default ( include "infra.aws.name" . ) .Values.opensearch.nameOverride }}
 spec:
   type: {{ upper .Values.opensearch.type }}
+  standbyReplicas: {{ .Values.opensearch.standbyReplicas }}
   lifecycleRules:
   {{- range $rule := .Values.opensearch.lifecycleRules }}
     - resource: {{ required "A resource is required for a lifecycle rule" $rule.resource | quote}}

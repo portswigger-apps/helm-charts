@@ -19,10 +19,13 @@ tests:
       - equal:
           path: spec.type
           value: "TIMESERIES"
+      - equal:
+          path: spec.standbyReplicas
+          value: false
       - isNullOrEmpty:
           path: spec.lifecycleRules
 
-  - it: should not create an OpenSearch Collection if creat is false
+  - it: should not create an OpenSearch Collection if create is false
     set:
       opensearch:
         enabled: true
@@ -36,6 +39,7 @@ tests:
       opensearch:
         enabled: true
         type: "vectorsearch"
+        standbyReplicas: true
         lifecycleRules:
           - resource: "orders/*"
             retentionPeriod: "15d"
@@ -48,6 +52,9 @@ tests:
       - equal:
           path: spec.type
           value: "VECTORSEARCH"
+      - equal:
+          path: spec.standbyReplicas
+          value: true
       - equal:
           path: spec.lifecycleRules[0].resource
           value: "orders/*"

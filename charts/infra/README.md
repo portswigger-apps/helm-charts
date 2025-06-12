@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.22.5](https://img.shields.io/badge/Version-0.22.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.22.5](https://img.shields.io/badge/AppVersion-0.22.5-informational?style=flat-square)
+![Version: 0.22.6](https://img.shields.io/badge/Version-0.22.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.22.2](https://img.shields.io/badge/AppVersion-0.22.2-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -121,6 +121,7 @@ helm install infra helm-charts/infra
 | opensearch.nameOverride | string | `""` | Use with `create: false` to map the secrets of an instance created elsewhere |
 | opensearch.enabled | bool | `false` | Set to `true` to deploy an opensearch collection |
 | opensearch.type | string | `"TIMESERIES"` | The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH |
+| opensearch.standbyReplicas | bool | `false` | Set to 'true' to use standby replicas for the collection. |
 | opensearch.lifecycleRules | list | `[]` | A list of rules configuring the retention period of indexes |
 
 ### Other Values

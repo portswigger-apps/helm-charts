@@ -304,6 +304,9 @@ opensearch:
   # opensearch.type -- The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH
   # @section -- opensearch
   type: "TIMESERIES"
+  # opensearch.standbyReplicas -- Set to 'true' to use standby replicas for the collection.
+  # @section -- opensearch
+  standbyReplicas: false
   # opensearch.lifecycleRules -- A list of rules configuring the retention period of indexes
   # @section -- opensearch
   lifecycleRules: []
