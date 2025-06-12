@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.26.3](https://img.shields.io/badge/Version-0.26.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.26.3](https://img.shields.io/badge/AppVersion-0.26.3-informational?style=flat-square)
+![Version: 0.26.4](https://img.shields.io/badge/Version-0.26.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.26.4](https://img.shields.io/badge/AppVersion-0.26.4-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.22.5 |
+| https://portswigger-apps.github.io/helm-charts/ | infra | 0.22.6 |
 
 ## Values
 
@@ -122,6 +122,7 @@ helm install app helm-charts/app
 | infra.opensearch.nameOverride | string | `""` | Use with `create: false` to map the secrets of an instance created elsewhere |
 | infra.opensearch.enabled | bool | `false` | Set to `true` to deploy an opensearch collection |
 | infra.opensearch.type | string | `"TIMESERIES"` | The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH |
+| infra.opensearch.standbyReplicas | bool | `false` | Set to 'true' to use standby replicas for the collection. |
 | infra.opensearch.lifecycleRules | list | `[]` | A list of rules configuring the retention period of indexes |
 
 ### Other Values

@@ -201,6 +201,9 @@ infra:
     # infra.opensearch.type -- The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH
     # @section -- infra
     type: "TIMESERIES"
+    # infra.opensearch.standbyReplicas -- Set to 'true' to use standby replicas for the collection.
+    # @section -- infra
+    standbyReplicas: false
     # infra.opensearch.lifecycleRules -- A list of rules configuring the retention period of indexes
     # @section -- infra
     lifecycleRules: [ ]
