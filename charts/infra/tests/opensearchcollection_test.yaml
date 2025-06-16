@@ -9,6 +9,15 @@ tests:
       - hasDocuments:
           count: 0
 
+  - it: should not create an OpenSearch Collection if create is false
+    set:
+      opensearch:
+        enabled: true
+        create: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
   - it: should create an OpenSearch Collection with default values
     set:
       opensearch:
@@ -25,15 +34,6 @@ tests:
       - isNullOrEmpty:
           path: spec.lifecycleRules
 
-  - it: should not create an OpenSearch Collection if create is false
-    set:
-      opensearch:
-        enabled: true
-        create: false
-    asserts:
-      - hasDocuments:
-          count: 0
-
   - it: should create an OpenSearch Collection with configured values
     set:
       opensearch:
@@ -41,11 +41,11 @@ tests:
         type: "vectorsearch"
         standbyReplicas: true
         lifecycleRules:
-          - resource: "orders/*"
-            retentionPeriod: "15d"
-          - resource: "sales/*"
-            retentionPeriod: "15d"
+          - resource: "sales*"
             retainIndefinitely: true
+          - resource: "orders*"
+            retainIndefinitely: false
+            retentionPeriod: "15d"
     asserts:
       - hasDocuments:
           count: 1
@@ -57,30 +57,42 @@ tests:
           value: true
       - equal:
           path: spec.lifecycleRules[0].resource
-          value: "orders/*"
+          value: "sales*"
       - equal:
-          path: spec.lifecycleRules[0].retentionPeriod
-          value: "15d"
-      - notExists:
           path: spec.lifecycleRules[0].retainIndefinitely
-      - equal:
-          path: spec.lifecycleRules[1].resource
-          value: "sales/*"
-      - equal:
-          path: spec.lifecycleRules[1].retainIndefinitely
           value: true
       - notExists:
+          path: spec.lifecycleRules[0].retentionPeriod
+      - equal:
+          path: spec.lifecycleRules[1].resource
+          value: "orders*"
+      - equal:
           path: spec.lifecycleRules[1].retentionPeriod
+          value: "15d"
+      - equal:
+          path: spec.lifecycleRules[1].retainIndefinitely
+          value: false
 
   - it: should fail to create an OpenSearch collection if a lifecycle rule is missing a resource
     set:
       opensearch:
         enabled: true
         lifecycleRules:
-          - retentionPeriod: "15d"
+          - retainIndefinitely: true
     asserts:
       - failedTemplate:
           errorMessage: "A resource is required for a lifecycle rule"
+
+  - it: should fail to create an OpenSearch collection if retainIndefinitely is not for a lifecyle rule
+    set:
+      opensearch:
+        enabled: true
+        lifecycleRules:
+          - resource: "sales*"
+            retentionPeriod: "15d"
+    asserts:
+      - failedTemplate:
+          errorMessage: "retainIndefinitely is required for a lifecycle rule"
 
   - it: should fail to create an OpenSearch collection if a lifecycle rule is configured with retainIndefinitely false but no retentionPeriod
     set:
@@ -88,16 +100,18 @@ tests:
         enabled: true
         lifecycleRules:
           - resource: "sales/*"
+            retainIndefinitely: false
     asserts:
       - failedTemplate:
           errorMessage: "retentionPeriod is required if retainIndefinitely is false"
 
-  - it: should fail to create an OpenSearch collection if configured without a retentionPeriod in the wrong format
+  - it: should fail to create an OpenSearch collection if configured with a retentionPeriod in the wrong format
     set:
       opensearch:
         enabled: true
         lifecycleRules:
           - resource: "sales/*"
+            retainIndefinitely: false
             retentionPeriod: "48s"
     asserts:
       - failedTemplate:
