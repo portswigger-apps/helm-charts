@@ -42,3 +42,7 @@ tests:
                 sourceLabels:
                 - __meta_kubernetes_pod_uid
                 targetLabel: pod_uid
+              - action: replace
+                sourceLabels:
+                  - __meta_kubernetes_pod_label_app_kubernetes_io_version
+                targetLabel: release_version
