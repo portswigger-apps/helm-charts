@@ -4,9 +4,9 @@ description: A Helm "monochart" for deploying common application patterns
 
 type: application
 
-version: 0.26.5
+version: 0.26.6
 
-appVersion: 0.26.5
+appVersion: 0.26.6
 
 keywords:
   - app
