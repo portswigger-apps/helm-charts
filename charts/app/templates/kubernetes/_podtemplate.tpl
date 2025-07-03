@@ -32,6 +32,7 @@ Outputs a pod spec for use in different resources.
           requests:
             memory: {{ quote .Values.resources.memory }}
             cpu: {{ quote .Values.resources.cpu }}
+            ephemeral-storage: 1Gi
           limits:
             memory: {{ quote .Values.resources.memory }}
         ports:

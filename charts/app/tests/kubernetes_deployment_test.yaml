@@ -166,6 +166,7 @@ tests:
           value:
             cpu: 100m
             memory: 64Mi
+            ephemeral-storage: 1Gi
       - equal:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].resources.limits
           value:
@@ -183,6 +184,7 @@ tests:
           value:
             cpu: "2"
             memory: 4Gi
+            ephemeral-storage: 1Gi
       - equal:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].resources.limits
           value:
