@@ -47,7 +47,7 @@ Outputs a pod spec for use in different resources.
             scheme: HTTP
           failureThreshold: 60
           periodSeconds: 5
-          timeoutSeconds: 2
+          timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
         readinessProbe:
           httpGet:
             path: {{ .Values.healthcheckEndpoint.path }}
@@ -56,7 +56,7 @@ Outputs a pod spec for use in different resources.
           failureThreshold: 1
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 2
+          timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
         livenessProbe:
           httpGet:
             path: {{ .Values.healthcheckEndpoint.path }}
@@ -65,7 +65,7 @@ Outputs a pod spec for use in different resources.
           failureThreshold: 3
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 2
+          timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

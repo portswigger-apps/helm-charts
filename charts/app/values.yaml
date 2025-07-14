@@ -156,6 +156,10 @@ healthcheckEndpoint:
   # healthcheckEndpoint.port -- TThe name of the port that the healthcheck endpoint is listening on
   # @section -- application
   port: app-port
+probes:
+  # probes.timeoutSeconds -- The timeout in seconds for startup, readiness and liveness probes
+  # @section -- application
+  timeoutSeconds: 2
 resources:
   # resources.cpu -- Requested CPU time for the pod
   # @section -- application
