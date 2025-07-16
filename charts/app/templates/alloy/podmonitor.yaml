@@ -9,7 +9,7 @@ spec:
     matchNames:
     -  {{ .Release.Namespace }}
   podMetricsEndpoints:
-  - interval: 15s
+  - interval: {{ .Values.metricsEndpoint.interval }}
     path: {{ .Values.metricsEndpoint.path }}
     port: {{ .Values.metricsEndpoint.port }}
     honorLabels: {{ .Values.metricsEndpoint.honorLabels }}
