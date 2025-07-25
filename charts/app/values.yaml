@@ -123,7 +123,15 @@ deployment:
   #     target:
   #       type: AverageValue
   #       averageValue: "160"
-
+  terminationDelay:
+    # @ignored
+    # deployment.terminationDelay.enabled -- Set to `true` to add a sleeping preStop hook.
+    # @section -- application
+    enabled: false
+    # @ignored
+    # deployment.terminationDelay.delaySeconds -- The number of seconds the pod will stay in `terminating` state before a SIGTERM is sent
+    # @section -- application
+    delaySeconds: 15
 ports:
   app-port:
     # ports.app-port.port -- The port the application is listening on

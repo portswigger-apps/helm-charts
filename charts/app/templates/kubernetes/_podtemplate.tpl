@@ -19,7 +19,7 @@ Outputs a pod spec for use in different resources.
       {{- end }}
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: {{ include "app.terminationGracePeriodSeconds" . }}
       {{- with .Values.initContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
@@ -28,6 +28,14 @@ Outputs a pod spec for use in different resources.
       - image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         name: {{ template "app.name" . }}
+        {{- if .Values.deployment.terminationDelay.enabled }}
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sleep
+              - {{ .Values.deployment.terminationDelay.delaySeconds | quote }}
+        {{- end }}
         resources:
           requests:
             memory: {{ quote .Values.resources.memory }}

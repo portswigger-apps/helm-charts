@@ -312,3 +312,14 @@ opensearch env variables
       key: id
 {{- end -}}
 {{- end -}}
+
+{{/*
+Calculate termination grace period seconds based on termination delay configuration
+*/}}
+{{- define "app.terminationGracePeriodSeconds" -}}
+{{- if and .Values.deployment.terminationDelay .Values.deployment.terminationDelay.enabled -}}
+{{- add 30 .Values.deployment.terminationDelay.delaySeconds -}}
+{{- else -}}
+30
+{{- end -}}
+{{- end -}}
