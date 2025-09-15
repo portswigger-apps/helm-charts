@@ -14,6 +14,9 @@ Outputs a pod spec for use in different resources.
       {{- end }}
       labels:
       {{- include "app.labels" . | nindent 8 }}
+      {{- if .Values.infra.flipt.enabled }}
+        flipt-enabled: "flipt-enabled"
+      {{- end }}
       {{- with .Values.pod.labels }}
       {{- toYaml . | nindent 8 }}
       {{- end }}

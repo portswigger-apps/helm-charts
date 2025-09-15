@@ -449,6 +449,11 @@ infra:
   #      retainIndefinitely: false
   #      retentionPeriod: "15d"
 
+  flipt:
+    # infra.flipt.enabled -- Set to `true` to enable integration with platform-flipt service
+    # @section -- infra
+    enabled: false
+
 # extraDeploy -- Extra Kubernetes configuration
 extraDeploy: []
 # preDeployCommand -- (string[]) Command to run before install and upgrade of your application. See examples in values.yaml
