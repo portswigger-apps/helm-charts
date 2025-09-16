@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.28.0](https://img.shields.io/badge/Version-0.28.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.28.0](https://img.shields.io/badge/AppVersion-0.28.0-informational?style=flat-square)
+![Version: 0.28.2](https://img.shields.io/badge/Version-0.28.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.28.2](https://img.shields.io/badge/AppVersion-0.28.2-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -115,7 +115,6 @@ helm install app helm-charts/app
 | infra.eventing.consumer.enabled | bool | `false` | Set to `true` to deploy an eventrule. |
 | infra.eventing.consumer.eventPattern | string | `""` | The pattern the rule should use to decide whether to send an event |
 | infra.eventing.consumer.inputPath | string | `""` | An optional method to extract specific data from events |
-| infra.flipt.enabled | bool | `false` | Set to `true` to add flipt-enabled pod label for access control. Network policies must be configured separately. |
 | infra.kinesis.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role attached to your application to allow assuming a Kinesis stream role |
 | infra.kinesis.streamName | string | `""` | Set to the name of the Kinesis stream. Required if `kinesis.enabled` is `true` |
 | infra.dynamodb.create | bool | `true` | Set to `false` to skip creation of the dynamodb tables if they have been created elsewhere |
