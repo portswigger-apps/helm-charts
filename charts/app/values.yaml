@@ -450,7 +450,7 @@ infra:
   #      retentionPeriod: "15d"
 
   flipt:
-    # infra.flipt.enabled -- Set to `true` to enable integration with platform-flipt service
+    # infra.flipt.enabled -- Set to `true` to add flipt-enabled pod label for access control. Network policies must be configured separately.
     # @section -- infra
     enabled: false
 
