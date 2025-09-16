@@ -186,6 +186,18 @@ spec:
             protocol: TCP
   {{- end }}
 
+  {{- if .Values.infra.flipt.enabled }}
+  # Network policy to allow communication with platform-flipt service
+  - toEndpoints:
+    - matchLabels:
+        app.kubernetes.io/app: platform-flipt
+        k8s:io.kubernetes.pod.namespace: platform
+    toPorts:
+    - ports:
+      - port: "8080"
+        protocol: TCP
+  {{- end }}
+
   {{- with .Values.ciliumNetworkPolicy.externalHttpsServices }}
   - toFQDNs:
     {{- range . }}
