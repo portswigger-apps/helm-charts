@@ -69,19 +69,19 @@ Outputs a pod spec for use in different resources.
           {{ include "app.healthcheck" . | nindent 10 }}
           failureThreshold: 60
           periodSeconds: 5
-          timeoutSeconds: 2
+          timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
         readinessProbe:
           {{ include "app.healthcheck" . | nindent 10 }}
           failureThreshold: 1
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 2
+          timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
         livenessProbe:
           {{ include "app.healthcheck" . | nindent 10 }}
           failureThreshold: 3
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 2
+          timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
