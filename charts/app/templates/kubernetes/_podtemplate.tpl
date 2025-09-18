@@ -8,7 +8,9 @@ gRPC requires port number, http can use port name.
 {{- if eq .Values.healthcheckEndpoint.type "grpc" }}
 grpc:
   port: {{ (get (get .Values.ports (toString .Values.healthcheckEndpoint.port) | default dict) "port") | default .Values.healthcheckEndpoint.port }}
-  service: {{ .Values.healthcheckEndpoint.grpcService }}
+  {{- with .Values.healthcheckEndpoint.grpcService }}
+  service: {{ . }}
+  {{- end }}
 {{- else if eq .Values.healthcheckEndpoint.type "http" }}
 httpGet:
   path: {{ .Values.healthcheckEndpoint.path }}

@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.29.0](https://img.shields.io/badge/Version-0.29.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.29.0](https://img.shields.io/badge/AppVersion-0.29.0-informational?style=flat-square)
+![Version: 0.29.1](https://img.shields.io/badge/Version-0.29.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.29.1](https://img.shields.io/badge/AppVersion-0.29.1-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -132,7 +132,7 @@ helm install app helm-charts/app
 |-----|------|---------|-------------|
 | deployment.terminationDelay | object | `{}` |  |
 | healthcheckEndpoint.type | string | `"http"` |  |
-| healthcheckEndpoint.grpcService | string | `"grpc.health.v1.Health"` |  |
+| healthcheckEndpoint.grpcService | string | `""` |  |
 | pod.additionalVolumes | list | `[]` | Configuration for additional volumes. See example in values.yaml |
 | pod.additionalVolumeMounts | list | `[]` | Configuration for additional volume mounts. References additionalVolumes, see example in values.yaml |
 | pod.labels | object | `{}` | Additional labels to add to pods |
