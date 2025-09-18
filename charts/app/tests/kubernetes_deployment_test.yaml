@@ -129,6 +129,80 @@ tests:
             periodSeconds: 10
             timeoutSeconds: 2
 
+  - it: should create Deployment with grpc startup, liveness and readiness probes when configured
+    template: kubernetes/deployment.yaml
+    set:
+      healthcheckEndpoint:
+        type: grpc
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].startupProbe
+          value:
+            grpc:
+              port: 8080
+              service: grpc.health.v1.Health
+            failureThreshold: 60
+            periodSeconds: 5
+            timeoutSeconds: 2
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe
+          value:
+            grpc:
+              port: 8080
+              service: grpc.health.v1.Health
+            failureThreshold: 1
+            successThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe
+          value:
+            grpc:
+              port: 8080
+              service: grpc.health.v1.Health
+            failureThreshold: 3
+            successThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
+
+  - it: should create Deployment with custom grpc startup, liveness and readiness probes when configured
+    template: kubernetes/deployment.yaml
+    set:
+      healthcheckEndpoint:
+        type: grpc
+        port: 9090
+        grpcService: my.app.Service
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].startupProbe
+          value:
+            grpc:
+              port: 9090
+              service: my.app.Service
+            failureThreshold: 60
+            periodSeconds: 5
+            timeoutSeconds: 2
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe
+          value:
+            grpc:
+              port: 9090
+              service: my.app.Service
+            failureThreshold: 1
+            successThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe
+          value:
+            grpc:
+              port: 9090
+              service: my.app.Service
+            failureThreshold: 3
+            successThreshold: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
+
   - it: should create Deployment with default ports configured
     template: kubernetes/deployment.yaml
     asserts:

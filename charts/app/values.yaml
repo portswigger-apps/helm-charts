@@ -161,6 +161,12 @@ metricsEndpoint:
   # @section -- application
   interval: 15s
 healthcheckEndpoint:
+  # healthcheckendpoint.type -- The type of healthcheck to use for probes. Options are `http` or `grpc`
+  # @section -- application
+  type: http
+  # healthcheckEndpoint.grpcService - The service to call the Check method on. See: https://github.com/grpc/grpc/blob/master/doc/health-checking.md
+  # @section -- application
+  grpcService: grpc.health.v1.Health
   # healthcheckEndpoint.path -- The path of the applications HTTP healthcheck endpoint
   # @section -- application
   path: /health

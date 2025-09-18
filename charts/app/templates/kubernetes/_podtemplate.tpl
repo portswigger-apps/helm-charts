@@ -1,5 +1,21 @@
 {{/* vim: set filetype=mustache: */}}
 
+{{/*
+Outputs a configured healthcheck used in startup, liveness and readiness probes.
+gRPC requires port number, http can use port name.
+*/}}
+{{- define "app.healthcheck" }}
+{{- if eq .Values.healthcheckEndpoint.type "grpc" }}
+grpc:
+  port: {{ (get (get .Values.ports (toString .Values.healthcheckEndpoint.port) | default dict) "port") | default .Values.healthcheckEndpoint.port }}
+  service: {{ .Values.healthcheckEndpoint.grpcService }}
+{{- else if eq .Values.healthcheckEndpoint.type "http" }}
+httpGet:
+  path: {{ .Values.healthcheckEndpoint.path }}
+  port: {{ .Values.healthcheckEndpoint.port }}
+  scheme: HTTP
+{{- end }}
+{{- end }}
 
 {{/*
 Outputs a pod spec for use in different resources.
@@ -50,27 +66,18 @@ Outputs a pod spec for use in different resources.
             protocol: {{ $portSpec.protocol }}
         {{- end }}
         startupProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
+          {{ include "app.healthcheck" . | nindent 10 }}
           failureThreshold: 60
           periodSeconds: 5
           timeoutSeconds: 2
         readinessProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
+          {{ include "app.healthcheck" . | nindent 10 }}
           failureThreshold: 1
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
         livenessProbe:
-          httpGet:
-            path: {{ .Values.healthcheckEndpoint.path }}
-            port: {{ .Values.healthcheckEndpoint.port }}
-            scheme: HTTP
+          {{ include "app.healthcheck" . | nindent 10 }}
           failureThreshold: 3
           periodSeconds: 10
           successThreshold: 1
