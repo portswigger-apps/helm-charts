@@ -210,3 +210,6 @@ infra:
   #    - resource: "examples/*"
   #      retainIndefinitely: false
   #      retentionPeriod: "15d"
+
+# extraDeploy -- Extra Kubernetes configuration
+extraDeploy: []
