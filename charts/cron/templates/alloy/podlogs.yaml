@@ -1,0 +1,36 @@
+apiVersion: monitoring.grafana.com/v1alpha2
+kind: PodLogs
+metadata:
+  name: {{ template "cron.name" . }}
+spec:
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "cron.labelselector" . | nindent 6 }}
+  relabelings:
+    - action: replace
+      sourceLabels:
+        - __meta_kubernetes_pod_container_name
+      targetLabel: container
+    - action: replace
+      sourceLabels:
+        - __meta_kubernetes_pod_name
+      targetLabel: pod
+    - action: replace
+      sourceLabels:
+        - __meta_kubernetes_namespace
+      targetLabel: namespace
+    - action: replace
+      sourceLabels:
+        - __meta_kubernetes_pod_container_id
+      targetLabel: tmp_container_id
+    - action: replace
+      sourceLabels:
+        - __meta_kubernetes_pod_uid
+      targetLabel: pod_uid
+    - action: replace
+      sourceLabels:
+        - __meta_kubernetes_pod_label_app_kubernetes_io_version
+      targetLabel: release_version

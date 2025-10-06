@@ -1,7 +1,7 @@
 suite: Cronjob
 
 templates:
-  - cronjob.yaml
+  - kubernetes/cronjob.yaml
 tests:
   - it: should create default cronjob
     asserts:
