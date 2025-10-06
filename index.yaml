@@ -2424,6 +2424,23 @@ entries:
     version: 0.0.0-alpha-1
   cron:
   - apiVersion: v2
+    appVersion: 0.4.8
+    created: "2025-10-06T14:48:16.968370783Z"
+    dependencies:
+    - name: infra
+      repository: https://portswigger-apps.github.io/helm-charts/
+      version: 0.22.7
+    description: A Helm "monochart" for deploying cron jobs
+    digest: 1fe362959ffbb1c04ffba8b7034ffb4a6d21ebba509d2001f3ed6d14e513b0e7
+    keywords:
+    - cron
+    - infra
+    name: cron
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/cron-0.4.8/cron-0.4.8.tgz
+    version: 0.4.8
+  - apiVersion: v2
     appVersion: 0.4.7
     created: "2025-10-06T13:58:10.25093961Z"
     dependencies:
@@ -2910,21 +2927,9 @@ entries:
     version: 0.0.0-alpha-3
   - apiVersion: v2
     appVersion: 0.0.0
-    created: "2024-03-07T14:22:40.109891353Z"
+    created: "2024-03-07T14:57:59.794186945Z"
     description: A Helm "monochart" for deploying common application patterns
-    digest: d2949be6997909dcf268bfb46ed16c22ebfa8f2fc764889fe00fb7ec558ebf7a
-    keywords:
-    - cron
-    name: cron
-    type: application
-    urls:
-    - https://github.com/portswigger-apps/helm-charts/releases/download/cron-0.0.0-alpha-2/cron-0.0.0-alpha-2.tgz
-    version: 0.0.0-alpha-2
-  - apiVersion: v2
-    appVersion: 0.0.0
-    created: "2024-03-05T09:14:17.272423964Z"
-    description: A Helm "monochart" for deploying common application patterns
-    digest: b1978873e952439c113caa7aba3ff785848567ff4e7a9b34072cc7f7bae124fb
+    digest: 9cf729c38de17c4624783c202145a4f26216be4cf90fd46c7349f89a0a223e78
     keywords:
     - cron
     name: cron
@@ -2946,9 +2951,9 @@ entries:
     version: 0.0.0-alpha-2
   - apiVersion: v2
     appVersion: 0.0.0
-    created: "2024-03-07T14:57:59.794186945Z"
+    created: "2024-03-05T09:14:17.272423964Z"
     description: A Helm "monochart" for deploying common application patterns
-    digest: 9cf729c38de17c4624783c202145a4f26216be4cf90fd46c7349f89a0a223e78
+    digest: b1978873e952439c113caa7aba3ff785848567ff4e7a9b34072cc7f7bae124fb
     keywords:
     - cron
     name: cron
@@ -2973,6 +2978,18 @@ entries:
     created: "2024-03-05T09:22:33.941005263Z"
     description: A Helm "monochart" for deploying common application patterns
     digest: 48445a36df3b02b487261cc7073ba740b193bfcab86ecf91a27e7bbf162979e1
+    keywords:
+    - cron
+    name: cron
+    type: application
+    urls:
+    - https://github.com/portswigger-apps/helm-charts/releases/download/cron-0.0.0-alpha-2/cron-0.0.0-alpha-2.tgz
+    version: 0.0.0-alpha-2
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2024-03-07T14:22:40.109891353Z"
+    description: A Helm "monochart" for deploying common application patterns
+    digest: d2949be6997909dcf268bfb46ed16c22ebfa8f2fc764889fe00fb7ec558ebf7a
     keywords:
     - cron
     name: cron
@@ -4097,4 +4114,4 @@ entries:
     urls:
     - https://github.com/portswigger-apps/helm-charts/releases/download/infra-0.0.0-alpha-1/infra-0.0.0-alpha-1.tgz
     version: 0.0.0-alpha-1
-generated: "2025-10-06T13:58:10.252463392Z"
+generated: "2025-10-06T14:48:16.969149687Z"
