@@ -69,6 +69,29 @@ tests:
             secretRef:
               name: RELEASE-NAME-env
 
+  - it: should add additional volumes
+    set:
+      pod:
+        additionalVolumes:
+         - name: dsdsocket
+           hostPath:
+             path: /var/run/statsd-exporter
+        additionalVolumeMounts:
+         - name: dsdsocket
+           mountPath: /socket
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[?(@.name == "RELEASE-NAME")].volumeMounts[1]
+          value:
+            name: dsdsocket
+            mountPath: /socket
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.volumes[1]
+          value:
+            name: dsdsocket
+            hostPath:
+              path: /var/run/statsd-exporter
+
   - it: should create a Pod with s3Bucket connection details
     set:
       infra:

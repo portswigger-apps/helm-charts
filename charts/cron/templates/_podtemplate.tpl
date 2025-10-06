@@ -99,6 +99,9 @@ Outputs a pod spec for use in different resources.
                   name: {{ $.Release.Name }}-volume
                   readOnly: true
                 {{- end }}
+                {{- if .Values.pod.additionalVolumeMounts }}
+                {{- toYaml .Values.pod.additionalVolumeMounts | nindent 16 }}
+                {{- end }}
           volumes:
           - name: tmp-volume
             emptyDir: {}
@@ -106,5 +109,8 @@ Outputs a pod spec for use in different resources.
           - name: {{ $.Release.Name }}-volume
             secret:
               secretName: {{ $.Release.Name }}-volume
+          {{- end }}
+          {{- if .Values.pod.additionalVolumes }}
+          {{- toYaml .Values.pod.additionalVolumes | nindent 10 }}
           {{- end }}
 {{- end }}
