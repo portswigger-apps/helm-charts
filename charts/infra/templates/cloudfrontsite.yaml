@@ -13,7 +13,7 @@ spec:
   defaultCacheBehavior:
     {{- omit .Values.cloudfront.defaultCacheBehavior "grpcEnabled" | toYaml | nindent 4 }}
     {{- if hasKey .Values.cloudfront.defaultCacheBehavior "grpcEnabled" }}
-    grpcEnabled: {{ .Values.cloudfront.defaultCacheBehavior.grpcEnabled | quote }}
+    grpcEnabled: {{ .Values.cloudfront.defaultCacheBehavior.grpcEnabled }}
     {{- end }}
   restrictToOffice: {{ .Values.cloudfront.restrictToOffice | quote}}
 {{- end -}}
