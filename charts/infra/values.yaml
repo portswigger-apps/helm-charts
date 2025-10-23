@@ -104,6 +104,10 @@ cloudfront:
     # @section -- cloudfront
     allowedMethods: read
 
+    # cloudfront.defaultCacheBehavior.grpcEnabled -- Enable gRPC protocol support (requires allowedMethods: all for POST method)
+    # @section -- cloudfront
+    grpcEnabled: false
+
     # cloudfront.defaultCacheBehavior.minTtl -- The minimum time-to-live for the `CloudFrontSite` cache objects
     # @section -- cloudfront
     minTtl: 0
