@@ -67,6 +67,7 @@ tests:
             defaultTtl: 3601
             minTtl: 0
             maxTtl: 31536000
+            grpcEnabled: "false"
             cookies:
               behavior: allowlist
               allowlistedNames:
@@ -79,3 +80,22 @@ tests:
               behavior: allowlist
               allowlistedNames:
                 - my-query-string
+
+  - it: should create a CloudFrontSite with gRPC enabled
+    set:
+      cloudfront:
+        enabled: true
+        domainName: grpc.example.com
+        hostedZoneId: ZABCDEFGHIJKL
+        defaultCacheBehavior:
+          allowedMethods: all
+          grpcEnabled: true
+    asserts:
+      - isKind:
+          of: CloudFrontSite
+      - equal:
+          path: spec.defaultCacheBehavior.allowedMethods
+          value: all
+      - equal:
+          path: spec.defaultCacheBehavior.grpcEnabled
+          value: "true"
