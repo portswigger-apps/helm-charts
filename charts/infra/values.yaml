@@ -177,9 +177,6 @@ cloudfrontrouter:
   # cloudfrontrouter.domainName -- The presentation domain name for the `CloudFrontRouter` resource
   # @section -- cloudfront router
   domainName: ""
-  # cloudfrontrouter.wildcard -- Allows for requests to domain name with wildcard *.domainName
-  # @section -- cloudfront router
-  wildcard: false
   # cloudfrontrouter.acmCertificateARN -- The presentation domain name for the `CloudFrontRouter` resource
   # @section -- cloudfront router
   acmCertificateARN: ""

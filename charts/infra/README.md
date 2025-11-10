@@ -85,7 +85,6 @@ helm install infra helm-charts/infra
 |-----|------|---------|-------------|
 | cloudfrontrouter.enabled | bool | `false` | Set to `true` to deploy an `CloudFrontRouter` resource |
 | cloudfrontrouter.domainName | string | `""` | The presentation domain name for the `CloudFrontRouter` resource |
-| cloudfrontrouter.wildcard | bool | `false` | Allows for requests to domain name with wildcard *.domainName |
 | cloudfrontrouter.acmCertificateARN | string | `""` | The presentation domain name for the `CloudFrontRouter` resource |
 | cloudfrontrouter.origins | list | `[]` | A map of custom origins to be used by path configurations |
 | cloudfrontrouter.orderedCacheBehavior | list | `[]` | An ordered list of paths to direct to different origins |
