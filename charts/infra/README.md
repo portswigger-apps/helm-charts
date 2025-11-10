@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.22.10](https://img.shields.io/badge/Version-0.22.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.22.10](https://img.shields.io/badge/AppVersion-0.22.10-informational?style=flat-square)
+![Version: 0.23.0](https://img.shields.io/badge/Version-0.23.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.23.0](https://img.shields.io/badge/AppVersion-0.23.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -50,6 +50,7 @@ helm install infra helm-charts/infra
 | cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
 | cloudfront.restrictToOffice | bool | `true` | Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges |
+| cloudfront.wildcard | bool | `false` | Allows for requests to domain name with wildcard *.domainName |
 | cloudfront.geoRestriction.restrictionType | string | `"none"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
 | cloudfront.geoRestriction.locations | list | `[]` | A list of ISO ALPHA-2 country codes to apply restrictions to |
 | cloudfront.defaultCacheBehavior.allowedMethods | string | `"read"` | Whether `read` or `all` HTTP methods are allowed by the `CloudFrontSite` |
@@ -84,7 +85,6 @@ helm install infra helm-charts/infra
 |-----|------|---------|-------------|
 | cloudfrontrouter.enabled | bool | `false` | Set to `true` to deploy an `CloudFrontRouter` resource |
 | cloudfrontrouter.domainName | string | `""` | The presentation domain name for the `CloudFrontRouter` resource |
-| cloudfrontrouter.wildcard | bool | `false` | Allows for requests to domain name with wildcard *.domainName |
 | cloudfrontrouter.acmCertificateARN | string | `""` | The presentation domain name for the `CloudFrontRouter` resource |
 | cloudfrontrouter.origins | list | `[]` | A map of custom origins to be used by path configurations |
 | cloudfrontrouter.orderedCacheBehavior | list | `[]` | An ordered list of paths to direct to different origins |
