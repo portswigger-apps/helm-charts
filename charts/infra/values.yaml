@@ -90,6 +90,10 @@ cloudfront:
   # @section -- cloudfront
   restrictToOffice: true
 
+  # cloudfront.wildcard -- Allows for requests to domain name with wildcard *.domainName
+  # @section -- cloudfront
+  wildcard: false
+
   geoRestriction:
     # cloudfront.geoRestriction.restrictionType -- Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions
     # @section -- cloudfront

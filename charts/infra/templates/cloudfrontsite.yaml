@@ -9,6 +9,9 @@ spec:
   geoRestriction: {{ .Values.cloudfront.geoRestriction | toYaml | nindent 4 }}
   targetOriginDomainName: {{ default .Values.cloudfront.targetOriginDomainName .Values.global.ingress.host }}
   domainName: {{ .Values.cloudfront.domainName }}
+  {{- if .Values.cloudfront.wildcard }}
+  wildcard: {{ .Values.cloudfront.wildcard }}
+  {{- end }}
   hostedZoneId: {{ .Values.cloudfront.hostedZoneId }}
   defaultCacheBehavior:
     {{- omit .Values.cloudfront.defaultCacheBehavior "grpcEnabled" | toYaml | nindent 4 }}
