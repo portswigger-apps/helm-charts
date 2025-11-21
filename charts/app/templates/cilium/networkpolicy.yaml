@@ -85,76 +85,48 @@ spec:
     {{- end }}
   {{- end }}
 
-  {{- if .Values.infra.s3Bucket.enabled }}
+  {{- $s3Enabled := .Values.infra.s3Bucket.enabled }}
+  {{- $bedrockEnabled := .Values.infra.bedrock.enabled }}
+  {{- $eventbridgeEnabled := .Values.infra.eventing.producer.enabled }}
+  {{- $sqsEnabled := .Values.infra.eventing.consumer.enabled }}
+  {{- $dynamodbEnabled := (not (empty (.Values.infra.dynamodb.tables ))) }}
+  {{- $kinesisEnabled := .Values.infra.kinesis.enabled }}
+  {{- $opensearchEnabled := .Values.infra.opensearch.enabled }}
+  {{- if or $s3Enabled $bedrockEnabled $eventbridgeEnabled $sqsEnabled $dynamodbEnabled $kinesisEnabled $opensearchEnabled }}
   - toFQDNs:
-    - matchPattern: "*.s3.*.amazonaws.com"
     - matchPattern: "sts.amazonaws.com"
     - matchPattern: "sts.*.amazonaws.com"
+    {{- if $s3Enabled }}
+    - matchPattern: "*.s3.*.amazonaws.com"
     - matchPattern: "*.s3.amazonaws.com"
-    toPorts:
-    - ports:
-      - port: "443"
-        protocol: TCP
-  {{- end }}
-
-{{- if .Values.infra.bedrock.enabled }}
-  - toFQDNs:
+    {{- end }}
+    {{- if $bedrockEnabled }}
     - matchPattern: "bedrock.*.amazonaws.com"
     - matchPattern: "bedrock-runtime.*.amazonaws.com"
-    - matchPattern: "sts.amazonaws.com"
-    - matchPattern: "sts.*.amazonaws.com"
+    {{- end }}
+    {{- if $eventbridgeEnabled }}
+    - matchName: "events.{{ .Values.global.aws.region }}.amazonaws.com"
+    {{- end }}
+    {{- if $sqsEnabled }}
+    - matchName: "sqs.{{ .Values.global.aws.region }}.amazonaws.com"
+    {{- end }}
+    {{- if $dynamodbEnabled }}
+    - matchPattern: "dynamodb.{{ .Values.global.aws.region }}.amazonaws.com"
+    - matchPattern: "*.ddb.{{ .Values.global.aws.region }}.amazonaws.com"
+    {{- end }}
+    {{- if $kinesisEnabled }}
+    - matchName: "kinesis.{{ .Values.global.aws.region }}.amazonaws.com"
+    - matchName: "kinesis.{{ .Values.global.aws.region }}.api.aws"
+    {{- end }}
+    {{- if $opensearchEnabled }}
+    - matchPattern: "*.{{- .Values.global.aws.region -}}.aoss.amazonaws.com"
+    {{- end }}
     toPorts:
     - ports:
       - port: "443"
         protocol: TCP
-  {{- end }}
 
-{{- if .Values.infra.eventing.producer.enabled }}
-  - toFQDNs:
-    - matchName: "events.{{- .Values.global.aws.region -}}.amazonaws.com"
-    - matchPattern: "sts.amazonaws.com"
-    - matchPattern: "sts.*.amazonaws.com"
-    toPorts:
-    - ports:
-      - port: "443"
-        protocol: TCP
   {{- end }}
-
-{{- if not (empty (.Values.infra.dynamodb.tables )) }}
-  - toFQDNs:
-      - matchPattern: "sts.amazonaws.com"
-      - matchPattern: "sts.*.amazonaws.com"
-      - matchPattern: "dynamodb.{{- .Values.global.aws.region -}}.amazonaws.com"
-      - matchPattern: "*.ddb.{{- .Values.global.aws.region -}}.amazonaws.com"
-    toPorts:
-      - ports:
-          - port: "443"
-            protocol: TCP
-  {{- end }}
-
-{{- if .Values.infra.kinesis.enabled }}
-  - toFQDNs:
-      - matchName: "kinesis.{{- .Values.global.aws.region -}}.amazonaws.com"
-      - matchName: "kinesis.{{- .Values.global.aws.region -}}.api.aws"
-      - matchPattern: "sts.amazonaws.com"
-      - matchPattern: "sts.*.amazonaws.com"
-    toPorts:
-      - ports:
-          - port: "443"
-            protocol: TCP
-  {{- end }}
-
-{{- if .Values.infra.eventing.consumer.enabled }}
-  - toFQDNs:
-    - matchName: "sqs.{{- .Values.global.aws.region -}}.amazonaws.com"
-    - matchPattern: "sts.amazonaws.com"
-    - matchPattern: "sts.*.amazonaws.com"
-    toPorts:
-    - ports:
-      - port: "443"
-        protocol: TCP
-  {{- end }}
-
   {{- if .Values.infra.redis.enabled }}
   - toFQDNs:
     - matchPattern: "*.serverless.euw1.cache.amazonaws.com"
@@ -164,29 +136,17 @@ spec:
         protocol: TCP
       - port: "6380"
         protocol: TCP
-  {{- end }}
 
+  {{- end }}
   {{- if .Values.infra.postgres.enabled }}
   - toFQDNs:
-    - matchPattern: {{ default (include "app.aws.name" .) .Values.infra.postgres.nameOverride }}.*.*.rds.amazonaws.com
-    toPorts:
-    - ports:
-      - port: "5432"
-        protocol: TCP
-  {{- end }}
-
-  {{- if .Values.infra.opensearch.enabled }}
-  - toFQDNs:
-      - matchPattern: "sts.amazonaws.com"
-      - matchPattern: "sts.*.amazonaws.com"
-      - matchPattern: "*.{{- .Values.global.aws.region -}}.aoss.amazonaws.com"
+      - matchPattern: {{ default (include "app.aws.name" .) .Values.infra.postgres.nameOverride }}.*.*.rds.amazonaws.com
     toPorts:
       - ports:
-          - port: "443"
+          - port: "5432"
             protocol: TCP
+
   {{- end }}
-
-
   {{- with .Values.ciliumNetworkPolicy.externalHttpsServices }}
   - toFQDNs:
     {{- range . }}
@@ -196,6 +156,7 @@ spec:
     - ports:
       - port: "443"
         protocol: TCP
+
   {{- end }}
 
   {{- range .Values.ciliumNetworkPolicy.egress }}

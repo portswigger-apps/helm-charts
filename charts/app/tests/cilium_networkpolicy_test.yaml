@@ -239,9 +239,9 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchPattern: "*.s3.*.amazonaws.com"
               - matchPattern: "sts.amazonaws.com"
               - matchPattern: "sts.*.amazonaws.com"
+              - matchPattern: "*.s3.*.amazonaws.com"
               - matchPattern: "*.s3.amazonaws.com"
             toPorts:
               - ports:
@@ -263,6 +263,34 @@ tests:
               - matchPattern: "sts.*.amazonaws.com"
               - matchPattern: "dynamodb.eu-west-1.amazonaws.com"
               - matchPattern: "*.ddb.eu-west-1.amazonaws.com"
+            toPorts:
+              - ports:
+                  - port: "443"
+                    protocol: TCP
+
+  - it: should add egress rules to multiple AWS services when enabled
+    set:
+      infra:
+        s3Bucket:
+          enabled: true
+        kinesis:
+          enabled: true
+        dynamodb:
+          tables:
+            - name: test
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchPattern: "sts.amazonaws.com"
+              - matchPattern: "sts.*.amazonaws.com"
+              - matchPattern: '*.s3.*.amazonaws.com'
+              - matchPattern: '*.s3.amazonaws.com'
+              - matchPattern: "dynamodb.eu-west-1.amazonaws.com"
+              - matchPattern: "*.ddb.eu-west-1.amazonaws.com"
+              - matchName: kinesis.eu-west-1.amazonaws.com
+              - matchName: kinesis.eu-west-1.api.aws
             toPorts:
               - ports:
                   - port: "443"
@@ -377,10 +405,10 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchPattern: bedrock.*.amazonaws.com
-              - matchPattern: bedrock-runtime.*.amazonaws.com
               - matchPattern: sts.amazonaws.com
               - matchPattern: sts.*.amazonaws.com
+              - matchPattern: bedrock.*.amazonaws.com
+              - matchPattern: bedrock-runtime.*.amazonaws.com
             toPorts:
               - ports:
                   - port: "443"
@@ -397,9 +425,9 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchName: events.eu-west-1.amazonaws.com
               - matchPattern: sts.amazonaws.com
               - matchPattern: sts.*.amazonaws.com
+              - matchName: events.eu-west-1.amazonaws.com
             toPorts:
               - ports:
                   - port: "443"
@@ -416,9 +444,9 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchName: sqs.eu-west-1.amazonaws.com
               - matchPattern: sts.amazonaws.com
               - matchPattern: sts.*.amazonaws.com
+              - matchName: sqs.eu-west-1.amazonaws.com
             toPorts:
               - ports:
                   - port: "443"
@@ -434,10 +462,10 @@ tests:
           path: spec.egress
           content:
             toFQDNs:
-              - matchName: "kinesis.eu-west-1.amazonaws.com"
-              - matchName: "kinesis.eu-west-1.api.aws"
               - matchPattern: sts.amazonaws.com
               - matchPattern: sts.*.amazonaws.com
+              - matchName: kinesis.eu-west-1.amazonaws.com
+              - matchName: kinesis.eu-west-1.api.aws
             toPorts:
               - ports:
                   - port: "443"
