@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.30.1](https://img.shields.io/badge/Version-0.30.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.30.1](https://img.shields.io/badge/AppVersion-0.30.1-informational?style=flat-square)
+![Version: 0.30.2](https://img.shields.io/badge/Version-0.30.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.30.2](https://img.shields.io/badge/AppVersion-0.30.2-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -20,25 +20,26 @@ helm install app helm-charts/app
 
 ### global
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| global.aws.accountId | string | Taken from deployment pipeline environment | The AWS account that this application is being deployed into |
-| global.ingress.enabled | bool | `false` | Set to `true` to expose the application with a Kubernetes `Ingress` |
-| global.ingress.host | string | `""` | Ingress host used to configure cloudfront target |
-| global.ingress.extraHosts | list | `[]` | Extra Ingress hosts used to configure extra host headers recognized by Traefik |
-| global.ingress.annotations | object | `{}` | Set annotations on the `Ingress` |
-| global.ingress.className | string | `"traefik"` | Override the `Ingress` class. In most cases this should be left as default |
-| global.ingress.paths | list | `["/"]` | Path prefixes that you want to make available externally with the `Ingress` |
-| global.ingress.customResponseHeaders | object | `{"X-Robots-Tag":"noindex"}` | Add custom response headers to an apps `Ingress` |
-| global.ingress.allowFromOffice | bool | `true` | Allow access to the Traefik `Ingress` from PortSwigger office IP ranges |
-| global.ingress.ipAllowListCIDRs | list | `[]` | Extra IP CIDR ranges to allow access from. |
-| global.ingress.authentication.enabled | bool | `false` | Set to `true` to require SSO authentication to access the application. |
-| global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges |
-| global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests. |
-| global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created |
+| Key | Type | Default | Description                                                                                                |
+|-----|------|---------|------------------------------------------------------------------------------------------------------------|
+| global.aws.accountId | string | Taken from deployment pipeline environment | The AWS account that this application is being deployed into                                               |
+| global.ingress.enabled | bool | `false` | Set to `true` to expose the application with a Kubernetes `Ingress`                                        |
+| global.ingress.host | string | `""` | Ingress host used to configure cloudfront target                                                           |
+| global.ingress.extraHosts | list | `[]` | Extra Ingress hosts used to configure extra host headers recognized by Traefik                             |
+| global.ingress.annotations | object | `{}` | Set annotations on the `Ingress`                                                                           |
+| global.ingress.className | string | `"traefik"` | Override the `Ingress` class. In most cases this should be left as default                                 |
+| global.ingress.paths | list | `["/"]` | Path prefixes that you want to make available externally with the `Ingress`                                |
+| global.ingress.customResponseHeaders | object | `{"X-Robots-Tag":"noindex"}` | Add custom response headers to an apps `Ingress`                                                           |
+| global.ingress.allowFromOffice | bool | `true` | Allow access to the Traefik `Ingress` from PortSwigger office IP ranges                                    |
+| global.ingress.ipAllowListCIDRs | list | `[]` | Extra IP CIDR ranges to allow access from.                                                                 |
+| global.ingress.authentication.enabled | bool | `false` | Set to `true` to require SSO authentication to access the application.                                     |
+| global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges                                            |
+| global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests.                                                                 |
+| global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service.                     |
+| global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created                                          |
 | global.serviceAccount.name | string | `.Release.Name` | `ServiceAccount` name. Use with `global.serviceAccount.enabled: false` to use an existing `ServiceAccount` |
-| global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false` |
-| global.serviceAccount.annotations | object | `{}` | Set annotations on the `ServiceAccount` |
+| global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false`       |
+| global.serviceAccount.annotations | object | `{}` | Set annotations on the `ServiceAccount`                                                                    |
 
 ### application
 

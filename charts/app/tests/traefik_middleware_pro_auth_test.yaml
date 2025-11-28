@@ -1,0 +1,44 @@
+suite: Middleware (pro-auth)
+
+templates:
+  - traefik/middleware-pro-auth.yaml
+
+tests:
+  - it: should not create pro-auth middleware by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create pro-auth middleware if not using traefik
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          className: alb
+          proAuth:
+            enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create pro-auth middleware with defaults when enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          proAuth:
+            enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.forwardAuth
+          value:
+            address: http://auth-burp-forwardauth.auth:2048/api/v1/auth
+            trustForwardHeader: false
+            authResponseHeaders:
+              - Authorization

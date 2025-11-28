@@ -227,6 +227,18 @@ platform-oauth2-proxy-psio
 {{- end -}}
 {{- end -}}
 
+{{- define "app.proAuthNamespace" -}}
+auth
+{{- end -}}
+
+{{- define "app.proAuthServiceName" -}}
+auth-burp-forwardauth
+{{- end -}}
+
+{{- define "app.proAuthAddress" -}}
+http://{{ include "app.proAuthServiceName" . }}.{{ include "app.proAuthNamespace" . }}:2048/api/v1/auth
+{{- end -}}
+
 {{/*
 Return the number of bytes given a value
 following a base 2 or base 10 number system.
