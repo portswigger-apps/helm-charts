@@ -56,6 +56,10 @@ global:
     # global.ingress.stripPrefixes -- A list of prefixes to strip from requests.
     # @section -- global
     stripPrefixes: []
+    proAuth:
+      # global.ingress.proAuth.enabled -- Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Will copy a JWT from the auth service to the Authorization header.
+      # @section -- global
+      enabled: false
   serviceAccount:
     # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
     # @section -- global
