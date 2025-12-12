@@ -335,3 +335,15 @@ Calculate termination grace period seconds based on termination delay configurat
 30
 {{- end -}}
 {{- end -}}
+
+{{/*
+NATS connection environment variables
+*/}}
+{{- define "app.natsConnectionEnv" }}
+{{- if .Values.infra.nats.enabled }}
+- name: NATS_URL
+  value: {{ printf "nats://%s:%d" .Values.infra.nats.serviceAddress (.Values.infra.nats.port | int) }}
+- name: NATS_TOKEN_FILE
+  value: {{ printf "%s/token" .Values.infra.nats.tokenPath }}
+{{- end }}
+{{- end }}

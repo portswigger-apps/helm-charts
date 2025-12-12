@@ -2,6 +2,8 @@ suite: NATS Configuration
 
 templates:
   - kubernetes/deployment.yaml
+  - kubernetes/secret-env.yaml
+  - kubernetes/secret-volume.yaml
   - cilium/networkpolicy.yaml
 
 tests:
@@ -75,3 +77,58 @@ tests:
                     audience: nats
                     expirationSeconds: 7200
                     path: token
+
+  - it: should add NATS_URL environment variable when enabled
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_URL
+            value: nats://nats.messaging.svc.cluster.local:4222
+
+  - it: should add NATS_TOKEN_FILE environment variable when enabled
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_TOKEN_FILE
+            value: /var/run/secrets/nats/token
+
+  - it: should use custom NATS service address when configured
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+          serviceAddress: nats.custom.svc.cluster.local
+          port: 4223
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_URL
+            value: nats://nats.custom.svc.cluster.local:4223
+
+  - it: should use custom token path when configured
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+          tokenPath: /custom/path/nats
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_TOKEN_FILE
+            value: /custom/path/nats/token
