@@ -92,6 +92,7 @@ spec:
   {{- $dynamodbEnabled := (not (empty (.Values.infra.dynamodb.tables ))) }}
   {{- $kinesisEnabled := .Values.infra.kinesis.enabled }}
   {{- $opensearchEnabled := .Values.infra.opensearch.enabled }}
+  {{- $natsEnabled := .Values.infra.nats.enabled }}
   {{- if or $s3Enabled $bedrockEnabled $eventbridgeEnabled $sqsEnabled $dynamodbEnabled $kinesisEnabled $opensearchEnabled }}
   - toFQDNs:
     - matchPattern: "sts.amazonaws.com"
@@ -144,6 +145,15 @@ spec:
     toPorts:
       - ports:
           - port: "5432"
+            protocol: TCP
+
+  {{- end }}
+  {{- if $natsEnabled }}
+  - toFQDNs:
+      - matchName: {{ .Values.infra.nats.serviceAddress }}
+    toPorts:
+      - ports:
+          - port: {{ .Values.infra.nats.port | quote }}
             protocol: TCP
 
   {{- end }}

@@ -132,3 +132,52 @@ tests:
           content:
             name: NATS_TOKEN_FILE
             value: /custom/path/nats/token
+
+  - it: should add NATS egress rule to CiliumNetworkPolicy when enabled
+    template: cilium/networkpolicy.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: nats.messaging.svc.cluster.local
+            toPorts:
+              - ports:
+                  - port: "4222"
+                    protocol: TCP
+
+  - it: should use custom NATS service address in egress rule
+    template: cilium/networkpolicy.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+          serviceAddress: nats.custom.svc.cluster.local
+          port: 4223
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: nats.custom.svc.cluster.local
+            toPorts:
+              - ports:
+                  - port: "4223"
+                    protocol: TCP
+
+  - it: should not add NATS egress rule when disabled
+    template: cilium/networkpolicy.yaml
+    set:
+      infra:
+        nats:
+          enabled: false
+    asserts:
+      - notContains:
+          path: spec.egress
+          content:
+            toFQDNs:
+              - matchName: nats.messaging.svc.cluster.local
