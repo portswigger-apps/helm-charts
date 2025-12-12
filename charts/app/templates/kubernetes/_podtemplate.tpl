@@ -162,6 +162,11 @@ Outputs a pod spec for use in different resources.
           name: {{ $.Release.Name }}-volume
           readOnly: true
         {{- end }}
+        {{- if .Values.infra.nats.enabled }}
+        - mountPath: {{ .Values.infra.nats.tokenPath }}
+          name: nats-token
+          readOnly: true
+        {{- end }}
         {{- if .Values.pod.additionalVolumeMounts }}
         {{- toYaml .Values.pod.additionalVolumeMounts | nindent 8 }}
         {{- end }}
@@ -195,6 +200,15 @@ Outputs a pod spec for use in different resources.
       - name: {{ $.Release.Name }}-volume
         secret:
           secretName: {{ $.Release.Name }}-volume
+      {{- end }}
+      {{- if .Values.infra.nats.enabled }}
+      - name: nats-token
+        projected:
+          sources:
+            - serviceAccountToken:
+                audience: nats
+                expirationSeconds: {{ .Values.infra.nats.tokenExpirationSeconds }}
+                path: token
       {{- end }}
       {{- if .Values.pod.additionalVolumes }}
       {{- toYaml .Values.pod.additionalVolumes | nindent 6 }}

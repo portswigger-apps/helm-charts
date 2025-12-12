@@ -24,3 +24,54 @@ tests:
           path: spec.template.spec.volumes
           content:
             name: nats-token
+
+  - it: should add NATS projected service account token volume when enabled
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: nats-token
+            projected:
+              sources:
+                - serviceAccountToken:
+                    audience: nats
+                    expirationSeconds: 3600
+                    path: token
+
+  - it: should add NATS volume mount when enabled
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].volumeMounts
+          content:
+            mountPath: /var/run/secrets/nats
+            name: nats-token
+            readOnly: true
+
+  - it: should use custom token expiration when configured
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+          tokenExpirationSeconds: 7200
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: nats-token
+            projected:
+              sources:
+                - serviceAccountToken:
+                    audience: nats
+                    expirationSeconds: 7200
+                    path: token
