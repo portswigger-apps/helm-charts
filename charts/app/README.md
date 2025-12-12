@@ -20,26 +20,26 @@ helm install app helm-charts/app
 
 ### global
 
-| Key | Type | Default | Description                                                                                                |
-|-----|------|---------|------------------------------------------------------------------------------------------------------------|
-| global.aws.accountId | string | Taken from deployment pipeline environment | The AWS account that this application is being deployed into                                               |
-| global.ingress.enabled | bool | `false` | Set to `true` to expose the application with a Kubernetes `Ingress`                                        |
-| global.ingress.host | string | `""` | Ingress host used to configure cloudfront target                                                           |
-| global.ingress.extraHosts | list | `[]` | Extra Ingress hosts used to configure extra host headers recognized by Traefik                             |
-| global.ingress.annotations | object | `{}` | Set annotations on the `Ingress`                                                                           |
-| global.ingress.className | string | `"traefik"` | Override the `Ingress` class. In most cases this should be left as default                                 |
-| global.ingress.paths | list | `["/"]` | Path prefixes that you want to make available externally with the `Ingress`                                |
-| global.ingress.customResponseHeaders | object | `{"X-Robots-Tag":"noindex"}` | Add custom response headers to an apps `Ingress`                                                           |
-| global.ingress.allowFromOffice | bool | `true` | Allow access to the Traefik `Ingress` from PortSwigger office IP ranges                                    |
-| global.ingress.ipAllowListCIDRs | list | `[]` | Extra IP CIDR ranges to allow access from.                                                                 |
-| global.ingress.authentication.enabled | bool | `false` | Set to `true` to require SSO authentication to access the application.                                     |
-| global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges                                            |
-| global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests.                                                                 |
-| global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service.                     |
-| global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created                                          |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| global.aws.accountId | string | Taken from deployment pipeline environment | The AWS account that this application is being deployed into |
+| global.ingress.enabled | bool | `false` | Set to `true` to expose the application with a Kubernetes `Ingress` |
+| global.ingress.host | string | `""` | Ingress host used to configure cloudfront target |
+| global.ingress.extraHosts | list | `[]` | Extra Ingress hosts used to configure extra host headers recognized by Traefik |
+| global.ingress.annotations | object | `{}` | Set annotations on the `Ingress` |
+| global.ingress.className | string | `"traefik"` | Override the `Ingress` class. In most cases this should be left as default |
+| global.ingress.paths | list | `["/"]` | Path prefixes that you want to make available externally with the `Ingress` |
+| global.ingress.customResponseHeaders | object | `{"X-Robots-Tag":"noindex"}` | Add custom response headers to an apps `Ingress` |
+| global.ingress.allowFromOffice | bool | `true` | Allow access to the Traefik `Ingress` from PortSwigger office IP ranges |
+| global.ingress.ipAllowListCIDRs | list | `[]` | Extra IP CIDR ranges to allow access from. |
+| global.ingress.authentication.enabled | bool | `false` | Set to `true` to require SSO authentication to access the application. |
+| global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges |
+| global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests. |
+| global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Will copy a JWT from the auth service to the Authorization header. |
+| global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created |
 | global.serviceAccount.name | string | `.Release.Name` | `ServiceAccount` name. Use with `global.serviceAccount.enabled: false` to use an existing `ServiceAccount` |
-| global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false`       |
-| global.serviceAccount.annotations | object | `{}` | Set annotations on the `ServiceAccount`                                                                    |
+| global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false` |
+| global.serviceAccount.annotations | object | `{}` | Set annotations on the `ServiceAccount` |
 
 ### application
 
@@ -126,6 +126,11 @@ helm install app helm-charts/app
 | infra.opensearch.type | string | `"TIMESERIES"` | The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH |
 | infra.opensearch.standbyReplicas | bool | `false` | Set to 'true' to use standby replicas for the collection. |
 | infra.opensearch.lifecycleRules | list | `[]` | A list of rules configuring the retention period of indexes |
+| infra.nats.enabled | bool | `false` | Set to `true` to enable NATS event bridge support |
+| infra.nats.serviceAddress | string | `nats.messaging.svc.cluster.local` | The NATS service address in the cluster |
+| infra.nats.port | int | `4222` | The NATS service port |
+| infra.nats.tokenPath | string | `/var/run/secrets/nats` | The path where the NATS token will be mounted |
+| infra.nats.tokenExpirationSeconds | int | `3600` | Token expiration time in seconds |
 
 ### Other Values
 

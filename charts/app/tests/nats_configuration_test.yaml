@@ -1,0 +1,26 @@
+suite: NATS Configuration
+
+templates:
+  - kubernetes/deployment.yaml
+  - cilium/networkpolicy.yaml
+
+tests:
+  - it: should not enable NATS by default
+    template: kubernetes/deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_URL
+      - notContains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_TOKEN_FILE
+
+  - it: should not add NATS volume when disabled
+    template: kubernetes/deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: nats-token
