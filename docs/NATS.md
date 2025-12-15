@@ -16,10 +16,9 @@ Enable NATS support in your `values.yaml`:
 infra:
   nats:
     enabled: true
-    serviceAddress: "nats.messaging.svc.cluster.local"  # optional, default shown
-    port: 4222                                           # optional, default shown
-    tokenPath: "/var/run/secrets/nats"                  # optional, default shown
-    tokenExpirationSeconds: 3600                         # optional, default shown
+    name: "nats"                # optional, default shown
+    namespace: "messaging"      # optional, default shown
+    port: 4222                  # optional, default shown
 ```
 
 ## What Gets Configured
@@ -35,16 +34,16 @@ When `infra.nats.enabled: true`, the following resources are automatically confi
 
 A Kubernetes projected service account token volume is automatically mounted with:
 - **Audience**: `nats`
-- **Expiration**: Configurable (default 3600 seconds)
-- **Auto-rotation**: Kubernetes rotates tokens at 80% of expiration time
-- **Mount path**: Configurable (default `/var/run/secrets/nats`)
+- **Expiration**: 3600 seconds (1 hour)
+- **Auto-rotation**: Kubernetes rotates tokens at 80% of expiration time (after 48 minutes)
+- **Mount path**: `/var/run/secrets/nats`
 
 ### Network Policy
 
 A Cilium NetworkPolicy egress rule is added allowing:
 - **Protocol**: TCP
 - **Port**: Configurable (default 4222)
-- **Destination**: NATS service FQDN
+- **Destination**: NATS pods matched by labels (`app.kubernetes.io/name` and namespace)
 
 ## Client Usage
 
@@ -94,16 +93,15 @@ helm upgrade --install my-app charts/app -f values-with-nats.yaml
 
 ## Custom NATS Configuration
 
-If your NATS service is deployed at a custom location:
+If your NATS service is deployed at a custom location or uses a non-standard port:
 
 ```yaml
 infra:
   nats:
     enabled: true
-    serviceAddress: "nats.custom-namespace.svc.cluster.local"
-    port: 4223
-    tokenPath: "/var/run/secrets/custom-nats"
-    tokenExpirationSeconds: 7200  # 2 hours
+    name: "nats-server"       # custom NATS deployment name
+    namespace: "events"       # custom namespace
+    port: 4223                # custom port
 ```
 
 ## Verifying NATS Configuration
@@ -134,7 +132,7 @@ kubectl get ciliumnetworkpolicy -o yaml | grep -A 10 nats
 - Verify the service address and port match your NATS deployment
 
 ### Authentication failed
-- Check token expiration: tokens rotate at 80% of `tokenExpirationSeconds`
+- Check token expiration: tokens rotate automatically after 48 minutes (80% of 1 hour)
 - Verify the NATS service is configured to accept tokens with audience "nats"
 - Ensure the service account is authorized in the NATS OIDC configuration
 
