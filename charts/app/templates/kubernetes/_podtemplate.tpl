@@ -164,7 +164,7 @@ Outputs a pod spec for use in different resources.
           readOnly: true
         {{- end }}
         {{- if .Values.infra.nats.enabled }}
-        - mountPath: {{ .Values.infra.nats.tokenPath }}
+        - mountPath: /var/run/secrets/nats
           name: nats-token
           readOnly: true
         {{- end }}
@@ -208,7 +208,7 @@ Outputs a pod spec for use in different resources.
           sources:
             - serviceAccountToken:
                 audience: nats
-                expirationSeconds: {{ .Values.infra.nats.tokenExpirationSeconds }}
+                expirationSeconds: 3600
                 path: token
       {{- end }}
       {{- if .Values.pod.additionalVolumes }}

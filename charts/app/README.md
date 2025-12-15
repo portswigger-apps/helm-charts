@@ -127,10 +127,9 @@ helm install app helm-charts/app
 | infra.opensearch.standbyReplicas | bool | `false` | Set to 'true' to use standby replicas for the collection. |
 | infra.opensearch.lifecycleRules | list | `[]` | A list of rules configuring the retention period of indexes |
 | infra.nats.enabled | bool | `false` | Set to `true` to enable NATS event bridge support |
-| infra.nats.serviceAddress | string | `nats.messaging.svc.cluster.local` | The NATS service address in the cluster |
+| infra.nats.name | string | `nats` | The NATS service name |
+| infra.nats.namespace | string | `messaging` | The namespace where NATS is deployed |
 | infra.nats.port | int | `4222` | The NATS service port |
-| infra.nats.tokenPath | string | `/var/run/secrets/nats` | The path where the NATS token will be mounted |
-| infra.nats.tokenExpirationSeconds | int | `3600` | Token expiration time in seconds |
 
 ### Other Values
 

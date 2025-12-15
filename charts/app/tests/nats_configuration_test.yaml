@@ -59,25 +59,6 @@ tests:
             name: nats-token
             readOnly: true
 
-  - it: should use custom token expiration when configured
-    template: kubernetes/deployment.yaml
-    set:
-      infra:
-        nats:
-          enabled: true
-          tokenExpirationSeconds: 7200
-    asserts:
-      - contains:
-          path: spec.template.spec.volumes
-          content:
-            name: nats-token
-            projected:
-              sources:
-                - serviceAccountToken:
-                    audience: nats
-                    expirationSeconds: 7200
-                    path: token
-
   - it: should add NATS_URL environment variable when enabled
     template: kubernetes/deployment.yaml
     set:
@@ -104,34 +85,21 @@ tests:
             name: NATS_TOKEN_FILE
             value: /var/run/secrets/nats/token
 
-  - it: should use custom NATS service address when configured
+  - it: should use custom NATS name and namespace when configured
     template: kubernetes/deployment.yaml
     set:
       infra:
         nats:
           enabled: true
-          serviceAddress: nats.custom.svc.cluster.local
+          name: nats-server
+          namespace: events
           port: 4223
     asserts:
       - contains:
           path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
           content:
             name: NATS_URL
-            value: nats://nats.custom.svc.cluster.local:4223
-
-  - it: should use custom token path when configured
-    template: kubernetes/deployment.yaml
-    set:
-      infra:
-        nats:
-          enabled: true
-          tokenPath: /custom/path/nats
-    asserts:
-      - contains:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
-          content:
-            name: NATS_TOKEN_FILE
-            value: /custom/path/nats/token
+            value: nats://nats-server.events.svc.cluster.local:4223
 
   - it: should add NATS egress rule to CiliumNetworkPolicy when enabled
     template: cilium/networkpolicy.yaml
@@ -143,27 +111,32 @@ tests:
       - contains:
           path: spec.egress
           content:
-            toFQDNs:
-              - matchName: nats.messaging.svc.cluster.local
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats
+                  k8s:io.kubernetes.pod.namespace: messaging
             toPorts:
               - ports:
                   - port: "4222"
                     protocol: TCP
 
-  - it: should use custom NATS service address in egress rule
+  - it: should use custom NATS name and namespace in egress rule
     template: cilium/networkpolicy.yaml
     set:
       infra:
         nats:
           enabled: true
-          serviceAddress: nats.custom.svc.cluster.local
+          name: nats-server
+          namespace: events
           port: 4223
     asserts:
       - contains:
           path: spec.egress
           content:
-            toFQDNs:
-              - matchName: nats.custom.svc.cluster.local
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats-server
+                  k8s:io.kubernetes.pod.namespace: events
             toPorts:
               - ports:
                   - port: "4223"
@@ -179,5 +152,6 @@ tests:
       - notContains:
           path: spec.egress
           content:
-            toFQDNs:
-              - matchName: nats.messaging.svc.cluster.local
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats

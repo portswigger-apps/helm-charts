@@ -463,22 +463,18 @@ infra:
     # infra.nats.enabled -- Set to `true` to enable NATS event bridge support
     # @section -- infra
     enabled: false
-    # infra.nats.serviceAddress -- The NATS service address in the cluster
-    # @default -- `nats.messaging.svc.cluster.local`
+    # infra.nats.name -- The NATS service name
+    # @default -- `nats`
     # @section -- infra
-    serviceAddress: "nats.messaging.svc.cluster.local"
+    name: "nats"
+    # infra.nats.namespace -- The namespace where NATS is deployed
+    # @default -- `messaging`
+    # @section -- infra
+    namespace: "messaging"
     # infra.nats.port -- The NATS service port
     # @default -- `4222`
     # @section -- infra
     port: 4222
-    # infra.nats.tokenPath -- The path where the NATS token will be mounted
-    # @default -- `/var/run/secrets/nats`
-    # @section -- infra
-    tokenPath: "/var/run/secrets/nats"
-    # infra.nats.tokenExpirationSeconds -- Token expiration time in seconds
-    # @default -- `3600`
-    # @section -- infra
-    tokenExpirationSeconds: 3600
 
 # extraDeploy -- Extra Kubernetes configuration
 extraDeploy: []

@@ -149,8 +149,10 @@ spec:
 
   {{- end }}
   {{- if $natsEnabled }}
-  - toFQDNs:
-      - matchName: {{ .Values.infra.nats.serviceAddress }}
+  - toEndpoints:
+      - matchLabels:
+          app.kubernetes.io/name: {{ .Values.infra.nats.name }}
+          k8s:io.kubernetes.pod.namespace: {{ .Values.infra.nats.namespace }}
     toPorts:
       - ports:
           - port: {{ .Values.infra.nats.port | quote }}
