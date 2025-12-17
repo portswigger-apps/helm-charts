@@ -33,7 +33,7 @@ jobs:
           kubectl-release-date: "2022-10-31"
           helm-diff-plugin-version: "v3.9.14"
           additional-helm-plugins: >-
-            https://github.com/helm-unittest/helm-unittest
+            https://github.com/helm-unittest/helm-unittest --version v1.0.2
 
       - name: Lint
         run: helm lint charts/*/
