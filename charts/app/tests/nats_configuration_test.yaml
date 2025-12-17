@@ -1,0 +1,157 @@
+suite: NATS Configuration
+
+templates:
+  - kubernetes/deployment.yaml
+  - kubernetes/secret-env.yaml
+  - kubernetes/secret-volume.yaml
+  - cilium/networkpolicy.yaml
+
+tests:
+  - it: should not enable NATS by default
+    template: kubernetes/deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_URL
+      - notContains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_TOKEN_FILE
+
+  - it: should not add NATS volume when disabled
+    template: kubernetes/deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: nats-token
+
+  - it: should add NATS projected service account token volume when enabled
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: nats-token
+            projected:
+              sources:
+                - serviceAccountToken:
+                    audience: nats
+                    expirationSeconds: 3600
+                    path: token
+
+  - it: should add NATS volume mount when enabled
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].volumeMounts
+          content:
+            mountPath: /var/run/secrets/nats
+            name: nats-token
+            readOnly: true
+
+  - it: should add NATS_URL environment variable when enabled
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_URL
+            value: nats://nats.messaging.svc.cluster.local:4222
+
+  - it: should add NATS_TOKEN_FILE environment variable when enabled
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_TOKEN_FILE
+            value: /var/run/secrets/nats/token
+
+  - it: should use custom NATS name and namespace when configured
+    template: kubernetes/deployment.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+          name: nats-server
+          namespace: events
+          port: 4223
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].env
+          content:
+            name: NATS_URL
+            value: nats://nats-server.events.svc.cluster.local:4223
+
+  - it: should add NATS egress rule to CiliumNetworkPolicy when enabled
+    template: cilium/networkpolicy.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats
+                  k8s:io.kubernetes.pod.namespace: messaging
+            toPorts:
+              - ports:
+                  - port: "4222"
+                    protocol: TCP
+
+  - it: should use custom NATS name and namespace in egress rule
+    template: cilium/networkpolicy.yaml
+    set:
+      infra:
+        nats:
+          enabled: true
+          name: nats-server
+          namespace: events
+          port: 4223
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats-server
+                  k8s:io.kubernetes.pod.namespace: events
+            toPorts:
+              - ports:
+                  - port: "4223"
+                    protocol: TCP
+
+  - it: should not add NATS egress rule when disabled
+    template: cilium/networkpolicy.yaml
+    set:
+      infra:
+        nats:
+          enabled: false
+    asserts:
+      - notContains:
+          path: spec.egress
+          content:
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats

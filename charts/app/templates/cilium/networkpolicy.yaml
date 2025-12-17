@@ -92,6 +92,7 @@ spec:
   {{- $dynamodbEnabled := (not (empty (.Values.infra.dynamodb.tables ))) }}
   {{- $kinesisEnabled := .Values.infra.kinesis.enabled }}
   {{- $opensearchEnabled := .Values.infra.opensearch.enabled }}
+  {{- $natsEnabled := .Values.infra.nats.enabled }}
   {{- if or $s3Enabled $bedrockEnabled $eventbridgeEnabled $sqsEnabled $dynamodbEnabled $kinesisEnabled $opensearchEnabled }}
   - toFQDNs:
     - matchPattern: "sts.amazonaws.com"
@@ -144,6 +145,17 @@ spec:
     toPorts:
       - ports:
           - port: "5432"
+            protocol: TCP
+
+  {{- end }}
+  {{- if $natsEnabled }}
+  - toEndpoints:
+      - matchLabels:
+          app.kubernetes.io/name: {{ .Values.infra.nats.name }}
+          k8s:io.kubernetes.pod.namespace: {{ .Values.infra.nats.namespace }}
+    toPorts:
+      - ports:
+          - port: {{ .Values.infra.nats.port | quote }}
             protocol: TCP
 
   {{- end }}

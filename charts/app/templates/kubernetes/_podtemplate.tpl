@@ -138,6 +138,7 @@ Outputs a pod spec for use in different resources.
           {{- include "app.postgresConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.redisConnectionSecretEnv" . | nindent 10 }}
           {{- include "app.openSearchCollectionEnvs" . | nindent 10 }}
+          {{- include "app.natsConnectionEnv" . | nindent 10 }}
           {{- range $key, $value := omit .Values.env "DOTNET_GCHeapHardLimit" "GOMEMLIMIT" "_JAVA_OPTIONS" "OAUTH_PROXY_URL" }}
           - name: {{ $key }}
             value: {{ $value | quote }}
@@ -160,6 +161,11 @@ Outputs a pod spec for use in different resources.
         {{- if .Values.secretVolume }}
         - mountPath: /secrets
           name: {{ $.Release.Name }}-volume
+          readOnly: true
+        {{- end }}
+        {{- if .Values.infra.nats.enabled }}
+        - mountPath: /var/run/secrets/nats
+          name: nats-token
           readOnly: true
         {{- end }}
         {{- if .Values.pod.additionalVolumeMounts }}
@@ -195,6 +201,15 @@ Outputs a pod spec for use in different resources.
       - name: {{ $.Release.Name }}-volume
         secret:
           secretName: {{ $.Release.Name }}-volume
+      {{- end }}
+      {{- if .Values.infra.nats.enabled }}
+      - name: nats-token
+        projected:
+          sources:
+            - serviceAccountToken:
+                audience: nats
+                expirationSeconds: 3600
+                path: token
       {{- end }}
       {{- if .Values.pod.additionalVolumes }}
       {{- toYaml .Values.pod.additionalVolumes | nindent 6 }}
