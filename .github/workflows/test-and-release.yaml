@@ -25,16 +25,12 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Setup Helmfile
-        uses: mamezou-tech/setup-helmfile@v1.2.0
+        uses: mamezou-tech/setup-helmfile@v2.1.0
         with:
-          helmfile-version: "v0.150.0"
-          helm-version: "v3.11.0"
-          kubectl-version: "1.24.7"
-          kubectl-release-date: "2022-10-31"
-          helm-diff-plugin-version: "v3.9.14"
+          helm-version: "v3.19.4"
           additional-helm-plugins: >-
-            https://github.com/helm-unittest/helm-unittest --version v1.0.2
-
+            https://github.com/helm-unittest/helm-unittest
+            
       - name: Lint
         run: helm lint charts/*/
 
