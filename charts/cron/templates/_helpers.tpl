@@ -184,3 +184,15 @@ Usage:
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
 {{- end -}}
+
+{{/*
+NATS connection environment variables
+*/}}
+{{- define "cron.natsConnectionEnv" }}
+{{- if .Values.infra.nats.enabled }}
+- name: NATS_URL
+  value: {{ printf "nats://%s.%s.svc.cluster.local:%d" .Values.infra.nats.name .Values.infra.nats.namespace (.Values.infra.nats.port | int) }}
+- name: NATS_TOKEN_FILE
+  value: /var/run/secrets/nats/token
+{{- end }}
+{{- end }}

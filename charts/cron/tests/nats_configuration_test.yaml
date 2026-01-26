@@ -1,0 +1,74 @@
+suite: NATS Configuration (CronJob)
+
+templates:
+  - kubernetes/cronjob.yaml
+
+tests:
+  - it: should not enable NATS by default
+    asserts:
+      - notContains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: NATS_URL
+
+  - it: should not add NATS volume when disabled
+    asserts:
+      - notContains:
+          path: spec.jobTemplate.spec.template.spec.volumes
+          content:
+            name: nats-token
+
+  - it: should add NATS environment variables when enabled
+    set:
+      infra.nats.enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: NATS_URL
+            value: nats://nats.messaging.svc.cluster.local:4222
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: NATS_TOKEN_FILE
+            value: /var/run/secrets/nats/token
+
+  - it: should add NATS projected service account token volume when enabled
+    set:
+      infra.nats.enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.volumes
+          content:
+            name: nats-token
+            projected:
+              sources:
+                - serviceAccountToken:
+                    audience: nats
+                    expirationSeconds: 3600
+                    path: token
+
+  - it: should add NATS volume mount when enabled
+    set:
+      infra.nats.enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /var/run/secrets/nats
+            name: nats-token
+            readOnly: true
+
+  - it: should use custom NATS configuration when provided
+    set:
+      infra.nats:
+        enabled: true
+        name: nats-server
+        namespace: events
+        port: 4223
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: NATS_URL
+            value: nats://nats-server.events.svc.cluster.local:4223

@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.4.8](https://img.shields.io/badge/Version-0.4.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.8](https://img.shields.io/badge/AppVersion-0.4.8-informational?style=flat-square)
+![Version: 0.4.9](https://img.shields.io/badge/Version-0.4.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.9](https://img.shields.io/badge/AppVersion-0.4.9-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -78,6 +78,10 @@ helm install cron helm-charts/cron
 | infra.opensearch.type | string | `"TIMESERIES"` | The type of the collection. Must be either TIMESERIES, VECTORSEARCH, or SEARCH |
 | infra.opensearch.standbyReplicas | bool | `false` | Set to 'true' to use standby replicas for the collection. |
 | infra.opensearch.lifecycleRules | list | `[]` | A list of rules configuring the retention period of indexes |
+| infra.nats.enabled | bool | `false` | Set to `true` to enable NATS event bridge support |
+| infra.nats.name | string | `nats` | The NATS service name |
+| infra.nats.namespace | string | `messaging` | The namespace where NATS is deployed |
+| infra.nats.port | int | `4222` | The NATS service port |
 
 ### Other Values
 

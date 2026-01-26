@@ -77,6 +77,7 @@ Outputs a pod spec for use in different resources.
                 {{- include "cron.postgresConnectionSecretEnv" . | nindent 16 }}
                 {{- include "cron.dynamodbTableEnvs" . | nindent 16 }}
                 {{- include "cron.openSearchCollectionEnvs" . | nindent 16 }}
+                {{- include "cron.natsConnectionEnv" . | nindent 16 }}
                 {{- range $key, $value := .Values.env}}
                 - name: {{ $key }}
                   value: {{ $value | quote }}
@@ -99,6 +100,11 @@ Outputs a pod spec for use in different resources.
                   name: {{ $.Release.Name }}-volume
                   readOnly: true
                 {{- end }}
+                {{- if .Values.infra.nats.enabled }}
+                - mountPath: /var/run/secrets/nats
+                  name: nats-token
+                  readOnly: true
+                {{- end }}
                 {{- if .Values.pod.additionalVolumeMounts }}
                 {{- toYaml .Values.pod.additionalVolumeMounts | nindent 16 }}
                 {{- end }}
@@ -109,6 +115,15 @@ Outputs a pod spec for use in different resources.
           - name: {{ $.Release.Name }}-volume
             secret:
               secretName: {{ $.Release.Name }}-volume
+          {{- end }}
+          {{- if .Values.infra.nats.enabled }}
+          - name: nats-token
+            projected:
+              sources:
+                - serviceAccountToken:
+                    audience: nats
+                    expirationSeconds: 3600
+                    path: token
           {{- end }}
           {{- if .Values.pod.additionalVolumes }}
           {{- toYaml .Values.pod.additionalVolumes | nindent 10 }}
