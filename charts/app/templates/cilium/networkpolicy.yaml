@@ -98,6 +98,10 @@ spec:
     - matchPattern: "sts.amazonaws.com"
     - matchPattern: "sts.*.amazonaws.com"
     {{- if $s3Enabled }}
+    - matchPattern: "s3.*.amazonaws.com"
+    - matchPattern: "s3.dualstack.*.amazonaws.com"
+    - matchPattern: "s3-fips.*.amazonaws.com"
+    - matchPattern: "s3-fips.dualstack.*.amazonaws.com"
     - matchPattern: "*.s3.*.amazonaws.com"
     - matchPattern: "*.s3.amazonaws.com"
     {{- end }}

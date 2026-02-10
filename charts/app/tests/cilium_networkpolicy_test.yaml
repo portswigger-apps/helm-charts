@@ -241,6 +241,10 @@ tests:
             toFQDNs:
               - matchPattern: "sts.amazonaws.com"
               - matchPattern: "sts.*.amazonaws.com"
+              - matchPattern: "s3.*.amazonaws.com"
+              - matchPattern: "s3.dualstack.*.amazonaws.com"
+              - matchPattern: "s3-fips.*.amazonaws.com"
+              - matchPattern: "s3-fips.dualstack.*.amazonaws.com"
               - matchPattern: "*.s3.*.amazonaws.com"
               - matchPattern: "*.s3.amazonaws.com"
             toPorts:
@@ -285,6 +289,10 @@ tests:
             toFQDNs:
               - matchPattern: "sts.amazonaws.com"
               - matchPattern: "sts.*.amazonaws.com"
+              - matchPattern: "s3.*.amazonaws.com"
+              - matchPattern: "s3.dualstack.*.amazonaws.com"
+              - matchPattern: "s3-fips.*.amazonaws.com"
+              - matchPattern: "s3-fips.dualstack.*.amazonaws.com"
               - matchPattern: '*.s3.*.amazonaws.com'
               - matchPattern: '*.s3.amazonaws.com'
               - matchPattern: "dynamodb.eu-west-1.amazonaws.com"
