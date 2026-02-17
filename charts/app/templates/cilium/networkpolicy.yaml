@@ -85,6 +85,17 @@ spec:
     {{- end }}
   {{- end }}
 
+  {{- with .Values.ciliumNetworkPolicy.toServices }}
+  - toServices:
+    {{- $defaultToService := dict "namespace" $.Release.Namespace }}
+    {{- range . }}
+    {{- $toService := merge . $defaultToService }}
+    - k8sService:
+        serviceName: {{ $toService.name }}
+        namespace: {{ $toService.namespace }}
+    {{- end }}
+  {{- end }}
+
   {{- $s3Enabled := .Values.infra.s3Bucket.enabled }}
   {{- $bedrockEnabled := .Values.infra.bedrock.enabled }}
   {{- $eventbridgeEnabled := .Values.infra.eventing.producer.enabled }}

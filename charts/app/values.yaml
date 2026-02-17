@@ -269,6 +269,14 @@ ciliumNetworkPolicy:
   # - name: license-checker
   #   namespace: web
 
+  # ciliumNetworkPolicy.toServices -- A list of Kubernetes service names and optional namespace to allow egress to. See examples in values.yaml
+  # @section -- network
+  toServices: []
+  # - name: nats
+  #   namespace: messaging
+  # - name: redis-master
+  #   namespace: cache
+
   # @ignored
   ingressControllerEndpointMatchLabels:
     k8s:io.kubernetes.pod.namespace: ingress
