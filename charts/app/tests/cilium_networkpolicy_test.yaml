@@ -403,6 +403,30 @@ tests:
                   component: ai-service
                   k8s:io.kubernetes.pod.namespace: NAMESPACE
 
+  - it: should add egress rules for toServices
+    set:
+      ciliumNetworkPolicy:
+        toServices:
+          - name: nats
+            namespace: messaging
+          - name: redis-master
+          - name: postgres
+            namespace: database
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toServices:
+              - k8sService:
+                  serviceName: nats
+                  namespace: messaging
+              - k8sService:
+                  serviceName: redis-master
+                  namespace: NAMESPACE
+              - k8sService:
+                  serviceName: postgres
+                  namespace: database
+
   - it: should add egress rules for Bedrock when bedrock is enabled
     set:
       infra:
