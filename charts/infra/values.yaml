@@ -55,10 +55,6 @@ s3Bucket:
   # @section -- s3Bucket
   nameOverride: ""
 
-  # s3Bucket.enableDataInsights -- Set to `true` to allow data insights access to the `s3Bucket`
-  # @section -- s3Bucket
-  enableDataInsights: false
-
   # s3Bucket.bucketAccessPolicies -- (list) Additional IAM policy statements to include in the S3 bucket resource policy. KMS key permissions are auto-derived from S3 actions (`s3:PutObject` grants `kms:GenerateDataKey`, `s3:GetObject` grants `kms:Decrypt`).
   # @default -- `[]`
   # @section -- s3Bucket
