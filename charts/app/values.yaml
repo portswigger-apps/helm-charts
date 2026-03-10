@@ -325,6 +325,16 @@ infra:
     # @default -- `false`
     # @section -- infra
     enableDataInsights: false
+    # infra.s3Bucket.bucketAccessPolicies -- (list) Additional IAM policy statements to include in the S3 bucket resource policy. KMS key permissions are auto-derived from S3 actions (`s3:PutObject` grants `kms:GenerateDataKey`, `s3:GetObject` grants `kms:Decrypt`). Resource ARNs default to the bucket if not specified.
+    # @default -- `[]`
+    # @section -- infra
+    bucketAccessPolicies: []
+    # - Effect: Allow
+    #   Principal:
+    #     AWS: "arn:aws:iam::999999999999:role/example-role"
+    #   Action:
+    #     - s3:PutObject
+    #     - s3:ListBucket
   cloudfrontrouter:
     # infra.cloudfrontrouter.enabled -- Set to `true` to deploy an `CloudFrontRouter` resource. Advanced resource.
     # @section -- infra
