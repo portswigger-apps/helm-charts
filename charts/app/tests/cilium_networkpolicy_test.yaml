@@ -478,3 +478,55 @@ tests:
               - ports:
                   - port: "443"
                     protocol: TCP
+
+  - it: should add NATS egress rule to CiliumNetworkPolicy when enabled
+    set:
+      infra:
+        nats:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats
+                  k8s:io.kubernetes.pod.namespace: messaging
+            toPorts:
+              - ports:
+                  - port: "4222"
+                    protocol: TCP
+
+  - it: should use custom NATS name and namespace in egress rule
+    set:
+      infra:
+        nats:
+          enabled: true
+          name: nats-server
+          namespace: events
+          port: 4223
+    asserts:
+      - contains:
+          path: spec.egress
+          content:
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats-server
+                  k8s:io.kubernetes.pod.namespace: events
+            toPorts:
+              - ports:
+                  - port: "4223"
+                    protocol: TCP
+
+  - it: should not add NATS egress rule when disabled
+    set:
+      infra:
+        nats:
+          enabled: false
+    asserts:
+      - notContains:
+          path: spec.egress
+          content:
+            toEndpoints:
+              - matchLabels:
+                  app.kubernetes.io/name: nats
