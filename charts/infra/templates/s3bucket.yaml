@@ -18,4 +18,8 @@ spec:
     {{- end }}
   {{- end }}
 {{- end }}
+  {{- with .Values.s3Bucket.bucketAccessPolicies }}
+  bucketAccessPolicies:
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
 {{- end }}

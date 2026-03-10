@@ -132,6 +132,90 @@ tests:
               id: "test"
               status: Disabled
 
+  - it: should not set bucketAccessPolicies by default
+    set:
+      s3Bucket:
+        enabled: true
+    asserts:
+      - isNull:
+          path: spec.bucketAccessPolicies
+
+  - it: should set bucketAccessPolicies with a single statement
+    set:
+      s3Bucket:
+        enabled: true
+        bucketAccessPolicies:
+          - Effect: Allow
+            Principal:
+              AWS: "arn:aws:iam::999999999999:role/example-role"
+            Action:
+              - s3:PutObject
+              - s3:ListBucket
+            Resource:
+              - "arn:aws:s3:::my-bucket"
+              - "arn:aws:s3:::my-bucket/*"
+    asserts:
+      - equal:
+          path: spec.bucketAccessPolicies
+          value:
+            - Effect: Allow
+              Principal:
+                AWS: "arn:aws:iam::999999999999:role/example-role"
+              Action:
+                - s3:PutObject
+                - s3:ListBucket
+              Resource:
+                - "arn:aws:s3:::my-bucket"
+                - "arn:aws:s3:::my-bucket/*"
+
+  - it: should set bucketAccessPolicies with multiple statements
+    set:
+      s3Bucket:
+        enabled: true
+        bucketAccessPolicies:
+          - Effect: Allow
+            Principal:
+              AWS: "arn:aws:iam::999999999999:role/uploader-role"
+            Action:
+              - s3:PutObject
+            Resource:
+              - "arn:aws:s3:::my-bucket/*"
+          - Effect: Allow
+            Principal:
+              AWS: "arn:aws:iam::999999999999:role/reader-role"
+            Action:
+              - s3:GetObject
+              - s3:ListBucket
+            Resource:
+              - "arn:aws:s3:::my-bucket"
+              - "arn:aws:s3:::my-bucket/*"
+    asserts:
+      - equal:
+          path: spec.bucketAccessPolicies[0].Principal.AWS
+          value: "arn:aws:iam::999999999999:role/uploader-role"
+      - equal:
+          path: spec.bucketAccessPolicies[1].Principal.AWS
+          value: "arn:aws:iam::999999999999:role/reader-role"
+      - equal:
+          path: spec.bucketAccessPolicies
+          value:
+            - Effect: Allow
+              Principal:
+                AWS: "arn:aws:iam::999999999999:role/uploader-role"
+              Action:
+                - s3:PutObject
+              Resource:
+                - "arn:aws:s3:::my-bucket/*"
+            - Effect: Allow
+              Principal:
+                AWS: "arn:aws:iam::999999999999:role/reader-role"
+              Action:
+                - s3:GetObject
+                - s3:ListBucket
+              Resource:
+                - "arn:aws:s3:::my-bucket"
+                - "arn:aws:s3:::my-bucket/*"
+
   - it: should map data insights to correct true value
     set:
       s3Bucket:
