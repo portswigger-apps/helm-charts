@@ -321,10 +321,6 @@ infra:
       - expiration:
           - days: 0
         status: Disabled
-    # infra.s3Bucket.enableDataInsights -- (list) Add IAM Role & IAM policy for data insight access to the `s3Bucket`
-    # @default -- `false`
-    # @section -- infra
-    enableDataInsights: false
     # infra.s3Bucket.bucketAccessPolicies -- (list) Additional IAM policy statements to include in the S3 bucket resource policy. KMS key permissions are auto-derived from S3 actions (`s3:PutObject` grants `kms:GenerateDataKey`, `s3:GetObject` grants `kms:Decrypt`). Resource ARNs default to the bucket if not specified.
     # @default -- `[]`
     # @section -- infra
