@@ -132,6 +132,25 @@ tests:
               id: "test"
               status: Disabled
 
+  - it: should set versioning to false by default
+    set:
+      s3Bucket:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.versioning
+          value: false
+
+  - it: should set versioning to true when versioning is true
+    set:
+      s3Bucket:
+        enabled: true
+        versioning: true
+    asserts:
+      - equal:
+          path: spec.versioning
+          value: true
+
   - it: should not set bucketAccessPolicies by default
     set:
       s3Bucket:
