@@ -8,6 +8,7 @@ metadata:
     {{- include "infra.labels" . | nindent 8 }}
 spec:
   irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
+  versioning: {{ .Values.s3Bucket.versioning }}
   {{- with .Values.s3Bucket.lifecycleRules }}
   lifecycleRules:
   {{- range $i, $rule := . }}
