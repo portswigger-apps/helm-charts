@@ -43,8 +43,6 @@ global:
       - 217.138.234.184/29
       - 52.211.196.189/32
       - 57.133.217.203/32
-      - 4.21.19.193/32
-      - 131.239.245.166/32
     # global.ingress.ipAllowListCIDRs -- Extra IP CIDR ranges to allow access from.
     # @section -- global
     ipAllowListCIDRs: []
