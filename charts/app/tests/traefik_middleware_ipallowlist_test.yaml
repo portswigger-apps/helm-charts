@@ -46,6 +46,8 @@ tests:
                 - 217.138.234.184/29
                 - 52.211.196.189/32
                 - 57.133.217.203/32
+                - 4.21.19.193/32
+                - 131.239.245.166/32
 
   - it: should not create ipallowlist middleware when `ipAllowListCIDRs` contains 0.0.0.0/0
     set:
