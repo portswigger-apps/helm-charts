@@ -136,6 +136,16 @@ deployment:
     # deployment.terminationDelay.delaySeconds -- The number of seconds the pod will stay in `terminating` state before a SIGTERM is sent
     # @section -- application
     delaySeconds: 15
+pdb:
+  # pdb.maxUnavailable -- Maximum pods that may be voluntarily disrupted at one time.
+  # Absolute integer (e.g. `1`) or percentage (e.g. `"50%"`). Only applied when
+  # `deployment.replicas > 1`. Mutually exclusive with `pdb.minAvailable`.
+  # @section -- application
+  maxUnavailable: "50%"
+  # pdb.minAvailable -- Minimum pods that must remain available. When set, takes
+  # precedence over `maxUnavailable`. Absolute integer or percentage.
+  # @section -- application
+  minAvailable: null
 ports:
   app-port:
     # ports.app-port.port -- The port the application is listening on
@@ -177,6 +187,21 @@ healthcheckEndpoint:
   # healthcheckEndpoint.port -- TThe name of the port that the healthcheck endpoint is listening on
   # @section -- application
   port: app-port
+# livenessEndpoint -- Override `healthcheckEndpoint` for the **liveness** probe only.
+# Liveness should be cheap and check only "is the process responsive" with no
+# database or downstream dependency checks. Keys set here override the matching
+# keys in `healthcheckEndpoint`; unset keys fall through. Leave as `{}` to inherit
+# the existing `healthcheckEndpoint` (preserves chart pre-0.46.0 behaviour).
+# @section -- application
+livenessEndpoint: {}
+# livenessEndpoint:
+#   path: /livez
+# readinessEndpoint -- Override `healthcheckEndpoint` for the **readiness** probe
+# (and startup probe, which mirrors it). Readiness can legitimately go red on
+# transient downstream blips without warranting a pod restart. Keys set here
+# override the matching keys in `healthcheckEndpoint`; unset keys fall through.
+# @section -- application
+readinessEndpoint: {}
 resources:
   # resources.cpu -- Requested CPU time for the pod
   # @section -- application
