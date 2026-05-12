@@ -269,6 +269,19 @@ tests:
             port: metrics-port
             scheme: HTTP
 
+  - it: should render mixed-protocol probes when livenessEndpoint overrides type to grpc
+    template: kubernetes/deployment.yaml
+    set:
+      livenessEndpoint:
+        type: grpc
+    asserts:
+      - exists:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.grpc
+      - exists:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe.httpGet
+      - notExists:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.httpGet
+
   - it: should create Deployment with default ports configured
     template: kubernetes/deployment.yaml
     asserts:
