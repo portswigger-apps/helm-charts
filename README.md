@@ -44,6 +44,23 @@ know about paths, ports, annotations etc...
 
 
 
+## Consuming the charts
+
+These charts are published to GHCR as OCI artifacts at `oci://ghcr.io/portswigger-apps/charts/{app,cron,infra}`. They're set to **Internal** visibility — any repo in the `portswigger-apps` enterprise can pull them, but they are not publicly accessible.
+
+In a `helmfile.yaml`, reference them directly by OCI URL — no `repositories:` block needed:
+
+```yaml
+releases:
+  - name: my-app
+    chart: oci://ghcr.io/portswigger-apps/charts/app
+    version: 1.2.3
+```
+
+For local development (running `helmfile diff` on your laptop), see [Authenticating to the chart registry](../platform-docs/docs/app-platform/user/getting-started.md#authenticating-to-the-chart-registry) — a `helm registry login ghcr.io` is required once per machine.
+
+In CI, the shared `helmfile-deployment.yaml` workflow handles `helm registry login` automatically using the calling workflow's `GITHUB_TOKEN`.
+
 ## Other guidance
 
 - **We don't use shared templates.** It is possible to reference helper functions across chart boundaries, but
@@ -64,4 +81,4 @@ to appear in the README. For example, `ciliumNetworkPolicy.enabled` allows you t
 we don't want to encourage it. When someone thinks something might be hard, they are likely to disable it and copy that config
 across all the apps that they create... `chmod 777 ...`, `sudo EVERYTHING`, `su root`, `service iptables stop`, `sudo setenforce Permissive`...
 
-- **REMEMBER: These charts are public. Avoid exposing underlying service details in things like test data.**
+- **REMEMBER: These charts are internal-only.** They're not exposed to the public internet, but they are visible to anyone in the `portswigger-apps` enterprise. Avoid embedding secrets, but exposing service names / namespaces is fine.
