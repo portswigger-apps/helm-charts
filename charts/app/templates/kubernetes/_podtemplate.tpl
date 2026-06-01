@@ -3,18 +3,22 @@
 {{/*
 Outputs a configured healthcheck used in startup, liveness and readiness probes.
 gRPC requires port number, http can use port name.
+
+Argument: a dict with keys
+  endpoint - the resolved endpoint config (type, path, port, grpcService)
+  ports    - the ports map (typically .Values.ports)
 */}}
 {{- define "app.healthcheck" }}
-{{- if eq .Values.healthcheckEndpoint.type "grpc" }}
+{{- if eq .endpoint.type "grpc" }}
 grpc:
-  port: {{ (get (get .Values.ports (toString .Values.healthcheckEndpoint.port) | default dict) "port") | default .Values.healthcheckEndpoint.port }}
-  {{- with .Values.healthcheckEndpoint.grpcService }}
+  port: {{ (get (get .ports (toString .endpoint.port) | default dict) "port") | default .endpoint.port }}
+  {{- with .endpoint.grpcService }}
   service: {{ . }}
   {{- end }}
-{{- else if eq .Values.healthcheckEndpoint.type "http" }}
+{{- else if eq .endpoint.type "http" }}
 httpGet:
-  path: {{ .Values.healthcheckEndpoint.path }}
-  port: {{ .Values.healthcheckEndpoint.port }}
+  path: {{ .endpoint.path }}
+  port: {{ .endpoint.port }}
   scheme: HTTP
 {{- end }}
 {{- end }}
@@ -67,19 +71,21 @@ Outputs a pod spec for use in different resources.
             containerPort: {{ $portSpec.port }}
             protocol: {{ $portSpec.protocol }}
         {{- end }}
+        {{- $readinessEndpoint := mergeOverwrite (deepCopy .Values.healthcheckEndpoint) (.Values.readinessEndpoint | default dict) }}
+        {{- $livenessEndpoint := mergeOverwrite (deepCopy .Values.healthcheckEndpoint) (.Values.livenessEndpoint | default dict) }}
         startupProbe:
-          {{ include "app.healthcheck" . | nindent 10 }}
+          {{ include "app.healthcheck" (dict "endpoint" $readinessEndpoint "ports" .Values.ports) | nindent 10 }}
           failureThreshold: 60
           periodSeconds: 5
           timeoutSeconds: 2
         readinessProbe:
-          {{ include "app.healthcheck" . | nindent 10 }}
+          {{ include "app.healthcheck" (dict "endpoint" $readinessEndpoint "ports" .Values.ports) | nindent 10 }}
           failureThreshold: 1
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
         livenessProbe:
-          {{ include "app.healthcheck" . | nindent 10 }}
+          {{ include "app.healthcheck" (dict "endpoint" $livenessEndpoint "ports" .Values.ports) | nindent 10 }}
           failureThreshold: 3
           periodSeconds: 10
           successThreshold: 1

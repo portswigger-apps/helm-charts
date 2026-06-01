@@ -200,6 +200,88 @@ tests:
             periodSeconds: 10
             timeoutSeconds: 2
 
+  - it: should apply livenessEndpoint to the liveness probe only when set
+    template: kubernetes/deployment.yaml
+    set:
+      livenessEndpoint:
+        path: /livez
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.httpGet.path
+          value: /livez
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe.httpGet.path
+          value: /health
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].startupProbe.httpGet.path
+          value: /health
+
+  - it: should apply readinessEndpoint to readiness and startup probes only when set
+    template: kubernetes/deployment.yaml
+    set:
+      readinessEndpoint:
+        path: /readyz
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe.httpGet.path
+          value: /readyz
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].startupProbe.httpGet.path
+          value: /readyz
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.httpGet.path
+          value: /health
+
+  - it: should apply both liveness and readiness overrides independently
+    template: kubernetes/deployment.yaml
+    set:
+      livenessEndpoint:
+        path: /livez
+      readinessEndpoint:
+        path: /readyz
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.httpGet.path
+          value: /livez
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe.httpGet.path
+          value: /readyz
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].startupProbe.httpGet.path
+          value: /readyz
+
+  - it: should inherit healthcheckEndpoint port when only path is overridden in livenessEndpoint
+    template: kubernetes/deployment.yaml
+    set:
+      ports:
+        metrics-port:
+          port: 9090
+          protocol: TCP
+      healthcheckEndpoint:
+        port: metrics-port
+      livenessEndpoint:
+        path: /livez
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.httpGet
+          value:
+            path: /livez
+            port: metrics-port
+            scheme: HTTP
+
+  - it: should render mixed-protocol probes when livenessEndpoint overrides type to grpc
+    template: kubernetes/deployment.yaml
+    set:
+      livenessEndpoint:
+        type: grpc
+    asserts:
+      - exists:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.grpc
+      - exists:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].readinessProbe.httpGet
+      - notExists:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].livenessProbe.httpGet
+
   - it: should create Deployment with default ports configured
     template: kubernetes/deployment.yaml
     asserts:

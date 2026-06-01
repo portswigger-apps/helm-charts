@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.45.0](https://img.shields.io/badge/Version-0.45.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.45.0](https://img.shields.io/badge/AppVersion-0.45.0-informational?style=flat-square)
+![Version: 0.46.0](https://img.shields.io/badge/Version-0.46.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.46.0](https://img.shields.io/badge/AppVersion-0.46.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -57,6 +57,8 @@ helm install app helm-charts/app
 | deployment.averageCpuUtilization | int | `9` | The target average CPU utilization percentage for the HorizontalPodAutoscaler |
 | deployment.averageMemoryUtilization | int | `disabled` | The target average Memory utilization percentage for the HorizontalPodAutoscaler |
 | deployment.customAutoscalingMetrics | list | `disabled` | Advanced: A list of custom metrics scalers. |
+| pdb.maxUnavailable | string | `"50%"` | Maximum pods that may be voluntarily disrupted at one time. Absolute integer (e.g. `1`) or percentage (e.g. `"50%"`). Only applied when `deployment.replicas > 1`. Mutually exclusive with `pdb.minAvailable`. |
+| pdb.minAvailable | string | `nil` | Minimum pods that must remain available. When set, takes precedence over `maxUnavailable`. Absolute integer or percentage. |
 | ports.app-port.port | int | `8080` | The port the application is listening on |
 | ports.app-port.protocol | string | `"TCP"` | The protocol the application uses. This should alost always be TCP |
 | ports.app-port.expose | bool | `true` | Whether the port should be accessible to the cluster and outside world |
@@ -66,6 +68,8 @@ helm install app helm-charts/app
 | metricsEndpoint.interval | string | `"15s"` | The interval at which metrics are scraped from the endpoint |
 | healthcheckEndpoint.path | string | `"/health"` | The path of the applications HTTP healthcheck endpoint |
 | healthcheckEndpoint.port | string | `"app-port"` | TThe name of the port that the healthcheck endpoint is listening on |
+| livenessEndpoint | object | `{}` | Override `healthcheckEndpoint` for the **liveness** probe only. Liveness should be cheap and check only "is the process responsive" with no database or downstream dependency checks. Keys set here override the matching keys in `healthcheckEndpoint`; unset keys fall through. Leave as `{}` to inherit the existing `healthcheckEndpoint` (preserves chart pre-0.46.0 behaviour). |
+| readinessEndpoint | object | `{}` | Override `healthcheckEndpoint` for the **readiness** probe (and startup probe, which mirrors it). Readiness can legitimately go red on transient downstream blips without warranting a pod restart. Keys set here override the matching keys in `healthcheckEndpoint`; unset keys fall through. |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
 

@@ -18,3 +18,41 @@ tests:
           count: 1
       - isKind:
           of: PodDisruptionBudget
+
+  - it: should default to maxUnavailable 50% when replicas is greater than 1
+    set:
+      deployment:
+        replicas: 2
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: "50%"
+      - notExists:
+          path: spec.minAvailable
+
+  - it: should honour a custom maxUnavailable value
+    set:
+      deployment:
+        replicas: 2
+      pdb:
+        maxUnavailable: 1
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - notExists:
+          path: spec.minAvailable
+
+  - it: should use minAvailable when set, taking precedence over maxUnavailable
+    set:
+      deployment:
+        replicas: 3
+      pdb:
+        minAvailable: 2
+        maxUnavailable: 1
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 2
+      - notExists:
+          path: spec.maxUnavailable
