@@ -13,6 +13,10 @@ jobs:
   test-and-release:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write     # needed by chart-releaser-action
+      packages: write     # needed for OCI push to GHCR
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,7 +34,7 @@ jobs:
           helm-version: "v3.19.4"
           additional-helm-plugins: >-
             https://github.com/helm-unittest/helm-unittest
-            
+
       - name: Lint
         run: helm lint charts/*/
 
@@ -43,3 +47,22 @@ jobs:
         env:
           CR_SKIP_EXISTING: "true"
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Login to GHCR
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.actor }}
+        run: printf '%s' "$GH_TOKEN" | helm registry login ghcr.io -u "$GH_USER" --password-stdin
+
+      - name: Package and push charts to GHCR (OCI)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          set -euo pipefail
+          mkdir -p .cr-release-packages-oci
+          for chart_dir in charts/*/; do
+            helm package "$chart_dir" -d .cr-release-packages-oci
+          done
+          for pkg in .cr-release-packages-oci/*.tgz; do
+            helm push "$pkg" oci://ghcr.io/portswigger-apps/charts
+          done
