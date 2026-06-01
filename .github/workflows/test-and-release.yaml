@@ -41,19 +41,19 @@ jobs:
       - name: Test
         run: helm unittest --strict charts/*/
 
-      - name: Release
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: helm/chart-releaser-action@v1.5.0
-        env:
-          CR_SKIP_EXISTING: "true"
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
       - name: Login to GHCR
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_USER: ${{ github.actor }}
         run: printf '%s' "$GH_TOKEN" | helm registry login ghcr.io -u "$GH_USER" --password-stdin
+
+      - name: Release
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: helm/chart-releaser-action@v1.5.0
+        env:
+          CR_SKIP_EXISTING: "true"
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Package and push charts to GHCR (OCI)
         if: ${{ github.ref == 'refs/heads/main' }}

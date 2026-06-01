@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.4.9](https://img.shields.io/badge/Version-0.4.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.9](https://img.shields.io/badge/AppVersion-0.4.9-informational?style=flat-square)
+![Version: 0.4.10](https://img.shields.io/badge/Version-0.4.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.10](https://img.shields.io/badge/AppVersion-0.4.10-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -14,7 +14,7 @@ helm install cron helm-charts/cron
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://portswigger-apps.github.io/helm-charts/ | infra | 0.22.7 |
+| oci://ghcr.io/portswigger-apps/charts | infra | 0.26.0 |
 
 ## Values
 

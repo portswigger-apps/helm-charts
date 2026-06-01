@@ -4,9 +4,9 @@ description: A Helm "monochart" for deploying common application patterns
 
 type: application
 
-version: 0.46.0
+version: 0.46.1
 
-appVersion: 0.46.0
+appVersion: 0.46.1
 
 keywords:
   - app
@@ -15,4 +15,4 @@ keywords:
 dependencies:
   - name: infra
     version: 0.26.0
-    repository: https://portswigger-apps.github.io/helm-charts/
+    repository: oci://ghcr.io/portswigger-apps/charts
