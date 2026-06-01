@@ -61,6 +61,7 @@ jobs:
           set -euo pipefail
           mkdir -p .cr-release-packages-oci
           for chart_dir in charts/*/; do
+            helm dependency update "$chart_dir"
             helm package "$chart_dir" -d .cr-release-packages-oci
           done
           for pkg in .cr-release-packages-oci/*.tgz; do
