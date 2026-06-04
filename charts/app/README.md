@@ -108,7 +108,6 @@ helm install app helm-charts/app
 | infra.cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | infra.cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
 | infra.cloudfront.restrictToOffice | bool | `true` | Set to `false` to allow access to the `CloudFrontSite` outside of the office IPs. (managed outside of app-chart) |
-| infra.cloudfront.edgeAllowlist | string | `""` | Named edge WAF posture (`public`|`office`|`office-auth0`). When set, supersedes `infra.cloudfront.restrictToOffice`. (managed outside of app-chart) |
 | infra.cloudfront.originHeaderAuth | bool | `true` | Set to 'true' to enable authentication between CloudFront and the origin |
 | infra.cloudfront.defaultCacheBehavior.allowedMethods | string | `"read"` | Whether `read` or `all` HTTP methods are allowed by the `CloudFrontSite` |
 | infra.cloudfront.defaultCacheBehavior.minTtl | int | `0` | The minimum time-to-live for the `CloudFrontSite` cache objects |

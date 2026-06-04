@@ -51,7 +51,6 @@ helm install infra helm-charts/infra
 | cloudfront.domainName | string | `""` | The presentation domain name for the `CloudFrontSite` resource |
 | cloudfront.targetOriginDomainName | string | `.Values.global.ingress.host` | The target origin domain name that the `CloudFrontSite` resource fronts |
 | cloudfront.restrictToOffice | bool | `true` | Set to `true` to restrict access to the `CloudFrontSite` to the office IP ranges |
-| cloudfront.edgeAllowlist | string | unset | Named edge WAF posture (`public`|`office`|`office-auth0`). When set, supersedes `cloudfront.restrictToOffice`. Leave unset to keep using `restrictToOffice`. |
 | cloudfront.wildcard | bool | `false` | Allows for requests to domain name with wildcard *.domainName |
 | cloudfront.geoRestriction.restrictionType | string | `"none"` | Whether to `allow` or `deny` the configured locations access to the `CloudFrontSite`. Set to `none` to remove all restrictions |
 | cloudfront.geoRestriction.locations | list | `[]` | A list of ISO ALPHA-2 country codes to apply restrictions to |

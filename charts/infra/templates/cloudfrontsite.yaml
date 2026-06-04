@@ -19,7 +19,4 @@ spec:
     grpcEnabled: {{ .Values.cloudfront.defaultCacheBehavior.grpcEnabled }}
     {{- end }}
   restrictToOffice: {{ .Values.cloudfront.restrictToOffice | quote}}
-  {{- with .Values.cloudfront.edgeAllowlist }}
-  edgeAllowlist: {{ . | quote }}
-  {{- end }}
 {{- end -}}
