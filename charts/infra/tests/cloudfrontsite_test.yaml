@@ -81,6 +81,46 @@ tests:
               allowlistedNames:
                 - my-query-string
 
+  - it: should emit edgeAllowlist when set and still emit restrictToOffice
+    set:
+      global:
+        ingress:
+          host: example.com
+      cloudfront:
+        enabled: true
+        restrictToOffice: true
+        edgeAllowlist: office-auth0
+        domainName: cloudfront.example.com
+        hostedZoneId: ZABCDEFGHIJKL
+        defaultCacheBehavior:
+          allowedMethods: all
+    asserts:
+      - equal:
+          path: spec.edgeAllowlist
+          value: office-auth0
+      - equal:
+          path: spec.restrictToOffice
+          value: "true"
+
+  - it: should NOT emit edgeAllowlist when unset (back-compat)
+    set:
+      global:
+        ingress:
+          host: example.com
+      cloudfront:
+        enabled: true
+        restrictToOffice: true
+        domainName: cloudfront.example.com
+        hostedZoneId: ZABCDEFGHIJKL
+        defaultCacheBehavior:
+          allowedMethods: all
+    asserts:
+      - notExists:
+          path: spec.edgeAllowlist
+      - equal:
+          path: spec.restrictToOffice
+          value: "true"
+
   - it: should create a CloudFrontSite with gRPC enabled
     set:
       cloudfront:
