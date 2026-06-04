@@ -104,6 +104,11 @@ cloudfront:
   # @section -- cloudfront
   restrictToOffice: true
 
+  # cloudfront.edgeAllowlist -- Named edge WAF posture (`public`|`office`|`office-auth0`). When set, supersedes `cloudfront.restrictToOffice`. Leave unset to keep using `restrictToOffice`.
+  # @default -- unset
+  # @section -- cloudfront
+  edgeAllowlist: ""
+
   # cloudfront.wildcard -- Allows for requests to domain name with wildcard *.domainName
   # @section -- cloudfront
   wildcard: false
