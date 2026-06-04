@@ -381,6 +381,9 @@ infra:
     # infra.cloudfront.restrictToOffice -- Set to `false` to allow access to the `CloudFrontSite` outside of the office IPs. (managed outside of app-chart)
     # @section -- infra
     restrictToOffice: true
+    # infra.cloudfront.edgeAllowlist -- Named edge WAF posture (`public`|`office`|`office-auth0`). When set, supersedes `infra.cloudfront.restrictToOffice`. (managed outside of app-chart)
+    # @section -- infra
+    edgeAllowlist: ""
     # infra.cloudfront.originHeaderAuth -- Set to 'true' to enable authentication between CloudFront and the origin
     # @section -- infra
     originHeaderAuth: true
