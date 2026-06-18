@@ -166,6 +166,7 @@ tests:
           host: app.example.io
           proAuth:
             enabled: true
+            version: 1
     asserts:
       - hasDocuments:
           count: 1

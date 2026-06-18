@@ -18,11 +18,12 @@ tests:
           className: alb
           proAuth:
             enabled: true
+            version: 1
     asserts:
       - hasDocuments:
           count: 0
 
-  - it: should create pro-auth middleware with defaults when enabled
+  - it: should create pro-auth middleware pointing at v1 when version is 1
     set:
       global:
         ingress:
@@ -30,6 +31,7 @@ tests:
           host: app.example.io
           proAuth:
             enabled: true
+            version: 1
     asserts:
       - hasDocuments:
           count: 1
@@ -42,3 +44,46 @@ tests:
             trustForwardHeader: false
             authResponseHeaders:
               - Authorization
+
+  - it: should create pro-auth middleware pointing at v2 when version is 2
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          proAuth:
+            enabled: true
+            version: 2
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.forwardAuth.address
+          value: http://auth-burp-forwardauth.auth:2048/api/v2/auth
+
+  - it: should fail when proAuth is enabled but version is unset
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          proAuth:
+            enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "global.ingress.proAuth.version is required when proAuth is enabled (must be 1 or 2)"
+
+  - it: should fail when proAuth version is not 1 or 2
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          proAuth:
+            enabled: true
+            version: 3
+    asserts:
+      - failedTemplate:
+          errorMessage: "global.ingress.proAuth.version must be 1 or 2, got 3"

@@ -60,6 +60,9 @@ global:
       # global.ingress.proAuth.enabled -- Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Will copy a JWT from the auth service to the Authorization header.
       # @section -- global
       enabled: false
+      # global.ingress.proAuth.version -- ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1` or `2`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow).
+      # @section -- global
+      version: ""
   serviceAccount:
     # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
     # @section -- global
