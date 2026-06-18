@@ -36,6 +36,7 @@ helm install app helm-charts/app
 | global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges |
 | global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests. |
 | global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Will copy a JWT from the auth service to the Authorization header. |
+| global.ingress.proAuth.version | string | `""` | ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1` or `2`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow). |
 | global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created |
 | global.serviceAccount.name | string | `.Release.Name` | `ServiceAccount` name. Use with `global.serviceAccount.enabled: false` to use an existing `ServiceAccount` |
 | global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false` |

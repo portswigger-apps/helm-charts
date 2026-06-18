@@ -236,7 +236,11 @@ auth-burp-forwardauth
 {{- end -}}
 
 {{- define "app.proAuthAddress" -}}
-http://{{ include "app.proAuthServiceName" . }}.{{ include "app.proAuthNamespace" . }}:2048/api/v1/auth
+{{- $version := required "global.ingress.proAuth.version is required when proAuth is enabled (must be 1 or 2)" .Values.global.ingress.proAuth.version -}}
+{{- if not (has (int $version) (list 1 2)) -}}
+{{- fail (printf "global.ingress.proAuth.version must be 1 or 2, got %v" $version) -}}
+{{- end -}}
+http://{{ include "app.proAuthServiceName" . }}.{{ include "app.proAuthNamespace" . }}:2048/api/v{{ $version }}/auth
 {{- end -}}
 
 {{/*
