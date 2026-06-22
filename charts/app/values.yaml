@@ -130,6 +130,13 @@ deployment:
   #     target:
   #       type: AverageValue
   #       averageValue: "160"
+  # deployment.terminationGracePeriodSeconds -- (int) Explicit pod terminationGracePeriodSeconds.
+  # When set, it overrides the value derived from `terminationDelay` — use it to give a workload
+  # a long graceful-drain window without inflating the preStop sleep. Leave unset to keep the
+  # historical `30 + terminationDelay.delaySeconds` behaviour.
+  # @default -- `30 + terminationDelay.delaySeconds`
+  # @section -- application
+  terminationGracePeriodSeconds: null
   terminationDelay:
     # @ignored
     # deployment.terminationDelay.enabled -- Set to `true` to add a sleeping preStop hook.

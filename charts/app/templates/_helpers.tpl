@@ -330,10 +330,16 @@ opensearch env variables
 {{- end -}}
 
 {{/*
-Calculate termination grace period seconds based on termination delay configuration
+Calculate termination grace period seconds.
+An explicit `deployment.terminationGracePeriodSeconds` always wins (lets a workload
+drain long-lived work independently of the preStop delay). Otherwise fall back to the
+historical `30 + terminationDelay.delaySeconds` (or a bare 30 when no delay is set), so
+charts that do not set the override render byte-identically.
 */}}
 {{- define "app.terminationGracePeriodSeconds" -}}
-{{- if and .Values.deployment.terminationDelay .Values.deployment.terminationDelay.enabled -}}
+{{- if .Values.deployment.terminationGracePeriodSeconds -}}
+{{- .Values.deployment.terminationGracePeriodSeconds -}}
+{{- else if and .Values.deployment.terminationDelay .Values.deployment.terminationDelay.enabled -}}
 {{- add 30 .Values.deployment.terminationDelay.delaySeconds -}}
 {{- else -}}
 30
