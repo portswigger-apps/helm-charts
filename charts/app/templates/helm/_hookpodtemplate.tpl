@@ -53,12 +53,13 @@ Outputs a pod spec for use in helm hooks.
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
-        {{- if or .Values.envFrom .Values.secretEnv }}
+        {{- $includeSecretEnv := and .Values.secretEnv .Values.hookSecretEnv }}
+        {{- if or .Values.envFrom $includeSecretEnv }}
         envFrom:
           {{- with .Values.envFrom }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-          {{- if .Values.secretEnv }}
+          {{- if $includeSecretEnv }}
           - secretRef:
               name: {{ .Release.Name }}-env
           {{- end }}

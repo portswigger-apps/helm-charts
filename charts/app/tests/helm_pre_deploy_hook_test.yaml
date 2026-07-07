@@ -200,3 +200,41 @@ tests:
           content:
             name: REDIS_READER_URL
             value: rediss://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_READER_HOST):$(REDIS_READER_PORT)
+
+  - it: should include secretEnv in envFrom by default
+    set:
+      preDeployCommand: ["python3"]
+      secretEnv:
+        SOME_SECRET: some-value
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].envFrom
+          content:
+            secretRef:
+              name: RELEASE-NAME-env
+
+  - it: should exclude secretEnv from envFrom when hookSecretEnv is false
+    # Covers the bootstrap-ordering case: pre-install/pre-upgrade/pre-rollback hooks run
+    # before the release's own secretEnv Secret is created, so a hook that requires it
+    # fails with "secret ... not found" the first time secretEnv is introduced.
+    set:
+      preDeployCommand: ["python3"]
+      secretEnv:
+        SOME_SECRET: some-value
+      hookSecretEnv: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].envFrom
+          content:
+            secretRef:
+              name: RELEASE-NAME-env
+
+  - it: should omit envFrom entirely when only secretEnv is set and hookSecretEnv is false
+    set:
+      preDeployCommand: ["python3"]
+      secretEnv:
+        SOME_SECRET: some-value
+      hookSecretEnv: false
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].envFrom
