@@ -537,12 +537,6 @@ preRollbackCommand: []
 # - manage.py
 # - rollback
 
-# hookSecretEnv -- Whether `preDeployCommand`/`preRollbackCommand` hook pods inherit `secretEnv`.
-# Defaults to `true` to match prior behaviour. Set to `false` if this is the first release
-# introducing `secretEnv` on a chart that also sets `preDeployCommand`/`preRollbackCommand`:
-# `pre-install`/`pre-upgrade`/`pre-rollback` hooks run *before* the release's own `secretEnv`
-# Secret is created, so a hook that requires it will fail with "secret ... not found" on that
-# first introduction. Once the Secret exists (e.g. after one release with this set to `false`),
-# it's safe to flip back to `true`.
+# hookSecretEnv -- Whether `preDeployCommand`/`preRollbackCommand` hooks inherit `secretEnv`. Defaults to `true`; set `false` for one release to break the bootstrap ordering race when first introducing `secretEnv` on a chart with these hooks (see README).
 # @section -- application
 hookSecretEnv: true
