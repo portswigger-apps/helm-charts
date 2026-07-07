@@ -157,6 +157,7 @@ helm install app helm-charts/app
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. See examples in values.yaml |
 | preRollbackCommand | string[] | `[]` | Command to run before a rollback. See examples in values.yaml |
+| hookSecretEnv | bool | `true` | Whether `preDeployCommand`/`preRollbackCommand` hook pods inherit `secretEnv`. Defaults to `true` to match prior behaviour. Set to `false` if this is the first release introducing `secretEnv` on a chart that also sets `preDeployCommand`/`preRollbackCommand`: `pre-install`/`pre-upgrade`/`pre-rollback` hooks run before the release's own `secretEnv` Secret is created, so a hook that requires it will fail with "secret ... not found" on that first introduction. Once the Secret exists, it's safe to flip back to `true`. |
 
 ---
 
