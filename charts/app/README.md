@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.46.1](https://img.shields.io/badge/Version-0.46.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.46.1](https://img.shields.io/badge/AppVersion-0.46.1-informational?style=flat-square)
+![Version: 0.50.0](https://img.shields.io/badge/Version-0.50.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.50.0](https://img.shields.io/badge/AppVersion-0.50.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://ghcr.io/portswigger-apps/charts | infra | 0.26.0 |
+| oci://ghcr.io/portswigger-apps/charts | infra | 0.27.0 |
 
 ## Values
 
@@ -58,6 +58,7 @@ helm install app helm-charts/app
 | deployment.averageCpuUtilization | int | `9` | The target average CPU utilization percentage for the HorizontalPodAutoscaler |
 | deployment.averageMemoryUtilization | int | `disabled` | The target average Memory utilization percentage for the HorizontalPodAutoscaler |
 | deployment.customAutoscalingMetrics | list | `disabled` | Advanced: A list of custom metrics scalers. |
+| deployment.terminationGracePeriodSeconds | int | `30 + terminationDelay.delaySeconds` | Explicit pod terminationGracePeriodSeconds. When set, it overrides the value derived from `terminationDelay` — use it to give a workload a long graceful-drain window without inflating the preStop sleep. Leave unset to keep the historical `30 + terminationDelay.delaySeconds` behaviour. |
 | pdb.maxUnavailable | string | `"50%"` | Maximum pods that may be voluntarily disrupted at one time. Absolute integer (e.g. `1`) or percentage (e.g. `"50%"`). Only applied when `deployment.replicas > 1`. Mutually exclusive with `pdb.minAvailable`. |
 | pdb.minAvailable | string | `nil` | Minimum pods that must remain available. When set, takes precedence over `maxUnavailable`. Absolute integer or percentage. |
 | ports.app-port.port | int | `8080` | The port the application is listening on |
@@ -73,6 +74,7 @@ helm install app helm-charts/app
 | readinessEndpoint | object | `{}` | Override `healthcheckEndpoint` for the **readiness** probe (and startup probe, which mirrors it). Readiness can legitimately go red on transient downstream blips without warranting a pod restart. Keys set here override the matching keys in `healthcheckEndpoint`; unset keys fall through. |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
+| hookSecretEnv | bool | `true` | Whether `preDeployCommand`/`preRollbackCommand` hooks inherit `secretEnv`. Defaults to `true`; set `false` for one release to break the bootstrap ordering race when first introducing `secretEnv` on a chart with these hooks (see README). |
 
 ### network
 
@@ -157,7 +159,6 @@ helm install app helm-charts/app
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
 | preDeployCommand | string[] | `[]` | Command to run before install and upgrade of your application. See examples in values.yaml |
 | preRollbackCommand | string[] | `[]` | Command to run before a rollback. See examples in values.yaml |
-| hookSecretEnv | bool | `true` | Whether `preDeployCommand`/`preRollbackCommand` hook pods inherit `secretEnv`. Defaults to `true` to match prior behaviour. Set to `false` if this is the first release introducing `secretEnv` on a chart that also sets `preDeployCommand`/`preRollbackCommand`: `pre-install`/`pre-upgrade`/`pre-rollback` hooks run before the release's own `secretEnv` Secret is created, so a hook that requires it will fail with "secret ... not found" on that first introduction. Once the Secret exists, it's safe to flip back to `true`. |
 
 ---
 
