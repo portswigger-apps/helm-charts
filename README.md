@@ -10,10 +10,22 @@ You'll need the following installed:
  - Helm unittest plugin: https://github.com/helm-unittest/helm-unittest?tab=readme-ov-file#install
  - pre-commit: https://pre-commit.com/#install
 
+Then, from the repo root, install the git hook so it runs automatically on every commit:
+
+```sh
+pre-commit install
+```
+
+Without this step `pre-commit` is just a config file — nothing runs it, and README drift
+(stale version badges, missing/misplaced values) won't be caught until someone notices by eye.
+CI does not currently run `pre-commit` either, so this is the only thing standing between a
+values.yaml change and a stale README.
+
 ## Documentation
 
-We use `helm-docs` installed as a pre-commit hook to regenerate READMEs with Helm chart
-values in a table.
+We use `helm-docs`, run via the `pre-commit` git hook installed above, to regenerate READMEs
+with Helm chart values in a table. Run `pre-commit run --all-files` to regenerate on demand
+(e.g. if you skipped installing the hook, or amended a commit with `--no-verify`).
 
 ## Unit tests
 
