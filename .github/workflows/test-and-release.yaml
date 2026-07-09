@@ -28,6 +28,33 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      # helm-docs' pre-commit hook shells out to a pre-installed binary rather
+      # than building its own (unlike the other two hooks below) — install it
+      # here, pinned from .pre-commit-config.yaml's own `rev` so the two can't
+      # drift apart.
+      - name: Install helm-docs
+        run: |
+          set -euo pipefail
+          VERSION=$(awk '/norwoodj\/helm-docs/{found=1} found && /rev:/{print $2; exit}' .pre-commit-config.yaml)
+          curl -sSL "https://github.com/norwoodj/helm-docs/releases/download/${VERSION}/helm-docs_${VERSION#v}_Linux_x86_64.tar.gz" \
+            | tar xz -C /usr/local/bin helm-docs
+          helm-docs --version
+
+      # Runs the same hooks as `pre-commit install` locally (see CLAUDE.md /
+      # README "Getting started") — chiefly helm-docs, which regenerates each
+      # chart's README from values.yaml. Nothing enforced this before: a
+      # contributor who skipped `pre-commit install` (or used --no-verify)
+      # could merge a stale README with only human review to catch it, which
+      # is exactly how the app chart's version badge drifted across three
+      # releases (#37, #38, #39).
+      - name: Pre-commit
+        uses: pre-commit/action@v3.0.1
+
       - name: Setup Helmfile
         uses: mamezou-tech/setup-helmfile@v2.1.0
         with:
