@@ -53,10 +53,11 @@ Outputs a pod spec for use in different resources.
         {{- if .Values.deployment.terminationDelay.enabled }}
         lifecycle:
           preStop:
-            exec:
-              command:
-              - sleep
-              - {{ .Values.deployment.terminationDelay.delaySeconds | quote }}
+            # Native SleepAction (k8s >=1.30): runs in the kubelet, so it works on
+            # distroless images that have no `sleep` binary. An exec `sleep` hook
+            # silently fails there (FailedPreStopHook), skipping the drain window.
+            sleep:
+              seconds: {{ .Values.deployment.terminationDelay.delaySeconds }}
         {{- end }}
         resources:
           requests:

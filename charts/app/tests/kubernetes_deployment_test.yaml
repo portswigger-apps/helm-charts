@@ -914,10 +914,8 @@ tests:
           path: spec.template.spec.terminationGracePeriodSeconds
           value: 45
       - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].lifecycle.preStop.exec.command
-          value:
-            - sleep
-            - "15"
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].lifecycle.preStop.sleep.seconds
+          value: 15
 
   - it: should use explicit terminationGracePeriodSeconds override when set
     template: kubernetes/deployment.yaml
@@ -946,10 +944,8 @@ tests:
           value: 330
       # preStop still renders from terminationDelay; only the grace period is overridden.
       - equal:
-          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].lifecycle.preStop.exec.command
-          value:
-            - sleep
-            - "15"
+          path: spec.template.spec.containers[?(@.name == "RELEASE-NAME")].lifecycle.preStop.sleep.seconds
+          value: 15
 
   - it: should not enable NATS by default
     template: kubernetes/deployment.yaml
