@@ -1,4 +1,5 @@
 {{- if and .Values.s3Bucket.enabled .Values.s3Bucket.create }}
+{{- include "infra.s3Bucket.validateVersioningDependents" . }}
 
 apiVersion: platform.portswigger.io/v1alpha1
 kind: S3Bucket
@@ -9,6 +10,7 @@ metadata:
 spec:
   irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
   versioning: {{ .Values.s3Bucket.versioning }}
+  replication: {{ .Values.s3Bucket.replication }}
   {{- with .Values.s3Bucket.lifecycleRules }}
   lifecycleRules:
   {{- range $i, $rule := . }}
