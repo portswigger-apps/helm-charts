@@ -151,6 +151,86 @@ tests:
           path: spec.versioning
           value: true
 
+  - it: should set replication to false by default
+    set:
+      s3Bucket:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.replication
+          value: false
+
+  - it: should set replication to true when replication and versioning are true
+    set:
+      s3Bucket:
+        enabled: true
+        versioning: true
+        replication: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.versioning
+          value: true
+      - equal:
+          path: spec.replication
+          value: true
+      - equal:
+          path: spec.replicationRetentionDays
+          value: 90
+
+  - it: should set replicationRetentionDays to 90 by default
+    set:
+      s3Bucket:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.replicationRetentionDays
+          value: 90
+
+  - it: should set replicationRetentionDays when overridden
+    set:
+      s3Bucket:
+        enabled: true
+        versioning: true
+        replication: true
+        replicationRetentionDays: 30
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.replication
+          value: true
+      - equal:
+          path: spec.replicationRetentionDays
+          value: 30
+
+  - it: should fail when replication is true and versioning is false
+    set:
+      s3Bucket:
+        enabled: true
+        versioning: false
+        replication: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "s3Bucket.replication requires s3Bucket.versioning: true — S3 replication cannot be enabled on a non-versioned bucket."
+
+  - it: should still render versioning when versioning is true and replication is false
+    set:
+      s3Bucket:
+        enabled: true
+        versioning: true
+        replication: false
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.versioning
+          value: true
+      - equal:
+          path: spec.replication
+          value: false
+
   - it: should not set bucketAccessPolicies by default
     set:
       s3Bucket:

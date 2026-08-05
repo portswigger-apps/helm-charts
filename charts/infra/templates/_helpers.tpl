@@ -67,6 +67,23 @@ Fetch given field from existing secret or generate a new random value
 
 
 {{/*
+Guards s3Bucket features that AWS only permits on a versioned bucket.
+
+Deliberately named for the general case rather than for any one feature: S3
+Object Lock has the identical `versioning: true` prerequisite and is queued
+(BAE-1538), so extend this helper with another check rather than adding a
+second one.
+
+Each check covers both directions at once — enabling the dependent feature
+without versioning, and removing versioning from a bucket that already has it.
+*/}}
+{{- define "infra.s3Bucket.validateVersioningDependents" -}}
+{{- if and .Values.s3Bucket.replication (not .Values.s3Bucket.versioning) -}}
+{{ fail "s3Bucket.replication requires s3Bucket.versioning: true — S3 replication cannot be enabled on a non-versioned bucket." }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Returns the managed cache policy id based on policy name
 */}}
 {{- define "infra.cloudfrontRouter.cachePolicyId" -}}

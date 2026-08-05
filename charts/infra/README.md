@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.27.0](https://img.shields.io/badge/Version-0.27.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.27.0](https://img.shields.io/badge/AppVersion-0.27.0-informational?style=flat-square)
+![Version: 0.28.0](https://img.shields.io/badge/Version-0.28.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.28.0](https://img.shields.io/badge/AppVersion-0.28.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -40,6 +40,8 @@ helm install infra helm-charts/infra
 | s3Bucket.nameOverride | string | `""` | Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere |
 | s3Bucket.bucketAccessPolicies | list | `[]` | Additional IAM policy statements to include in the S3 bucket resource policy. KMS key permissions are auto-derived from S3 actions (`s3:PutObject` grants `kms:GenerateDataKey`, `s3:GetObject` grants `kms:Decrypt`). |
 | s3Bucket.versioning | bool | `false` | Set to `true` to enable versioning on the `s3Bucket` |
+| s3Bucket.replication | bool | `false` | Set to `true` to provision a same-account, same-region replica of the `s3Bucket` for operational recovery. Requires `s3Bucket.versioning: true` — S3 replication cannot be enabled on a non-versioned bucket. |
+| s3Bucket.replicationRetentionDays | int | `90` | How long the replica keeps an object version after it stops being current, i.e. counted from the moment the object is overwritten or deleted in the source — **not** from when it was written. Objects still live in the source are never expired, so the replica always holds a copy of live data however old that data is. Ignored unless `s3Bucket.replication` is `true`. |
 | s3Bucket.lifecycleRules | list | `[]` | Configure the `s3Bucket` storage [lifecycle rules](https://marketplace.upbound.io/providers/upbound/provider-aws-s3/v1.2.1/resources/s3.aws.upbound.io/BucketLifecycleConfiguration/v1beta1#doc:spec-forProvider-rule) |
 
 ### cloudfront
