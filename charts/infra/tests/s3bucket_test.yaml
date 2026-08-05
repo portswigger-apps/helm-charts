@@ -175,6 +175,35 @@ tests:
       - equal:
           path: spec.replication
           value: true
+      - equal:
+          path: spec.replicationRetentionDays
+          value: 90
+
+  - it: should set replicationRetentionDays to 90 by default
+    set:
+      s3Bucket:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.replicationRetentionDays
+          value: 90
+
+  - it: should set replicationRetentionDays when overridden
+    set:
+      s3Bucket:
+        enabled: true
+        versioning: true
+        replication: true
+        replicationRetentionDays: 30
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.replication
+          value: true
+      - equal:
+          path: spec.replicationRetentionDays
+          value: 30
 
   - it: should fail when replication is true and versioning is false
     set:

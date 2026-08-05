@@ -11,6 +11,7 @@ spec:
   irsaRoleName: {{ default ( include "infra.aws.name" . ) .Values.global.serviceAccount.name }}-irsarole
   versioning: {{ .Values.s3Bucket.versioning }}
   replication: {{ .Values.s3Bucket.replication }}
+  replicationRetentionDays: {{ .Values.s3Bucket.replicationRetentionDays }}
   {{- with .Values.s3Bucket.lifecycleRules }}
   lifecycleRules:
   {{- range $i, $rule := . }}
