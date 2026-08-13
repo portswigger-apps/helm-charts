@@ -1,6 +1,6 @@
 # cron
 
-![Version: 0.4.10](https://img.shields.io/badge/Version-0.4.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.10](https://img.shields.io/badge/AppVersion-0.4.10-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying cron jobs
 
@@ -54,6 +54,7 @@ helm install cron helm-charts/cron
 | cron.parallelism | int | `1` | Number of pods of the cron job to start |
 | cron.restartPolicy | string | `"Never"` | Whether or not the pod should restart on failure. Valid values are: `Never` or `onFailure` |
 | cron.timeoutSeconds | int | `86400` | The maximum amount of time the job should run for in seconds. |
+| cron.ttlSecondsAfterFinished | string | unset, i.e. Kubernetes' default retention | Seconds to keep a finished `Job`, and its pods, before the TTL controller deletes them. This applies to FAILED Jobs too, which is the reason to set it: a failed run's pods are otherwise retained until the Job is rotated out by `failedJobsHistoryLimit`, so a "pod not running" alert watching them never clears and one broken run pages forever rather than once. Pick a window long enough to read the logs in. Left unset, retention is unchanged from Kubernetes' default. `0` is not expressible here (it reads as unset); the smallest deleting value is `1`. |
 
 ### infra
 
