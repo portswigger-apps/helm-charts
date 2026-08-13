@@ -70,6 +70,17 @@ cron:
   # @section -- cron
   timeoutSeconds: 86400
 
+  # cron.ttlSecondsAfterFinished -- Seconds to keep a finished `Job`, and its pods, before the
+  # TTL controller deletes them. This applies to FAILED Jobs too, which is the reason to set it:
+  # a failed run's pods are otherwise retained until the Job is rotated out by
+  # `failedJobsHistoryLimit`, so a "pod not running" alert watching them never clears and one
+  # broken run pages forever rather than once. Pick a window long enough to read the logs in.
+  # Left unset, retention is unchanged from Kubernetes' default. `0` is not expressible here
+  # (it reads as unset); the smallest deleting value is `1`.
+  # @default -- unset, i.e. Kubernetes' default retention
+  # @section -- cron
+  ttlSecondsAfterFinished:
+
 # env -- **Non-secret** environment variables to configure your application. Formatted as `ENV_VAR_NAME: env-var-value`
 # @section -- application
 env: {}

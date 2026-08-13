@@ -13,4 +13,7 @@ spec:
       activeDeadlineSeconds: {{ .Values.cron.timeoutSeconds }}
       parallelism: {{ .Values.cron.parallelism }}
       backoffLimit: {{ .Values.cron.retries }}
+      {{- if .Values.cron.ttlSecondsAfterFinished }}
+      ttlSecondsAfterFinished: {{ .Values.cron.ttlSecondsAfterFinished }}
+      {{- end }}
       template: {{ template "cron.podTemplate" . }}

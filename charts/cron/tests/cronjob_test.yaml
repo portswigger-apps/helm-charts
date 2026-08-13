@@ -294,3 +294,17 @@ tests:
               secretKeyRef:
                 name: override-opensearch
                 key: id
+
+  - it: should not set a job TTL by default
+    asserts:
+      - notExists:
+          path: spec.jobTemplate.spec.ttlSecondsAfterFinished
+
+  - it: should set the job TTL when one is given
+    set:
+      cron:
+        ttlSecondsAfterFinished: 3600
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.ttlSecondsAfterFinished
+          value: 3600
