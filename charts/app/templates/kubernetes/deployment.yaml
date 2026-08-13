@@ -12,7 +12,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 50%
-      maxUnavailable: 25%
+      maxSurge: {{ .Values.deployment.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.rollingUpdate.maxUnavailable }}
   minReadySeconds: 5
   template: {{ template "app.podTemplate" . }}

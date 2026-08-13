@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.50.1](https://img.shields.io/badge/Version-0.50.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.50.1](https://img.shields.io/badge/AppVersion-0.50.1-informational?style=flat-square)
+![Version: 0.51.0](https://img.shields.io/badge/Version-0.51.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.51.0](https://img.shields.io/badge/AppVersion-0.51.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -58,6 +58,8 @@ helm install app helm-charts/app
 | deployment.averageCpuUtilization | int | `9` | The target average CPU utilization percentage for the HorizontalPodAutoscaler |
 | deployment.averageMemoryUtilization | int | `disabled` | The target average Memory utilization percentage for the HorizontalPodAutoscaler |
 | deployment.customAutoscalingMetrics | list | `disabled` | Advanced: A list of custom metrics scalers. |
+| deployment.rollingUpdate.maxSurge | string | `"50%"` | Maximum extra pods (absolute integer or percentage) the rolling update may create above `deployment.replicas`. `"100%"` starts a full replacement set before any old pod is terminated. |
+| deployment.rollingUpdate.maxUnavailable | string | `"25%"` | Maximum pods (absolute integer or percentage) that may be unavailable during a rolling update. `0` guarantees the old pods keep serving until their replacements are Ready; combined with `maxSurge: "100%"` the old pods then all begin their graceful drain together. |
 | deployment.terminationGracePeriodSeconds | int | `30 + terminationDelay.delaySeconds` | Explicit pod terminationGracePeriodSeconds. When set, it overrides the value derived from `terminationDelay` — use it to give a workload a long graceful-drain window without inflating the preStop sleep. Leave unset to keep the historical `30 + terminationDelay.delaySeconds` behaviour. |
 | pdb.maxUnavailable | string | `"50%"` | Maximum pods that may be voluntarily disrupted at one time. Absolute integer (e.g. `1`) or percentage (e.g. `"50%"`). Only applied when `deployment.replicas > 1`. Mutually exclusive with `pdb.minAvailable`. |
 | pdb.minAvailable | string | `nil` | Minimum pods that must remain available. When set, takes precedence over `maxUnavailable`. Absolute integer or percentage. |

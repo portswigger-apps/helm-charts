@@ -130,6 +130,18 @@ deployment:
   #     target:
   #       type: AverageValue
   #       averageValue: "160"
+  rollingUpdate:
+    # deployment.rollingUpdate.maxSurge -- Maximum extra pods (absolute integer or
+    # percentage) the rolling update may create above `deployment.replicas`. `"100%"`
+    # starts a full replacement set before any old pod is terminated.
+    # @section -- application
+    maxSurge: "50%"
+    # deployment.rollingUpdate.maxUnavailable -- Maximum pods (absolute integer or
+    # percentage) that may be unavailable during a rolling update. `0` guarantees the
+    # old pods keep serving until their replacements are Ready; combined with
+    # `maxSurge: "100%"` the old pods then all begin their graceful drain together.
+    # @section -- application
+    maxUnavailable: "25%"
   # deployment.terminationGracePeriodSeconds -- (int) Explicit pod terminationGracePeriodSeconds.
   # When set, it overrides the value derived from `terminationDelay` — use it to give a workload
   # a long graceful-drain window without inflating the preStop sleep. Leave unset to keep the
