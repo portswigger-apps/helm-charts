@@ -1040,3 +1040,29 @@ tests:
           content:
             name: NATS_URL
             value: nats://nats-server.events.svc.cluster.local:4223
+  - it: should keep the historical rolling-update pacing by default
+    template: kubernetes/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.strategy
+          value:
+            type: RollingUpdate
+            rollingUpdate:
+              maxSurge: 50%
+              maxUnavailable: 25%
+
+  - it: should render configured rolling-update pacing
+    template: kubernetes/deployment.yaml
+    set:
+      deployment:
+        rollingUpdate:
+          maxSurge: 100%
+          maxUnavailable: 0
+    asserts:
+      - equal:
+          path: spec.strategy
+          value:
+            type: RollingUpdate
+            rollingUpdate:
+              maxSurge: 100%
+              maxUnavailable: 0
