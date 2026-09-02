@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.51.0](https://img.shields.io/badge/Version-0.51.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.51.0](https://img.shields.io/badge/AppVersion-0.51.0-informational?style=flat-square)
+![Version: 0.52.0](https://img.shields.io/badge/Version-0.52.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.52.0](https://img.shields.io/badge/AppVersion-0.52.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -37,6 +37,7 @@ helm install app helm-charts/app
 | global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests. |
 | global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Will copy a JWT from the auth service to the Authorization header. |
 | global.ingress.proAuth.version | string | `""` | ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1` or `2`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow). |
+| global.ingress.proAuth.serviceName | string | `""` | Name of the ForwardAuth `Service` (in the `auth` namespace) the pro-auth middleware forwards to. Empty means the shared `auth-burp-forwardauth`; set it to route a release through an audience-specific ForwardAuth instance (e.g. `burpat-reporting-forwardauth`, whose minted JWT `aud` only that service accepts). |
 | global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created |
 | global.serviceAccount.name | string | `.Release.Name` | `ServiceAccount` name. Use with `global.serviceAccount.enabled: false` to use an existing `ServiceAccount` |
 | global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false` |

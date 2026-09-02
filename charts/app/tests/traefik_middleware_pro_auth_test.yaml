@@ -63,6 +63,25 @@ tests:
           path: spec.forwardAuth.address
           value: http://auth-burp-forwardauth.auth:2048/api/v2/auth
 
+  - it: should forward to an audience-specific instance when serviceName is set
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          proAuth:
+            enabled: true
+            version: 2
+            serviceName: burpat-reporting-forwardauth
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.forwardAuth.address
+          value: http://burpat-reporting-forwardauth.auth:2048/api/v2/auth
+
   - it: should fail when proAuth is enabled but version is unset
     set:
       global:

@@ -232,7 +232,7 @@ auth
 {{- end -}}
 
 {{- define "app.proAuthServiceName" -}}
-auth-burp-forwardauth
+{{ .Values.global.ingress.proAuth.serviceName | default "auth-burp-forwardauth" }}
 {{- end -}}
 
 {{- define "app.proAuthAddress" -}}

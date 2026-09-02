@@ -63,6 +63,9 @@ global:
       # global.ingress.proAuth.version -- ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1` or `2`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow).
       # @section -- global
       version: ""
+      # global.ingress.proAuth.serviceName -- Name of the ForwardAuth `Service` (in the `auth` namespace) the pro-auth middleware forwards to. Empty means the shared `auth-burp-forwardauth`; set it to route a release through an audience-specific ForwardAuth instance (e.g. `burpat-reporting-forwardauth`, whose minted JWT `aud` only that service accepts).
+      # @section -- global
+      serviceName: ""
   serviceAccount:
     # global.serviceAccount.enabled -- Set to `false` to prevent the `ServiceAccount` from being created
     # @section -- global
