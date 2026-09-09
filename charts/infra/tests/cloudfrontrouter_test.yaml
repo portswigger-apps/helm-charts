@@ -207,3 +207,55 @@ tests:
                   queryStrings:
                     items:
                       - license
+
+  - it: should inject customHeader on the default and named origins when customHeaders is set
+    set:
+      global:
+      cloudfrontrouter:
+        enabled: true
+        domainName: cloudfront.example.com
+        origins:
+          - originId: website
+            domainName: www.example.com
+            customHeaders:
+              - name: X-Cloudfront-Auth
+                value: origin-secret
+        default:
+          domainName: default.example.com
+          customHeaders:
+            - name: X-Cloudfront-Auth
+              value: default-secret
+    asserts:
+      - equal:
+          path: spec.origins[0].originId
+          value: defaultOrigin
+      - equal:
+          path: spec.origins[0].customHeader
+          value:
+            - name: X-Cloudfront-Auth
+              value: default-secret
+      - equal:
+          path: spec.origins[1].originId
+          value: website
+      - equal:
+          path: spec.origins[1].customHeader
+          value:
+            - name: X-Cloudfront-Auth
+              value: origin-secret
+
+  - it: should not render customHeader when customHeaders is unset
+    set:
+      global:
+      cloudfrontrouter:
+        enabled: true
+        domainName: cloudfront.example.com
+        origins:
+          - originId: website
+            domainName: www.example.com
+        default:
+          domainName: default.example.com
+    asserts:
+      - notExists:
+          path: spec.origins[0].customHeader
+      - notExists:
+          path: spec.origins[1].customHeader

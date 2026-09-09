@@ -47,6 +47,10 @@ spec:
     {{ fail "cloudfrontrouter.default.domainName can not be empty"}}
     {{- end }}
     originId: defaultOrigin
+    {{- with .Values.cloudfrontrouter.default.customHeaders }}
+    customHeader:
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- range $origin := .Values.cloudfrontrouter.origins }}
   - customOriginConfig:
       httpPort: 80
@@ -58,6 +62,10 @@ spec:
         - TLSv1.2
     domainName: {{ $origin.domainName }}
     originId: {{ $origin.originId }}
+    {{- with $origin.customHeaders }}
+    customHeader:
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- $allowedHttpMethods := dict
     "read" (list "GET" "HEAD")
