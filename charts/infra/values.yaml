@@ -205,6 +205,10 @@ cloudfrontrouter:
     # # Custom origin MUST be available on 443 TLS 1.2+
     # - originId: website # this is id
     #   domainName: site.portswigger.net # This is custom origin hostname
+    #   # customHeaders -- Custom origin request headers injected by CloudFront (e.g. a shared secret the origin validates)
+    #   customHeaders:
+    #     - name: X-Cloudfront-Auth
+    #       value: <shared-secret>
     # - originId: website-static-cms
     #   domainName: website-cms-site.platform-dev.portswigger.io
 
@@ -234,6 +238,11 @@ cloudfrontrouter:
     originKeepaliveTimeout: ""
     originRequestPolicyName: AllViewerExceptHostHeader
     originRequestPolicyId: ""
+    # cloudfrontrouter.default.customHeaders -- Custom origin request headers injected by CloudFront for the default origin (e.g. a shared secret the origin validates)
+    # @section -- cloudfront router
+    customHeaders: []
+      # - name: X-Cloudfront-Auth
+      #   value: <shared-secret>
 
   # cloudfrontrouter.customCachePolicies -- Values for dynamic custom cache policies
   # @section -- cloudfront router
