@@ -530,21 +530,3 @@ tests:
             toEndpoints:
               - matchLabels:
                   app.kubernetes.io/name: nats
-
-  - it: should allow egress to Textract and STS when textract is enabled
-    set:
-      infra:
-        textract:
-          enabled: true
-    asserts:
-      - contains:
-          path: spec.egress
-          content:
-            toFQDNs:
-              - matchPattern: "sts.amazonaws.com"
-              - matchPattern: "sts.*.amazonaws.com"
-              - matchPattern: "textract.*.amazonaws.com"
-            toPorts:
-              - ports:
-                  - port: "443"
-                    protocol: TCP

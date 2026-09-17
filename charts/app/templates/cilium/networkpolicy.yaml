@@ -87,14 +87,13 @@ spec:
 
   {{- $s3Enabled := .Values.infra.s3Bucket.enabled }}
   {{- $bedrockEnabled := .Values.infra.bedrock.enabled }}
-  {{- $textractEnabled := .Values.infra.textract.enabled }}
   {{- $eventbridgeEnabled := .Values.infra.eventing.producer.enabled }}
   {{- $sqsEnabled := .Values.infra.eventing.consumer.enabled }}
   {{- $dynamodbEnabled := (not (empty (.Values.infra.dynamodb.tables ))) }}
   {{- $kinesisEnabled := .Values.infra.kinesis.enabled }}
   {{- $opensearchEnabled := .Values.infra.opensearch.enabled }}
   {{- $natsEnabled := .Values.infra.nats.enabled }}
-  {{- if or $s3Enabled $bedrockEnabled $textractEnabled $eventbridgeEnabled $sqsEnabled $dynamodbEnabled $kinesisEnabled $opensearchEnabled }}
+  {{- if or $s3Enabled $bedrockEnabled $eventbridgeEnabled $sqsEnabled $dynamodbEnabled $kinesisEnabled $opensearchEnabled }}
   - toFQDNs:
     - matchPattern: "sts.amazonaws.com"
     - matchPattern: "sts.*.amazonaws.com"
@@ -109,9 +108,6 @@ spec:
     {{- if $bedrockEnabled }}
     - matchPattern: "bedrock.*.amazonaws.com"
     - matchPattern: "bedrock-runtime.*.amazonaws.com"
-    {{- end }}
-    {{- if $textractEnabled }}
-    - matchPattern: "textract.*.amazonaws.com"
     {{- end }}
     {{- if $eventbridgeEnabled }}
     - matchName: "events.{{ .Values.global.aws.region }}.amazonaws.com"

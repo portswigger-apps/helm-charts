@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.52.0](https://img.shields.io/badge/Version-0.52.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.52.0](https://img.shields.io/badge/AppVersion-0.52.0-informational?style=flat-square)
+![Version: 0.51.0](https://img.shields.io/badge/Version-0.51.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.51.0](https://img.shields.io/badge/AppVersion-0.51.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://ghcr.io/portswigger-apps/charts | infra | 0.29.0 |
+| oci://ghcr.io/portswigger-apps/charts | infra | 0.27.0 |
 
 ## Values
 
@@ -123,7 +123,6 @@ helm install app helm-charts/app
 | infra.redis.size | string | `micro` | Options: micro, small, medium, large or xlarge |
 | infra.redis.version | string | `7` | Options: 7 |
 | infra.bedrock.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access. |
-| infra.textract.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable Amazon Textract document text detection. |
 | infra.eventing.producer.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable eventbridge access. |
 | infra.eventing.consumer.enabled | bool | `false` | Set to `true` to deploy an eventrule. |
 | infra.eventing.consumer.eventPattern | string | `""` | The pattern the rule should use to decide whether to send an event |
