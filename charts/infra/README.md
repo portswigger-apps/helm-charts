@@ -1,6 +1,6 @@
 # infra
 
-![Version: 0.28.0](https://img.shields.io/badge/Version-0.28.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.28.0](https://img.shields.io/badge/AppVersion-0.28.0-informational?style=flat-square)
+![Version: 0.29.0](https://img.shields.io/badge/Version-0.29.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.29.0](https://img.shields.io/badge/AppVersion-0.29.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common infrastructure
 
@@ -80,6 +80,12 @@ helm install infra helm-charts/infra
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | bedrock.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable bedrock access. |
+
+### textract
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| textract.enabled | bool | `false` | Set to `true` to deploy an IAM policy and role to be attached to your application to enable Amazon Textract document text detection. |
 
 ### cloudfront router
 
