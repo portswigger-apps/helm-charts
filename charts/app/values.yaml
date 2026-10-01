@@ -46,6 +46,9 @@ global:
     # global.ingress.ipAllowListCIDRs -- Extra IP CIDR ranges to allow access from.
     # @section -- global
     ipAllowListCIDRs: []
+    # global.ingress.ipAllowListRef -- Use an existing, centrally managed Traefik `Middleware` as the IP allowlist, given as `<namespace>-<name>@kubernetescrd`. It replaces this release's own `ipallowlist` Middleware in the chain rather than adding to it (Traefik requires every Middleware in a chain to pass, so two allowlists would only admit their intersection). `allowFromOffice` is then ignored, so the referenced Middleware must carry every range you need. Mutually exclusive with `ipAllowListCIDRs` and with CloudFront.
+    # @section -- global
+    ipAllowListRef: ""
     authentication:
       # global.ingress.authentication.enabled -- Set to `true` to require SSO authentication to access the application.
       # @section -- global

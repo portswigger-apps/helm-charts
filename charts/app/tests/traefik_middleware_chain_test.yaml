@@ -180,3 +180,93 @@ tests:
                 - name: NAMESPACE-RELEASE-NAME-ipallowlist@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
                 - name: NAMESPACE-RELEASE-NAME-pro-auth@kubernetescrd
+
+  - it: should replace the ipallowlist middleware with ipAllowListRef when set
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListRef: ingress-shared-ipallowlist@kubernetescrd
+          proAuth:
+            enabled: true
+            version: 2
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec
+          value:
+            chain:
+              middlewares:
+                - name: ingress-shared-ipallowlist@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
+                - name: NAMESPACE-RELEASE-NAME-pro-auth@kubernetescrd
+
+  - it: should keep ipAllowListRef first in the chain when SSO auth is enabled
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListRef: ingress-shared-ipallowlist@kubernetescrd
+          authentication:
+            enabled: true
+    asserts:
+      - equal:
+          path: spec.chain.middlewares
+          value:
+            - name: ingress-shared-ipallowlist@kubernetescrd
+            - name: NAMESPACE-RELEASE-NAME-headers@kubernetescrd
+            - name: NAMESPACE-RELEASE-NAME-redirect-auth@kubernetescrd
+            - name: NAMESPACE-RELEASE-NAME-forward-auth@kubernetescrd
+
+  - it: should fail when ipAllowListRef is not a kubernetescrd reference
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListRef: shared-ipallowlist
+    asserts:
+      - failedTemplate:
+          errorPattern: "global.ingress.ipAllowListRef must be a Traefik CRD reference"
+
+  - it: should fail when ipAllowListRef is combined with ipAllowListCIDRs
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListRef: ingress-shared-ipallowlist@kubernetescrd
+          ipAllowListCIDRs:
+            - 1.1.1.1/32
+    asserts:
+      - failedTemplate:
+          errorPattern: "mutually exclusive"
+
+  - it: should fail when ipAllowListRef is combined with CloudFront
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListRef: ingress-shared-ipallowlist@kubernetescrd
+      infra:
+        cloudfront:
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorPattern: "cannot be combined with CloudFront"
+
+  - it: should fail when ipAllowListRef is combined with allowFromCloudfront
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListRef: ingress-shared-ipallowlist@kubernetescrd
+          allowFromCloudfront: true
+    asserts:
+      - failedTemplate:
+          errorPattern: "cannot be combined with CloudFront"

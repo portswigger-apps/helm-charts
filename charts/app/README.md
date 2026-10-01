@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.52.0](https://img.shields.io/badge/Version-0.52.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.52.0](https://img.shields.io/badge/AppVersion-0.52.0-informational?style=flat-square)
+![Version: 0.53.0](https://img.shields.io/badge/Version-0.53.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.53.0](https://img.shields.io/badge/AppVersion-0.53.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -32,6 +32,7 @@ helm install app helm-charts/app
 | global.ingress.customResponseHeaders | object | `{"X-Robots-Tag":"noindex"}` | Add custom response headers to an apps `Ingress` |
 | global.ingress.allowFromOffice | bool | `true` | Allow access to the Traefik `Ingress` from PortSwigger office IP ranges |
 | global.ingress.ipAllowListCIDRs | list | `[]` | Extra IP CIDR ranges to allow access from. |
+| global.ingress.ipAllowListRef | string | `""` | Use an existing, centrally managed Traefik `Middleware` as the IP allowlist, given as `<namespace>-<name>@kubernetescrd`. It replaces this release's own `ipallowlist` Middleware in the chain rather than adding to it (Traefik requires every Middleware in a chain to pass, so two allowlists would only admit their intersection). `allowFromOffice` is then ignored, so the referenced Middleware must carry every range you need. Mutually exclusive with `ipAllowListCIDRs` and with CloudFront. |
 | global.ingress.authentication.enabled | bool | `false` | Set to `true` to require SSO authentication to access the application. |
 | global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges |
 | global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests. |
