@@ -244,6 +244,27 @@ http://{{ include "app.proAuthServiceName" . }}.{{ include "app.proAuthNamespace
 {{- end -}}
 
 {{/*
+Validate and return global.ingress.ipAllowListRef, an existing Traefik
+Middleware that replaces the per-release ipallowlist in the chain.
+Returns an empty string when unset.
+*/}}
+{{- define "app.ipAllowListRef" -}}
+{{- $ref := .Values.global.ingress.ipAllowListRef -}}
+{{- if $ref -}}
+{{- if not (regexMatch "^[a-z0-9]([-a-z0-9]*[a-z0-9])?@kubernetescrd$" $ref) -}}
+{{- fail (printf "global.ingress.ipAllowListRef must be a Traefik CRD reference of the form <namespace>-<name>@kubernetescrd, got %q" $ref) -}}
+{{- end -}}
+{{- if or .Values.infra.cloudfront.enabled .Values.infra.cloudfrontrouter.enabled .Values.global.ingress.allowFromCloudfront -}}
+{{- fail "global.ingress.ipAllowListRef cannot be combined with CloudFront (infra.cloudfront.enabled, infra.cloudfrontrouter.enabled or global.ingress.allowFromCloudfront)" -}}
+{{- end -}}
+{{- if .Values.global.ingress.ipAllowListCIDRs -}}
+{{- fail "global.ingress.ipAllowListRef and global.ingress.ipAllowListCIDRs are mutually exclusive: add the ranges to the referenced Middleware instead" -}}
+{{- end -}}
+{{- $ref -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the number of bytes given a value
 following a base 2 or base 10 number system.
 Input can be: b | B | k | K | m | M | g | G | Ki | Mi | Gi

@@ -58,3 +58,13 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+  - it: should not create ipallowlist middleware when `ipAllowListRef` is set
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          ipAllowListRef: ingress-shared-ipallowlist@kubernetescrd
+    asserts:
+      - hasDocuments:
+          count: 0

@@ -6,7 +6,10 @@ metadata:
 spec:
   chain:
     middlewares:
-{{- if not (has "0.0.0.0/0" .Values.global.ingress.ipAllowListCIDRs) }}
+{{- $ipAllowListRef := include "app.ipAllowListRef" . }}
+{{- if $ipAllowListRef }}
+    - name: {{ $ipAllowListRef }}
+{{- else if not (has "0.0.0.0/0" .Values.global.ingress.ipAllowListCIDRs) }}
 {{- if or .Values.infra.cloudfront.enabled .Values.infra.cloudfrontrouter.enabled .Values.global.ingress.allowFromCloudfront }}
     - name: {{.Release.Namespace}}-{{ .Release.Name }}-cloudfrontgate@kubernetescrd
 {{- else }}
