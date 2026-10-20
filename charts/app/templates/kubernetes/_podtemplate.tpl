@@ -42,9 +42,14 @@ Outputs a pod spec for use in different resources.
     spec:
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ include "app.terminationGracePeriodSeconds" . }}
-      {{- with .Values.initContainers }}
+      {{- if or .Values.postgresExtensionSetup.enabled .Values.initContainers }}
       initContainers:
+        {{- if .Values.postgresExtensionSetup.enabled }}
+        {{- include "app.postgresExtensionSetup" . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.initContainers }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
       containers:
       - image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"

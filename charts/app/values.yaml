@@ -262,6 +262,24 @@ initContainers: []
 #   image: nginx
 #   command: ['sh', '-c', "echo 'output'"]
 
+# postgresExtensionSetup -- Optional PostgreSQL extension setup before application/custom initializers and configured deployment/rollback commands. Requires existing database privileges; never grants permissions or changes installed versions.
+# @section == application
+postgresExtensionSetup:
+  # postgresExtensionSetup.enabled -- Enable extension setup using the existing PostgreSQL connection secret. Requires infra.postgres.enabled.
+  enabled: false
+  # postgresExtensionSetup.extensions -- Explicit extension name/version pairs, e.g. [{name: vector, version: "0.8.1"}]. Names use lowercase letters, digits and underscores; versions start with a digit and contain letters, digits, dots, underscores, plus or minus.
+  extensions: []
+  # postgresExtensionSetup.image -- Immutable PostgreSQL 16 client image. Custom images must provide /bin/sh and psql, support UID 1000 and a read-only filesystem, and trust any required TLS certificate authorities.
+  image: postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea
+  # postgresExtensionSetup.connectTimeoutSeconds -- Connection timeout per attempt (1-120 seconds). Kubernetes retries failed init containers.
+  connectTimeoutSeconds: 10
+  # postgresExtensionSetup.statementTimeoutMs -- Statement timeout, including extension creation and advisory lock acquisition (1-300000 milliseconds).
+  statementTimeoutMs: 60000
+  # postgresExtensionSetup.lockTimeoutMs -- Database lock wait bound (1-300000 milliseconds).
+  lockTimeoutMs: 30000
+  # postgresExtensionSetup.sslMode -- libpq TLS mode: disable, require, verify-ca or verify-full. Use a custom image with trusted CA roots for verification; require encrypts without verifying server identity.
+  sslMode: require
+
 service:
   # service.enabled -- Set to true to expose your application within the Kubernetes cluster
   # @section -- network

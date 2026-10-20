@@ -4,7 +4,16 @@
 Outputs a pod spec for use in helm hooks.
 */}}
 {{- define "app.hookPodTemplate" }}
+    {{- if .Values.postgresExtensionSetup.enabled }}
+    metadata:
+      labels:
+        {{- include "app.labels" . | nindent 8 }}
+    {{- end }}
     spec:
+      {{- if .Values.postgresExtensionSetup.enabled }}
+      initContainers:
+        {{- include "app.postgresExtensionSetup" . | nindent 8 }}
+      {{- end }}
       restartPolicy: OnFailure
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       terminationGracePeriodSeconds: 30

@@ -1,0 +1,258 @@
+suite: PostgreSQL extension setup
+templates:
+  - kubernetes/deployment.yaml
+  - kubernetes/secret-env.yaml
+  - kubernetes/secret-volume.yaml
+  - helm/pre-deploy-hook.yaml
+  - helm/pre-rollback-hook.yaml
+tests:
+  - it: leaves default pods without an initializer
+    template: kubernetes/deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.initContainers
+  - it: places setup before custom init and uses the existing connection secret
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      infra.postgres.nameOverride: existing-database
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+      initContainers: [{name: custom, image: example/init:1}]
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: postgres-extension-setup
+      - equal:
+          path: spec.template.spec.initContainers[1]
+          value: {name: custom, image: example/init:1}
+      - contains:
+          path: spec.template.spec.initContainers[0].env
+          content:
+            name: PGPASSWORD
+            valueFrom:
+              secretKeyRef: {name: existing-database-postgres, key: password}
+      - contains:
+          path: spec.template.spec.initContainers[0].env
+          content:
+            name: PGHOST
+            valueFrom:
+              secretKeyRef: {name: existing-database-postgres, key: host}
+      - contains:
+          path: spec.template.spec.initContainers[0].env
+          content:
+            name: PGPORT
+            valueFrom:
+              secretKeyRef: {name: existing-database-postgres, key: port}
+      - contains:
+          path: spec.template.spec.initContainers[0].env
+          content:
+            name: PGUSER
+            valueFrom:
+              secretKeyRef: {name: existing-database-postgres, key: username}
+      - equal:
+          path: spec.template.spec.initContainers[0].securityContext
+          value:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities: {drop: [ALL]}
+  - it: initializes predeploy commands
+    template: helm/pre-deploy-hook.yaml
+    set:
+      preDeployCommand: [migrate]
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: postgres-extension-setup
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value: [migrate]
+  - it: initializes prerollback commands
+    template: helm/pre-rollback-hook.yaml
+    set:
+      preRollbackCommand: [rollback]
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: postgres-extension-setup
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value: [rollback]
+  - it: requires postgres connection support
+    template: kubernetes/deployment.yaml
+    set:
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+    asserts:
+      - failedTemplate:
+          errorMessage: postgresExtensionSetup requires infra.postgres.enabled
+  - it: requires explicit extensions
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: postgresExtensionSetup.extensions must be a nonempty list
+  - it: refuses SQL in names
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: "vector'; DROP TABLE example;--", version: 0.8.1}]
+    asserts:
+      - failedTemplate:
+          errorMessage: invalid postgresExtensionSetup extension name
+  - it: refuses SQL in versions
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: "0.8.1'"}]
+    asserts:
+      - failedTemplate:
+          errorMessage: invalid postgresExtensionSetup extension version
+  - it: preserves custom init with setup disabled
+    template: kubernetes/deployment.yaml
+    set:
+      initContainers: [{name: custom, image: example/init:1}]
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers
+          value: [{name: custom, image: example/init:1}]
+  - it: leaves disabled hooks without setup
+    template: helm/pre-deploy-hook.yaml
+    set:
+      preDeployCommand: [migrate]
+    asserts:
+      - notExists:
+          path: spec.template.spec.initContainers
+  - it: uses bounded noninteractive connections
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].command
+          value: [/bin/sh, -ec]
+      - matchRegex:
+          path: spec.template.spec.initContainers[0].args[0]
+          pattern: 'psql -X --no-password --quiet --set=ON_ERROR_STOP=1'
+      - notMatchRegex:
+          path: spec.template.spec.initContainers[0].args[0]
+          pattern: 'PGPASSWORD|DATABASE_PASSWORD|postgres://|postgresql://'
+      - notExists:
+          path: spec.template.spec.initContainers[0].envFrom
+      - contains:
+          path: spec.template.spec.initContainers[0].env
+          content: {name: PGCONNECT_TIMEOUT, value: "10"}
+      - contains:
+          path: spec.template.spec.initContainers[0].env
+          content: {name: PGOPTIONS, value: "-c statement_timeout=60000 -c lock_timeout=30000"}
+      - contains:
+          path: spec.template.spec.initContainers[0].env
+          content: {name: PGSSLMODE, value: require}
+      - contains:
+          path: spec.template.spec.initContainers[0].env
+          content: {name: PGDATABASE, value: app}
+      - matchRegex:
+          path: spec.template.spec.initContainers[0].image
+          pattern: '^postgres:16[^@]*@sha256:[a-f0-9]{64}$'
+  - it: rejects invalid connectTimeoutSeconds
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+      postgresExtensionSetup.connectTimeoutSeconds: 0
+    asserts:
+      - failedTemplate:
+          errorMessage: postgresExtensionSetup.connectTimeoutSeconds must be an integer from 1 to 120
+  - it: rejects invalid statementTimeoutMs
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+      postgresExtensionSetup.statementTimeoutMs: 0
+    asserts:
+      - failedTemplate:
+          errorMessage: postgresExtensionSetup.statementTimeoutMs must be an integer from 1 to 300000
+  - it: rejects invalid lockTimeoutMs
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+      postgresExtensionSetup.lockTimeoutMs: 300001
+    asserts:
+      - failedTemplate:
+          errorMessage: postgresExtensionSetup.lockTimeoutMs must be an integer from 1 to 300000
+  - it: rejects invalid sslMode
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+      postgresExtensionSetup.sslMode: prefer
+    asserts:
+      - failedTemplate:
+          errorMessage: postgresExtensionSetup.sslMode must be disable, require, verify-ca or verify-full
+  - it: rejects invalid image
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+      postgresExtensionSetup.image: postgres:16
+    asserts:
+      - failedTemplate:
+          errorMessage: postgresExtensionSetup.image must use an immutable sha256 digest
+  - it: refuses duplicate extension declarations
+    template: kubernetes/deployment.yaml
+    set:
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}, {name: vector, version: 0.8.1}]
+    asserts:
+      - failedTemplate:
+          errorMessage: duplicate postgresExtensionSetup extension name
+  - it: labels hook pods for existing network policies
+    template: helm/pre-deploy-hook.yaml
+    set:
+      preDeployCommand: [migrate]
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/app"]
+          value: RELEASE-NAME
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/instance"]
+          value: app-RELEASE-NAME
+  - it: labels rollback hook pods for existing network policies
+    template: helm/pre-rollback-hook.yaml
+    set:
+      preRollbackCommand: [rollback]
+      infra.postgres.enabled: true
+      postgresExtensionSetup.enabled: true
+      postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/app"]
+          value: RELEASE-NAME
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/instance"]
+          value: app-RELEASE-NAME

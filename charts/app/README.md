@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.53.0](https://img.shields.io/badge/Version-0.53.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.53.0](https://img.shields.io/badge/AppVersion-0.53.0-informational?style=flat-square)
+![Version: 0.54.0](https://img.shields.io/badge/Version-0.54.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.54.0](https://img.shields.io/badge/AppVersion-0.54.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -158,6 +158,14 @@ helm install app helm-charts/app
 | pod.nodeSelector | object | `{}` | Set a nodeSelector(s) on your pods |
 | podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/). Only available on v1alpha1 |
 | initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
+| postgresExtensionSetup | object | `{"connectTimeoutSeconds":10,"enabled":false,"extensions":[],"image":"postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea","lockTimeoutMs":30000,"sslMode":"require","statementTimeoutMs":60000}` | Optional PostgreSQL extension setup before application/custom initializers and configured deployment/rollback commands. Requires existing database privileges; never grants permissions or changes installed versions. @section == application |
+| postgresExtensionSetup.enabled | bool | `false` | Enable extension setup using the existing PostgreSQL connection secret. Requires infra.postgres.enabled. |
+| postgresExtensionSetup.extensions | list | `[]` | Explicit extension name/version pairs, e.g. [{name: vector, version: "0.8.1"}]. Names use lowercase letters, digits and underscores; versions start with a digit and contain letters, digits, dots, underscores, plus or minus. |
+| postgresExtensionSetup.image | string | `"postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea"` | Immutable PostgreSQL 16 client image. Custom images must provide /bin/sh and psql, support UID 1000 and a read-only filesystem, and trust any required TLS certificate authorities. |
+| postgresExtensionSetup.connectTimeoutSeconds | int | `10` | Connection timeout per attempt (1-120 seconds). Kubernetes retries failed init containers. |
+| postgresExtensionSetup.statementTimeoutMs | int | `60000` | Statement timeout, including extension creation and advisory lock acquisition (1-300000 milliseconds). |
+| postgresExtensionSetup.lockTimeoutMs | int | `30000` | Database lock wait bound (1-300000 milliseconds). |
+| postgresExtensionSetup.sslMode | string | `"require"` | libpq TLS mode: disable, require, verify-ca or verify-full. Use a custom image with trusted CA roots for verification; require encrypts without verifying server identity. |
 | infra.cloudfrontrouter | object | `{}` |  |
 | infra.dynamodb.prefixOverride | string | `""` |  |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
@@ -204,6 +212,59 @@ ciliumNetworkPolicy:
   externalHttpsServices:
     - api.example.com
     - api.openai.com
+```
+
+---
+
+## PostgreSQL extension setup
+
+Extension setup is disabled by default. Enable it only when the database already
+provides the requested extension files and the existing connection role can create
+that extension. The chart does not grant permissions or install server-side files.
+
+```yaml
+infra:
+  postgres:
+    enabled: true
+postgresExtensionSetup:
+  enabled: true
+  extensions:
+    - name: vector
+      version: "0.8.1"
+```
+
+The initializer uses the chart's existing PostgreSQL connection secret and runs
+before custom init containers, application startup and configured pre-deploy or
+pre-rollback commands. Concurrent pods serialize setup with a transaction advisory
+lock in the same database. An absent extension is created at the explicit version;
+an installed extension must match exactly. Setup never upgrades or removes an
+extension. All requested extensions are checked in one transaction, and any error
+rolls back the operation. Rollbacks therefore also require the configured version
+to match the database; manage extension upgrades separately.
+
+A failed initializer blocks the application or hook command. Inspect the
+`postgres-extension-setup` init-container status and logs for connection,
+unavailable-extension, privilege or version-mismatch errors. Successful logs name
+the verified extensions and versions. Connection, statement and lock waits are
+bounded per attempt; Kubernetes retries failed initializers. Database readiness
+and secret provisioning must complete before setup can succeed.
+
+Existing pre-deploy hooks run before ordinary release resources on first install.
+If a database or its secret is created by that same release, do not configure a
+pre-deploy command that depends on it: provision the database first, or use
+application startup migrations. This initializer does not change Helm hook order.
+
+The default client uses TLS `require`, which encrypts traffic without verifying
+server identity. For `verify-ca` or `verify-full`, supply an immutable client image
+with the database CA certificate at libpq's trusted-root location for UID 1000.
+Client images must support non-root execution with a read-only filesystem. No
+credentials or connection URLs belong in extension setup values.
+
+To run the disposable PostgreSQL SQL checks locally (Helm 3, Docker and built chart
+dependencies required):
+
+```sh
+bash charts/app/tests/postgres-extension-sql.sh
 ```
 
 ----------------------------------------------
