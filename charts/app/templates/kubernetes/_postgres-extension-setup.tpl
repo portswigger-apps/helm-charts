@@ -1,4 +1,8 @@
-{{/* PostgreSQL extension setup is deliberately app-owned: it uses the existing secret. */}}
+{{/* vim: set filetype=mustache: */}}
+
+{{/*
+Outputs the PostgreSQL extension setup init container.
+*/}}
 {{- define "app.postgresExtensionSetup" -}}
 {{- $setup := .Values.postgresExtensionSetup -}}
 {{- if $setup.enabled -}}
