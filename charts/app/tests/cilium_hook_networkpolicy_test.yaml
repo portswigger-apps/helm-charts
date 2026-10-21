@@ -1,0 +1,103 @@
+suite: Extension hook network isolation
+templates:
+  - cilium/hook-networkpolicy.yaml
+  - kubernetes/service.yaml
+  - kubernetes/deployment.yaml
+  - kubernetes/secret-env.yaml
+  - kubernetes/secret-volume.yaml
+  - cilium/networkpolicy.yaml
+set:
+  infra.postgres.enabled: true
+  postgresExtensionSetup.enabled: true
+  postgresExtensionSetup.extensions: [{name: vector, version: 0.8.1}]
+  preDeployCommand: [migrate]
+tests:
+  - it: keeps the Service selecting only application pods
+    template: kubernetes/service.yaml
+    asserts:
+      - equal:
+          path: spec.selector
+          value: {app.kubernetes.io/app: RELEASE-NAME, app.kubernetes.io/instance: app-RELEASE-NAME}
+  - it: keeps workload identity stable
+    template: kubernetes/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.selector.matchLabels
+          value: {app.kubernetes.io/app: RELEASE-NAME, app.kubernetes.io/instance: app-RELEASE-NAME}
+      - isSubset:
+          path: spec.template.metadata.labels
+          content: {app.kubernetes.io/app: RELEASE-NAME, app.kubernetes.io/instance: app-RELEASE-NAME}
+  - it: retains application policy identity and ingress
+    template: cilium/networkpolicy.yaml
+    asserts:
+      - equal:
+          path: spec.endpointSelector.matchLabels
+          value: {app.kubernetes.io/app: RELEASE-NAME, app.kubernetes.io/instance: app-RELEASE-NAME}
+      - equal:
+          path: spec.ingress[0].fromEndpoints[0].matchLabels
+          value: {app.kubernetes.io/app: RELEASE-NAME, app.kubernetes.io/instance: app-RELEASE-NAME, 'k8s:io.kubernetes.pod.namespace': NAMESPACE}
+  - it: installs retained egress policy before install upgrade and rollback jobs
+    template: cilium/hook-networkpolicy.yaml
+    set:
+      ciliumNetworkPolicy.toApps: [{name: migration-api}]
+      ciliumNetworkPolicy.externalHttpsServices: [api.example.com]
+      ciliumNetworkPolicy.egress: [{toCIDR: [192.0.2.0/24]}]
+    asserts:
+      - equal:
+          path: metadata.name
+          value: postgres-extension-hooks-cacb1c9dc181fd1ca14b64b82b9cf3a1
+      - equal:
+          path: metadata.annotations
+          value:
+            helm.sh/hook: pre-install,pre-upgrade,pre-rollback
+            helm.sh/hook-weight: "-1"
+            helm.sh/hook-delete-policy: before-hook-creation
+      - equal:
+          path: spec.endpointSelector.matchLabels
+          value: {app.kubernetes.io/app: postgres-extension-hooks-cacb1c9dc181fd1ca14b64b82b9cf3a1, app.kubernetes.io/instance: hook-RELEASE-NAME}
+      - notExists:
+          path: spec.ingress
+      - equal:
+          path: spec.egress
+          value:
+            - toEndpoints:
+                - matchLabels: {'k8s:io.kubernetes.pod.namespace': kube-system, k8s-app: kube-dns}
+              toPorts:
+                - ports: [{port: "53", protocol: ANY}]
+                  rules: {dns: [{matchPattern: '*'}]}
+            - toEndpoints:
+                - matchLabels: {app.kubernetes.io/app: migration-api, 'k8s:io.kubernetes.pod.namespace': NAMESPACE}
+            - toFQDNs: [{matchPattern: NAMESPACE-RELEASE-NAME.*.*.rds.amazonaws.com}]
+              toPorts: [{ports: [{port: "5432", protocol: TCP}]}]
+            - toFQDNs: [{matchName: api.example.com}]
+              toPorts: [{ports: [{port: "443", protocol: TCP}]}]
+            - toCIDR: [192.0.2.0/24]
+  - it: omits hook policy when setup is disabled
+    template: cilium/hook-networkpolicy.yaml
+    set: {postgresExtensionSetup.enabled: false}
+    asserts: [{hasDocuments: {count: 0}}]
+  - it: omits hook policy when network policies are disabled
+    template: cilium/hook-networkpolicy.yaml
+    set: {ciliumNetworkPolicy.enabled: false}
+    asserts: [{hasDocuments: {count: 0}}]
+  - it: omits hook policy without hook commands
+    template: cilium/hook-networkpolicy.yaml
+    set: {preDeployCommand: []}
+    asserts: [{hasDocuments: {count: 0}}]
+  - it: supports rollback-only hooks
+    template: cilium/hook-networkpolicy.yaml
+    set: {preDeployCommand: [], preRollbackCommand: [rollback]}
+    asserts: [{hasDocuments: {count: 1}}]
+  - it: keeps a maximum-length release policy name valid and distinct
+    template: cilium/hook-networkpolicy.yaml
+    release:
+      name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    asserts:
+      - equal:
+          path: metadata.name
+          value: postgres-extension-hooks-abe346a7259fc90b4c27185419628e5e
+      - equal:
+          path: spec.endpointSelector.matchLabels
+          value:
+            app.kubernetes.io/app: postgres-extension-hooks-abe346a7259fc90b4c27185419628e5e
+            app.kubernetes.io/instance: hook-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

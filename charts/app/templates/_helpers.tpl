@@ -378,3 +378,13 @@ NATS connection environment variables
   value: /var/run/secrets/nats/token
 {{- end }}
 {{- end }}
+
+{{/* Dedicated identity for extension-enabled hook pods and their egress policy. */}}
+{{- define "app.hookName" -}}
+{{- printf "postgres-extension-hooks-%s" (.Release.Name | sha256sum | trunc 32) -}}
+{{- end -}}
+
+{{- define "app.hookLabelselector" -}}
+app.kubernetes.io/app: {{ include "app.hookName" . }}
+app.kubernetes.io/instance: hook-{{ .Release.Name }}
+{{- end -}}

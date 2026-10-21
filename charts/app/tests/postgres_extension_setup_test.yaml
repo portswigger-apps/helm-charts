@@ -228,7 +228,7 @@ tests:
     asserts:
       - failedTemplate:
           errorMessage: duplicate postgresExtensionSetup extension name
-  - it: labels hook pods for existing network policies
+  - it: isolates hook pods from the Service and app policy
     template: helm/pre-deploy-hook.yaml
     set:
       preDeployCommand: [migrate]
@@ -238,11 +238,17 @@ tests:
     asserts:
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/app"]
-          value: RELEASE-NAME
+          value: postgres-extension-hooks-cacb1c9dc181fd1ca14b64b82b9cf3a1
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/instance"]
-          value: app-RELEASE-NAME
-  - it: labels rollback hook pods for existing network policies
+          value: hook-RELEASE-NAME
+      - equal:
+          path: spec.template.spec.topologySpreadConstraints[0].labelSelector.matchLabels
+          value: {app.kubernetes.io/app: postgres-extension-hooks-cacb1c9dc181fd1ca14b64b82b9cf3a1, app.kubernetes.io/instance: hook-RELEASE-NAME}
+      - equal:
+          path: spec.template.spec.topologySpreadConstraints[1].labelSelector.matchLabels
+          value: {app.kubernetes.io/app: postgres-extension-hooks-cacb1c9dc181fd1ca14b64b82b9cf3a1, app.kubernetes.io/instance: hook-RELEASE-NAME}
+  - it: isolates rollback hook pods from the Service and app policy
     template: helm/pre-rollback-hook.yaml
     set:
       preRollbackCommand: [rollback]
@@ -252,7 +258,13 @@ tests:
     asserts:
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/app"]
-          value: RELEASE-NAME
+          value: postgres-extension-hooks-cacb1c9dc181fd1ca14b64b82b9cf3a1
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/instance"]
-          value: app-RELEASE-NAME
+          value: hook-RELEASE-NAME
+      - equal:
+          path: spec.template.spec.topologySpreadConstraints[0].labelSelector.matchLabels
+          value: {app.kubernetes.io/app: postgres-extension-hooks-cacb1c9dc181fd1ca14b64b82b9cf3a1, app.kubernetes.io/instance: hook-RELEASE-NAME}
+      - equal:
+          path: spec.template.spec.topologySpreadConstraints[1].labelSelector.matchLabels
+          value: {app.kubernetes.io/app: postgres-extension-hooks-cacb1c9dc181fd1ca14b64b82b9cf3a1, app.kubernetes.io/instance: hook-RELEASE-NAME}

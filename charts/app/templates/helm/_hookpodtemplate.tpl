@@ -7,7 +7,7 @@ Outputs a pod spec for use in helm hooks.
     {{- if .Values.postgresExtensionSetup.enabled }}
     metadata:
       labels:
-        {{- include "app.labels" . | nindent 8 }}
+        {{- include "app.hookLabelselector" . | nindent 8 }}
     {{- end }}
     spec:
       {{- if .Values.postgresExtensionSetup.enabled }}
@@ -94,13 +94,13 @@ Outputs a pod spec for use in helm hooks.
       topologySpreadConstraints:
       - labelSelector:
           matchLabels:
-            {{- include "app.labelselector" . | nindent 12 }}
+            {{- include (ternary "app.hookLabelselector" "app.labelselector" .Values.postgresExtensionSetup.enabled) . | nindent 12 }}
         maxSkew: 1
         topologyKey: kubernetes.io/hostname
         whenUnsatisfiable: DoNotSchedule
       - labelSelector:
           matchLabels:
-            {{- include "app.labelselector" . | nindent 12 }}
+            {{- include (ternary "app.hookLabelselector" "app.labelselector" .Values.postgresExtensionSetup.enabled) . | nindent 12 }}
         maxSkew: 1
         topologyKey: topology.kubernetes.io/zone
         whenUnsatisfiable: ScheduleAnyway
