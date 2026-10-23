@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.53.0](https://img.shields.io/badge/Version-0.53.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.53.0](https://img.shields.io/badge/AppVersion-0.53.0-informational?style=flat-square)
+![Version: 0.54.0](https://img.shields.io/badge/Version-0.54.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.54.0](https://img.shields.io/badge/AppVersion-0.54.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://ghcr.io/portswigger-apps/charts | infra | 0.29.0 |
+| oci://ghcr.io/portswigger-apps/charts | infra | 0.30.0 |
 
 ## Values
 
@@ -77,6 +77,7 @@ helm install app helm-charts/app
 | readinessEndpoint | object | `{}` | Override `healthcheckEndpoint` for the **readiness** probe (and startup probe, which mirrors it). Readiness can legitimately go red on transient downstream blips without warranting a pod restart. Keys set here override the matching keys in `healthcheckEndpoint`; unset keys fall through. |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
+| initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. |
 | hookSecretEnv | bool | `true` | Whether `preDeployCommand`/`preRollbackCommand` hooks inherit `secretEnv`. Defaults to `true`; set `false` for one release to break the bootstrap ordering race when first introducing `secretEnv` on a chart with these hooks (see README). |
 
 ### network
@@ -103,6 +104,7 @@ helm install app helm-charts/app
 | infra.postgres.version | string | `"16.4"` | Options: 16.2, 16.3 or 16.4 |
 | infra.postgres.multiAz | bool | `false` | Set to `true` to deploy the `PostgresInstance` across multiple availability zones |
 | infra.postgres.enablePerformanceInsights | bool | `false` | Set to `true` to enable Performance Insights on the `PostgresInstance` |
+| infra.postgres.extensions | list | `[]` | PostgreSQL extensions for the platform to create in the `app` database. Each entry has a `name` and optional quoted string `version`. Existing extensions are adopted without upgrading; removing an entry does not drop it. With `create: false`, configure extensions on the externally managed claim instead. |
 | infra.s3Bucket.enabled | bool | `false` | Set to `true` to deploy an `s3Bucket` resource |
 | infra.s3Bucket.create | bool | `true` | Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere |
 | infra.s3Bucket.nameOverride | string | `""` | Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere |
@@ -157,7 +159,6 @@ helm install app helm-charts/app
 | pod.annotations | object | `{}` | Additional annotations to add to pods |
 | pod.nodeSelector | object | `{}` | Set a nodeSelector(s) on your pods |
 | podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/). Only available on v1alpha1 |
-| initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
 | infra.cloudfrontrouter | object | `{}` |  |
 | infra.dynamodb.prefixOverride | string | `""` |  |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
@@ -205,6 +206,46 @@ ciliumNetworkPolicy:
     - api.example.com
     - api.openai.com
 ```
+
+---
+
+## PostgreSQL extensions
+
+Configure platform-managed extensions through the infra chart dependency:
+
+```yaml
+infra:
+  postgres:
+    enabled: true
+    extensions:
+      - name: vector
+        version: "0.8.1"
+      - name: pg_trgm
+```
+
+The platform creates extensions in the `app` database after PostgreSQL becomes
+available. The default empty list leaves existing instances unchanged. Names
+may include underscores and hyphens, such as `pg_trgm` and `uuid-ossp`.
+Versions must be quoted strings (`"1.6"`, not `1.6`); omitting a version uses
+the database engine's default. The platform API validates names and versions.
+
+Existing extensions are adopted as-is. Changing the configured version does not
+upgrade an installed extension or enforce its current version. Upgrades require
+a separately managed `ALTER EXTENSION ... UPDATE`. Removing an entry or deleting
+the claim does not drop the extension (`deletionPolicy: Orphan`).
+
+This requires platform support for `PostgresInstance.spec.extensions` and the
+PostgreSQL SQL provider. Extension creation is asynchronous and does not run in
+application init containers or Helm hooks. First apply the extension
+configuration with an application version that works without it, verify
+provisioning and the actual installed version, then deploy extension-dependent
+migrations and application code. Helm does not wait for extension provisioning
+before starting pods or running pre-install/pre-upgrade hooks. On first install,
+those hooks also run before ordinary database and secret resources are created.
+
+With `infra.postgres.create: false`, configure extensions on the claim managed
+elsewhere; setting this list does not change that external claim. Shared-instance
+extensions belong to the owner of that database claim.
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

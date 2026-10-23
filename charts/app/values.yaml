@@ -256,7 +256,7 @@ podLogs:
   # podLogs.pipelineStages -- Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/). Only available on v1alpha1
   pipelineStages: []
 # initContainers -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
-# @section == application
+# @section -- application
 initContainers: []
 # - name: init-myservice
 #   image: nginx
@@ -354,6 +354,9 @@ infra:
     # @default -- `false`
     # @section -- infra
     enablePerformanceInsights: null
+    # infra.postgres.extensions -- PostgreSQL extensions for the platform to create in the `app` database. Each entry has a `name` and optional quoted string `version`. Existing extensions are adopted without upgrading; removing an entry does not drop it. With `create: false`, configure extensions on the externally managed claim instead.
+    # @section -- infra
+    extensions: []
   s3Bucket:
     # infra.s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
     # @section -- infra
