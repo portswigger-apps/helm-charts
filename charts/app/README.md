@@ -14,7 +14,7 @@ helm install app helm-charts/app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://ghcr.io/portswigger-apps/charts | infra | 0.29.0 |
+| oci://ghcr.io/portswigger-apps/charts | infra | 0.30.0 |
 
 ## Values
 
@@ -77,6 +77,7 @@ helm install app helm-charts/app
 | readinessEndpoint | object | `{}` | Override `healthcheckEndpoint` for the **readiness** probe (and startup probe, which mirrors it). Readiness can legitimately go red on transient downstream blips without warranting a pod restart. Keys set here override the matching keys in `healthcheckEndpoint`; unset keys fall through. |
 | resources.cpu | string | `"100m"` | Requested CPU time for the pod |
 | resources.memory | string | `"64Mi"` | Maximum memory usage for the pod |
+| initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. |
 | hookSecretEnv | bool | `true` | Whether `preDeployCommand`/`preRollbackCommand` hooks inherit `secretEnv`. Defaults to `true`; set `false` for one release to break the bootstrap ordering race when first introducing `secretEnv` on a chart with these hooks (see README). |
 
 ### network
@@ -103,6 +104,7 @@ helm install app helm-charts/app
 | infra.postgres.version | string | `"16.4"` | Options: 16.2, 16.3 or 16.4 |
 | infra.postgres.multiAz | bool | `false` | Set to `true` to deploy the `PostgresInstance` across multiple availability zones |
 | infra.postgres.enablePerformanceInsights | bool | `false` | Set to `true` to enable Performance Insights on the `PostgresInstance` |
+| infra.postgres.extensions | list | `[]` | PostgreSQL extensions for the platform to create in the `app` database. Each entry has a `name` and optional quoted string `version`. Existing extensions are adopted without upgrading; removing an entry does not drop it. With `create: false`, configure extensions on the externally managed claim instead. |
 | infra.s3Bucket.enabled | bool | `false` | Set to `true` to deploy an `s3Bucket` resource |
 | infra.s3Bucket.create | bool | `true` | Set to `false` to skip creation of the `s3Bucket` if it has been created elsewhere |
 | infra.s3Bucket.nameOverride | string | `""` | Override the `s3Bucket` name or use with `create: false` to map the secrets of an instance created elsewhere |
@@ -157,15 +159,6 @@ helm install app helm-charts/app
 | pod.annotations | object | `{}` | Additional annotations to add to pods |
 | pod.nodeSelector | object | `{}` | Set a nodeSelector(s) on your pods |
 | podLogs.pipelineStages | list | `[]` | Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/). Only available on v1alpha1 |
-| initContainers | list | `[]` | Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started. @section == application |
-| postgresExtensionSetup | object | `{"connectTimeoutSeconds":10,"enabled":false,"extensions":[],"image":"postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea","lockTimeoutMs":30000,"sslMode":"require","statementTimeoutMs":60000}` | PostgreSQL extension setup before application startup and configured hooks. @section == application |
-| postgresExtensionSetup.enabled | bool | `false` | Enable setup with the existing PostgreSQL connection secret; requires infra.postgres.enabled. |
-| postgresExtensionSetup.extensions | list | `[]` | Extension names and required versions. |
-| postgresExtensionSetup.image | string | `"postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea"` | Pinned PostgreSQL client image. |
-| postgresExtensionSetup.connectTimeoutSeconds | int | `10` | Connection timeout per attempt (1-120 seconds). |
-| postgresExtensionSetup.statementTimeoutMs | int | `60000` | Statement timeout (1-300000 milliseconds). |
-| postgresExtensionSetup.lockTimeoutMs | int | `30000` | Database lock timeout (1-300000 milliseconds). |
-| postgresExtensionSetup.sslMode | string | `"require"` | libpq TLS mode: disable, require, verify-ca or verify-full; require encrypts without verifying server identity. |
 | infra.cloudfrontrouter | object | `{}` |  |
 | infra.dynamodb.prefixOverride | string | `""` |  |
 | extraDeploy | list | `[]` | Extra Kubernetes configuration |
@@ -216,42 +209,43 @@ ciliumNetworkPolicy:
 
 ---
 
-## PostgreSQL extension setup
+## PostgreSQL extensions
 
-Setup is disabled by default. It uses the existing PostgreSQL connection secret;
-extension files must already exist on the server, and the connection role must
-have permission to create them.
+Configure platform-managed extensions through the infra chart dependency:
 
 ```yaml
 infra:
   postgres:
     enabled: true
-postgresExtensionSetup:
-  enabled: true
-  extensions:
-    - name: vector
-      version: "0.8.1"
+    extensions:
+      - name: vector
+        version: "0.8.1"
+      - name: pg_trgm
 ```
 
-Setup runs before custom init containers, application startup, and configured
-pre-deploy or pre-rollback commands. It creates a missing extension at the
-requested version, fails if an installed version differs, and never upgrades.
-If initialization fails, inspect the `postgres-extension-setup` init-container
-status and logs; Kubernetes retries failed initializers.
+The platform creates extensions in the `app` database after PostgreSQL becomes
+available. The default empty list leaves existing instances unchanged. Names
+may include underscores and hyphens, such as `pg_trgm` and `uuid-ossp`.
+Versions must be quoted strings (`"1.6"`, not `1.6`); omitting a version uses
+the database engine's default. The platform API validates names and versions.
 
-On first install, Helm runs pre-deploy hooks before ordinary release resources.
-If the same release creates the database or secret, dependent pre-deploy commands
-cannot use them; provision the database first or use application startup
-migrations.
+Existing extensions are adopted as-is. Changing the configured version does not
+upgrade an installed extension or enforce its current version. Upgrades require
+a separately managed `ALTER EXTENSION ... UPDATE`. Removing an entry or deleting
+the claim does not drop the extension (`deletionPolicy: Orphan`).
 
-TLS defaults to `require`, which encrypts traffic without verifying server
-identity. For `verify-ca` or `verify-full`, use an immutable custom client image
-with the database CA in its trusted roots; it must support UID 1000 and a
-read-only filesystem.
+This requires platform support for `PostgresInstance.spec.extensions` and the
+PostgreSQL SQL provider. Extension creation is asynchronous and does not run in
+application init containers or Helm hooks. First apply the extension
+configuration with an application version that works without it, verify
+provisioning and the actual installed version, then deploy extension-dependent
+migrations and application code. Helm does not wait for extension provisioning
+before starting pods or running pre-install/pre-upgrade hooks. On first install,
+those hooks also run before ordinary database and secret resources are created.
 
-This opt-in initializer is a stopgap; extension upgrades and shared-database ownership belong in the platform `PostgresInstance` composition.
-
-The hook egress policy runs before hook jobs and remains until the next hook invocation; Helm uninstall does not remove this retained hook resource. Delete the retained policy manually after uninstall.
+With `infra.postgres.create: false`, configure extensions on the claim managed
+elsewhere; setting this list does not change that external claim. Shared-instance
+extensions belong to the owner of that database claim.
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

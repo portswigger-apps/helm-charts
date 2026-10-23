@@ -4,16 +4,7 @@
 Outputs a pod spec for use in helm hooks.
 */}}
 {{- define "app.hookPodTemplate" }}
-    {{- if .Values.postgresExtensionSetup.enabled }}
-    metadata:
-      labels:
-        {{- include "app.hookLabelselector" . | nindent 8 }}
-    {{- end }}
     spec:
-      {{- if .Values.postgresExtensionSetup.enabled }}
-      initContainers:
-        {{- include "app.postgresExtensionSetup" . | nindent 8 }}
-      {{- end }}
       restartPolicy: OnFailure
       serviceAccountName: {{ include "app.serviceAccountName" . }}
       terminationGracePeriodSeconds: 30
@@ -94,13 +85,13 @@ Outputs a pod spec for use in helm hooks.
       topologySpreadConstraints:
       - labelSelector:
           matchLabels:
-            {{- include (ternary "app.hookLabelselector" "app.labelselector" .Values.postgresExtensionSetup.enabled) . | nindent 12 }}
+            {{- include "app.labelselector" . | nindent 12 }}
         maxSkew: 1
         topologyKey: kubernetes.io/hostname
         whenUnsatisfiable: DoNotSchedule
       - labelSelector:
           matchLabels:
-            {{- include (ternary "app.hookLabelselector" "app.labelselector" .Values.postgresExtensionSetup.enabled) . | nindent 12 }}
+            {{- include "app.labelselector" . | nindent 12 }}
         maxSkew: 1
         topologyKey: topology.kubernetes.io/zone
         whenUnsatisfiable: ScheduleAnyway

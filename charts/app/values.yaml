@@ -256,29 +256,11 @@ podLogs:
   # podLogs.pipelineStages -- Grafana logging agent [pipeline stage](https://grafana.com/docs/loki/latest/send-data/promtail/pipelines/). Only available on v1alpha1
   pipelineStages: []
 # initContainers -- Configuration for [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/), which are containers that run before the app container is started.
-# @section == application
+# @section -- application
 initContainers: []
 # - name: init-myservice
 #   image: nginx
 #   command: ['sh', '-c', "echo 'output'"]
-
-# postgresExtensionSetup -- PostgreSQL extension setup before application startup and configured hooks.
-# @section == application
-postgresExtensionSetup:
-  # postgresExtensionSetup.enabled -- Enable setup with the existing PostgreSQL connection secret; requires infra.postgres.enabled.
-  enabled: false
-  # postgresExtensionSetup.extensions -- Extension names and required versions.
-  extensions: []
-  # postgresExtensionSetup.image -- Pinned PostgreSQL client image.
-  image: postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea
-  # postgresExtensionSetup.connectTimeoutSeconds -- Connection timeout per attempt (1-120 seconds).
-  connectTimeoutSeconds: 10
-  # postgresExtensionSetup.statementTimeoutMs -- Statement timeout (1-300000 milliseconds).
-  statementTimeoutMs: 60000
-  # postgresExtensionSetup.lockTimeoutMs -- Database lock timeout (1-300000 milliseconds).
-  lockTimeoutMs: 30000
-  # postgresExtensionSetup.sslMode -- libpq TLS mode: disable, require, verify-ca or verify-full; require encrypts without verifying server identity.
-  sslMode: require
 
 service:
   # service.enabled -- Set to true to expose your application within the Kubernetes cluster
@@ -372,6 +354,9 @@ infra:
     # @default -- `false`
     # @section -- infra
     enablePerformanceInsights: null
+    # infra.postgres.extensions -- PostgreSQL extensions for the platform to create in the `app` database. Each entry has a `name` and optional quoted string `version`. Existing extensions are adopted without upgrading; removing an entry does not drop it. With `create: false`, configure extensions on the externally managed claim instead.
+    # @section -- infra
+    extensions: []
   s3Bucket:
     # infra.s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
     # @section -- infra
