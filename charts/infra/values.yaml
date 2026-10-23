@@ -42,6 +42,10 @@ postgres:
   # @section -- postgres
   enablePerformanceInsights: null
 
+  # postgres.extensions -- PostgreSQL extensions for the platform to create in the `app` database. Each entry has a `name` and optional quoted string `version`. Existing extensions are adopted without upgrading; removing an entry does not drop it. With `create: false`, configure extensions on the externally managed claim instead.
+  # @section -- postgres
+  extensions: []
+
 s3Bucket:
   # s3Bucket.enabled -- Set to `true` to deploy an `s3Bucket` resource
   # @section -- s3Bucket
