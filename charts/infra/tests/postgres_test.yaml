@@ -28,6 +28,60 @@ tests:
       - equal:
           path: metadata.name
           value: NAMESPACE-RELEASE-NAME
+      - notExists:
+          path: spec.extensions
+
+  - it: should omit an empty extension list
+    set:
+      postgres:
+        enabled: true
+        extensions: []
+    asserts:
+      - notExists:
+          path: spec.extensions
+
+  - it: should pass extension names and string versions to the platform
+    set:
+      postgres:
+        enabled: true
+        extensions:
+          - name: vector
+            version: "0.8.1"
+          - name: uuid-ossp
+            version: "1.6"
+          - name: pg_trgm
+    asserts:
+      - equal:
+          path: spec.extensions
+          value:
+            - name: vector
+              version: "0.8.1"
+            - name: uuid-ossp
+              version: "1.6"
+            - name: pg_trgm
+
+  - it: should not create a disabled database even with extensions configured
+    set:
+      postgres:
+        enabled: false
+        extensions:
+          - name: vector
+            version: "0.8.1"
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not manage extensions on a database created elsewhere
+    set:
+      postgres:
+        enabled: true
+        create: false
+        extensions:
+          - name: vector
+            version: "0.8.1"
+    asserts:
+      - hasDocuments:
+          count: 0
 
   - it: should create a PostgresInstance with custom fields
     set:
