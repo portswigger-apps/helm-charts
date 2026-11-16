@@ -9,6 +9,13 @@ spec:
     address: {{ include "app.proAuthAddress" . }}
     trustForwardHeader: false
     authResponseHeaders:
+{{- if eq (int .Values.global.ingress.proAuth.version) 3 }}
+      {{- /* v3 mints nothing: leaving Authorization out passes the caller's Auth0
+      token through. Listing these makes Traefik drop any copy the caller sent. */}}
+      - Portswigger-Ai-Credit-Account
+      - Portswigger-Ai-License-Allocation-Number
+{{- else }}
       - Authorization
+{{- end }}
 {{- end }}
 {{- end }}

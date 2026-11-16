@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.53.0](https://img.shields.io/badge/Version-0.53.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.53.0](https://img.shields.io/badge/AppVersion-0.53.0-informational?style=flat-square)
+![Version: 0.54.0](https://img.shields.io/badge/Version-0.54.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.54.0](https://img.shields.io/badge/AppVersion-0.54.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -36,8 +36,8 @@ helm install app helm-charts/app
 | global.ingress.authentication.enabled | bool | `false` | Set to `true` to require SSO authentication to access the application. |
 | global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges |
 | global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests. |
-| global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Will copy a JWT from the auth service to the Authorization header. |
-| global.ingress.proAuth.version | string | `""` | ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1` or `2`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow). |
+| global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. On versions `1` and `2` it copies a JWT from the auth service to the Authorization header; on version `3` it leaves the caller's Auth0 token in place and copies the `Portswigger-Ai-Credit-Account` and `Portswigger-Ai-License-Allocation-Number` headers. |
+| global.ingress.proAuth.version | string | `""` | ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1`, `2` or `3`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow), `3` -> `/api/v3/auth` (Auth0 token passed through, with the AI credit account and license allocation number in headers). |
 | global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created |
 | global.serviceAccount.name | string | `.Release.Name` | `ServiceAccount` name. Use with `global.serviceAccount.enabled: false` to use an existing `ServiceAccount` |
 | global.serviceAccount.automountServiceAccountToken | bool | `false` | Set to `true` to mount tokens for access to the Kubernetes API. This should almost always be `false` |

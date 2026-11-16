@@ -60,10 +60,10 @@ global:
     # @section -- global
     stripPrefixes: []
     proAuth:
-      # global.ingress.proAuth.enabled -- Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Will copy a JWT from the auth service to the Authorization header.
+      # global.ingress.proAuth.enabled -- Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. On versions `1` and `2` it copies a JWT from the auth service to the Authorization header; on version `3` it leaves the caller's Auth0 token in place and copies the `Portswigger-Ai-Credit-Account` and `Portswigger-Ai-License-Allocation-Number` headers.
       # @section -- global
       enabled: false
-      # global.ingress.proAuth.version -- ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1` or `2`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow).
+      # global.ingress.proAuth.version -- ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1`, `2` or `3`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow), `3` -> `/api/v3/auth` (Auth0 token passed through, with the AI credit account and license allocation number in headers).
       # @section -- global
       version: ""
   serviceAccount:

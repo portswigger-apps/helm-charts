@@ -63,6 +63,29 @@ tests:
           path: spec.forwardAuth.address
           value: http://auth-burp-forwardauth.auth:2048/api/v2/auth
 
+  - it: should create pro-auth middleware pointing at v3 that passes the Auth0 token through when version is 3
+    set:
+      global:
+        ingress:
+          enabled: true
+          host: app.example.io
+          proAuth:
+            enabled: true
+            version: 3
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Middleware
+      - equal:
+          path: spec.forwardAuth
+          value:
+            address: http://auth-burp-forwardauth.auth:2048/api/v3/auth
+            trustForwardHeader: false
+            authResponseHeaders:
+              - Portswigger-Ai-Credit-Account
+              - Portswigger-Ai-License-Allocation-Number
+
   - it: should fail when proAuth is enabled but version is unset
     set:
       global:
@@ -73,9 +96,9 @@ tests:
             enabled: true
     asserts:
       - failedTemplate:
-          errorMessage: "global.ingress.proAuth.version is required when proAuth is enabled (must be 1 or 2)"
+          errorMessage: "global.ingress.proAuth.version is required when proAuth is enabled (must be 1, 2 or 3)"
 
-  - it: should fail when proAuth version is not 1 or 2
+  - it: should fail when proAuth version is not 1, 2 or 3
     set:
       global:
         ingress:
@@ -83,7 +106,7 @@ tests:
           host: app.example.io
           proAuth:
             enabled: true
-            version: 3
+            version: 4
     asserts:
       - failedTemplate:
-          errorMessage: "global.ingress.proAuth.version must be 1 or 2, got 3"
+          errorMessage: "global.ingress.proAuth.version must be 1, 2 or 3, got 4"
