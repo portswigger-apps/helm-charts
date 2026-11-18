@@ -23,7 +23,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: should create pro-auth middleware pointing at v1 when version is 1
+  - it: should create pro-auth middleware pointing at v1, listing Authorization and the five forwardauth headers, when version is 1
     set:
       global:
         ingress:
@@ -44,8 +44,13 @@ tests:
             trustForwardHeader: false
             authResponseHeaders:
               - Authorization
+              - Portswigger-Ai-Auth-Mode
+              - Portswigger-Ai-Credit-Account
+              - Portswigger-Ai-License-Allocation-Number
+              - Portswigger-Ai-License-Type
+              - Portswigger-Ai-Customer-Reference
 
-  - it: should create pro-auth middleware pointing at v2 when version is 2
+  - it: should create pro-auth middleware pointing at v2, listing Authorization and the five forwardauth headers, when version is 2
     set:
       global:
         ingress:
@@ -60,31 +65,17 @@ tests:
       - isKind:
           of: Middleware
       - equal:
-          path: spec.forwardAuth.address
-          value: http://auth-burp-forwardauth.auth:2048/api/v2/auth
-
-  - it: should create pro-auth middleware pointing at v3 that passes the Auth0 token through when version is 3
-    set:
-      global:
-        ingress:
-          enabled: true
-          host: app.example.io
-          proAuth:
-            enabled: true
-            version: 3
-    asserts:
-      - hasDocuments:
-          count: 1
-      - isKind:
-          of: Middleware
-      - equal:
           path: spec.forwardAuth
           value:
-            address: http://auth-burp-forwardauth.auth:2048/api/v3/auth
+            address: http://auth-burp-forwardauth.auth:2048/api/v2/auth
             trustForwardHeader: false
             authResponseHeaders:
+              - Authorization
+              - Portswigger-Ai-Auth-Mode
               - Portswigger-Ai-Credit-Account
               - Portswigger-Ai-License-Allocation-Number
+              - Portswigger-Ai-License-Type
+              - Portswigger-Ai-Customer-Reference
 
   - it: should fail when proAuth is enabled but version is unset
     set:
@@ -96,9 +87,9 @@ tests:
             enabled: true
     asserts:
       - failedTemplate:
-          errorMessage: "global.ingress.proAuth.version is required when proAuth is enabled (must be 1, 2 or 3)"
+          errorMessage: "global.ingress.proAuth.version is required when proAuth is enabled (must be 1 or 2)"
 
-  - it: should fail when proAuth version is not 1, 2 or 3
+  - it: should fail when proAuth version is not 1 or 2
     set:
       global:
         ingress:
@@ -106,7 +97,7 @@ tests:
           host: app.example.io
           proAuth:
             enabled: true
-            version: 4
+            version: 3
     asserts:
       - failedTemplate:
-          errorMessage: "global.ingress.proAuth.version must be 1, 2 or 3, got 4"
+          errorMessage: "global.ingress.proAuth.version must be 1 or 2, got 3"
