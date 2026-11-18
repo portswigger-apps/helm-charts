@@ -10,15 +10,18 @@ spec:
     trustForwardHeader: false
     {{- /* For each listed header Traefik deletes the caller's copy from the request
     and copies in auth-burp-forwardauth's value, if it set one. Authorization carries
-    the minted JWT, or the caller's own Auth0 token when forwardauth's
-    AUTH0_PASS_THROUGH_ENABLED is on; the Portswigger-Ai-* headers are set only then.
-    Listing them always means a caller can never send its own marker or account. */}}
+    the minted JWT or, on v2 with forwardauth's AUTH0_PASS_THROUGH_ENABLED on, the
+    caller's own Auth0 token; the Portswigger-Ai-* headers are set only then. They are
+    listed for v2 alone, so a caller can never send its own marker or account there;
+    v1 never passes an Auth0 token through, and keeps Authorization only. */}}
     authResponseHeaders:
       - Authorization
+      {{- if eq (int .Values.global.ingress.proAuth.version) 2 }}
       - Portswigger-Ai-Auth-Mode
       - Portswigger-Ai-Credit-Account
       - Portswigger-Ai-License-Allocation-Number
       - Portswigger-Ai-License-Type
       - Portswigger-Ai-Customer-Reference
+      {{- end }}
 {{- end }}
 {{- end }}

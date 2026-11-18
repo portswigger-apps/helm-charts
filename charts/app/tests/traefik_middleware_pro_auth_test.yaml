@@ -23,7 +23,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: should create pro-auth middleware pointing at v1, listing Authorization and the five forwardauth headers, when version is 1
+  - it: should create pro-auth middleware pointing at v1, listing only Authorization, when version is 1
     set:
       global:
         ingress:
@@ -44,11 +44,6 @@ tests:
             trustForwardHeader: false
             authResponseHeaders:
               - Authorization
-              - Portswigger-Ai-Auth-Mode
-              - Portswigger-Ai-Credit-Account
-              - Portswigger-Ai-License-Allocation-Number
-              - Portswigger-Ai-License-Type
-              - Portswigger-Ai-Customer-Reference
 
   - it: should create pro-auth middleware pointing at v2, listing Authorization and the five forwardauth headers, when version is 2
     set:
