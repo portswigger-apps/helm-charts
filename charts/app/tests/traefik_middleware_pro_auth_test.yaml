@@ -23,7 +23,7 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: should create pro-auth middleware pointing at v1 when version is 1
+  - it: should create pro-auth middleware pointing at v1, listing only Authorization, when version is 1
     set:
       global:
         ingress:
@@ -45,7 +45,7 @@ tests:
             authResponseHeaders:
               - Authorization
 
-  - it: should create pro-auth middleware pointing at v2 when version is 2
+  - it: should create pro-auth middleware pointing at v2, listing Authorization and the five forwardauth headers, when version is 2
     set:
       global:
         ingress:
@@ -60,8 +60,17 @@ tests:
       - isKind:
           of: Middleware
       - equal:
-          path: spec.forwardAuth.address
-          value: http://auth-burp-forwardauth.auth:2048/api/v2/auth
+          path: spec.forwardAuth
+          value:
+            address: http://auth-burp-forwardauth.auth:2048/api/v2/auth
+            trustForwardHeader: false
+            authResponseHeaders:
+              - Authorization
+              - Portswigger-Ai-Auth-Mode
+              - Portswigger-Ai-Credit-Account
+              - Portswigger-Ai-License-Allocation-Number
+              - Portswigger-Ai-License-Type
+              - Portswigger-Ai-Customer-Reference
 
   - it: should fail when proAuth is enabled but version is unset
     set:

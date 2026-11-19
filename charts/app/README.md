@@ -1,6 +1,6 @@
 # app
 
-![Version: 0.53.0](https://img.shields.io/badge/Version-0.53.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.53.0](https://img.shields.io/badge/AppVersion-0.53.0-informational?style=flat-square)
+![Version: 0.54.0](https://img.shields.io/badge/Version-0.54.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.54.0](https://img.shields.io/badge/AppVersion-0.54.0-informational?style=flat-square)
 
 A Helm "monochart" for deploying common application patterns
 
@@ -36,7 +36,7 @@ helm install app helm-charts/app
 | global.ingress.authentication.enabled | bool | `false` | Set to `true` to require SSO authentication to access the application. |
 | global.ingress.allowFromCloudfront | bool | `false` | Allow access to the Traefik `Ingress` from Cloudfront IP ranges |
 | global.ingress.stripPrefixes | list | `[]` | A list of prefixes to strip from requests. |
-| global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Will copy a JWT from the auth service to the Authorization header. |
+| global.ingress.proAuth.enabled | bool | `false` | Set to `true` to enable forwarding requests through the auth-burp-forwardauth service. Traefik replaces the request's `Authorization` header with the auth service's value. On version `2` it also replaces `Portswigger-Ai-Auth-Mode`, `Portswigger-Ai-Credit-Account`, `Portswigger-Ai-License-Allocation-Number`, `Portswigger-Ai-License-Type` and `Portswigger-Ai-Customer-Reference`, so a caller's own copies never reach the app. On v2, `Authorization` carries the minted JWT, or the caller's own Auth0 token when the auth service's `AUTH0_PASS_THROUGH_ENABLED` is on (marked `Portswigger-Ai-Auth-Mode: auth0`, with the AI credit account and licence details in the other headers). |
 | global.ingress.proAuth.version | string | `""` | ForwardAuth endpoint version. Required when `proAuth.enabled` is `true` (must be `1` or `2`); rendering fails if unset. `1` -> `/api/v1/auth` (legacy activation-token flow), `2` -> `/api/v2/auth` (Auth0 + activation-token flow). |
 | global.serviceAccount.enabled | bool | `true` | Set to `false` to prevent the `ServiceAccount` from being created |
 | global.serviceAccount.name | string | `.Release.Name` | `ServiceAccount` name. Use with `global.serviceAccount.enabled: false` to use an existing `ServiceAccount` |
