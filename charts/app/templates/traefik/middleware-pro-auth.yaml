@@ -9,11 +9,11 @@ spec:
     address: {{ include "app.proAuthAddress" . }}
     trustForwardHeader: false
     {{- /* For each listed header Traefik deletes the caller's copy from the request
-    and copies in auth-burp-forwardauth's value, if it set one. Authorization carries
-    the minted JWT or, on v2 with forwardauth's AUTH0_PASS_THROUGH_ENABLED on, the
-    caller's own Auth0 token; the Portswigger-Ai-* headers are set only then. They are
-    listed for v2 alone, so a caller can never send its own marker or account there;
-    v1 never passes an Auth0 token through, and keeps Authorization only. */}}
+    and copies in auth-burp-forwardauth's value, if it set one. On v2 with forwardauth's
+    AUTH0_PASS_THROUGH_ENABLED on, Authorization carries the caller's own Auth0 token
+    and forwardauth sets the Portswigger-Ai-* headers; listing them means a caller can
+    never supply its own marker or account. v1 always gets forwardauth's minted JWT and
+    never these headers, so it lists Authorization only. */}}
     authResponseHeaders:
       - Authorization
       {{- if eq (int .Values.global.ingress.proAuth.version) 2 }}
